@@ -34,19 +34,24 @@ function allowedOrigins(): Set<string> {
   return origins;
 }
 
+// TODO(security): temporary — reflects any origin while the allowlist is still
+// being worked out. `allowedOrigins()` is kept and logged so restoring the
+// strict check is a one-line revert of the `origin` callback below.
 function configureCors(app: INestApplication): void {
   const exact = allowedOrigins();
-  logger.log(`CORS: ${[...exact].join(', ') || '(none)'}`);
+  logger.warn(
+    `CORS: allowing ALL origins (temporary). Configured allowlist (unused): ${
+      [...exact].join(', ') || '(none)'
+    }`,
+  );
 
   app.enableCors({
+    // Reflects the caller's Origin rather than sending `*`, because `*` is
+    // invalid with credentials:true and browsers reject the response.
     origin: (
       origin: string | undefined,
       cb: (err: Error | null, allow?: boolean) => void,
-    ) => {
-      // Non-browser clients (curl, mobile) send no Origin.
-      if (!origin) return cb(null, true);
-      cb(null, exact.has(stripTrailingSlash(origin)));
-    },
+    ) => cb(null, true),
     methods: CORS_METHODS,
     allowedHeaders: CORS_HEADERS,
     credentials: true,
