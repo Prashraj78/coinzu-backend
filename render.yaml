@@ -25,6 +25,9 @@ services:
       # Everything below is secret or environment-specific: set the values in
       # the Render dashboard. `sync: false` keeps them out of the repo and
       # stops Render inheriting them from another service.
+      # DATABASE_URL is enough on its own — the DB_HOST/PORT/USERNAME/PASSWORD
+      # /DATABASE quartet is only read when no URL is given, so the startup
+      # "Missing or empty" warning for those is expected and harmless.
       - key: DATABASE_URL
         sync: false
       - key: DB_SSL
@@ -100,5 +103,12 @@ services:
 
       - key: CORS_ORIGINS
         sync: false
-      - key: APP_BASE_URL
+
+      # Both default to localhost in code, which would break verification
+      # links and CORS in production. They have to be set here.
+      - key: API_BASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: MAIL_FROM_ADDRESS
         sync: false
