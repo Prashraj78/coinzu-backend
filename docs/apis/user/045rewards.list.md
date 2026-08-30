@@ -40,7 +40,7 @@ None.
 | `data[].cadence` | string | `none`, `daily` or `weekly`. |
 | `data[].title` | string | e.g. `Daily Lucky Draw`. |
 | `data[].subtitle` | string \| null | e.g. `Win up to 5,000 Coins`. |
-| `data[].icon_url` | string \| null | The card artwork. |
+| `data[].icon_url` | string \| null | The card artwork, admin-managed. Handle `null`. |
 | `data[].headline_prize_coins` | integer | The big number on the card. **Display only** — see the notes. |
 | `data[].entry_cost_gems` | integer | Gems one entry, or one play, costs. |
 | `data[].status` | string | See [Enum values](#enum-values). |

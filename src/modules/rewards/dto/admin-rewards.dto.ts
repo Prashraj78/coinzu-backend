@@ -33,6 +33,15 @@ export class HowItWorksStepDto {
   @IsString()
   @MaxLength(255)
   description?: string;
+
+  @ApiPropertyOptional({
+    example: 'https://pub-….r2.dev/dropdown-icons/calendar.png',
+    description: 'Pick one from the `reward_step_icon` dropdown type.',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  icon_url?: string;
 }
 
 export class UpdateRewardGameDto {

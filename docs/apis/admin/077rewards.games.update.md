@@ -41,7 +41,7 @@ Every field optional; only what you send changes.
 | `min_entries` | integer | 1–10,000. | Fewest per purchase. |
 | `max_entries` | integer | 1–10,000. | Most per purchase. |
 | `entry_packs` | integer[] | Up to 10 positive integers. | Quick-pick buttons, in order. |
-| `how_it_works` | object[] | Up to 6 `{ title, description? }`. | The explainer strip. |
+| `how_it_works` | object[] | Up to 6 `{ title, description?, icon_url? }`. | The explainer strip. Pick each `icon_url` from the `reward_step_icon` dropdown type. |
 | `terms_url` | string | Max 500. | The T&C link. |
 | `status` | string | See [Enum values](#enum-values). | |
 | `cadence` | string | See [Enum values](#enum-values). | Draw games only. |
@@ -94,5 +94,6 @@ Identical to `GET /api/admin/rewards/games`, so the tab re-renders from the resp
 - **`slug` and `kind` cannot be changed.** The slug is how a shipped app addresses the card, and the kind decides the mechanic. Neither is in the body.
 - **Changes are live immediately**, including for a draw already accepting entries. Raising `entry_cost_gems` mid-period means later buyers pay more than earlier ones for the same draw — each purchase records the price it paid, so the ledger stays honest, but prefer changing price between periods.
 - **Changing `cadence` does not move the open draw.** The current instance keeps its deadline; the new cadence applies to the one opened after it settles.
+- **Step icons come from the dropdown master data.** `how_it_works[].icon_url` should be one of the `reward_step_icon` options, so the artwork is managed in one place and reused across rewards. Nothing enforces it — any R2 URL is accepted — but picking from the list is what keeps the strip consistent.
 - **`entry_packs` are a convenience, not a constraint.** Anything between `min_entries` and `max_entries` is a valid purchase, so the app keeps its free-entry keypad regardless.
 - Setting a live draw game to `paused` leaves its open draw in place but unreachable. Set it back to `live` and entries resume; the deadline did not move.

@@ -46,8 +46,9 @@ export class RewardGame {
   @Column({ type: 'jsonb', default: () => "'[]'" })
   entry_packs: number[];
 
+  /** Each step shows an icon from the `reward_step_icon` dropdown type. */
   @Column({ type: 'jsonb', default: () => "'[]'" })
-  how_it_works: { title: string; description?: string }[];
+  how_it_works: { title: string; description?: string; icon_url?: string }[];
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   terms_url: string | null;

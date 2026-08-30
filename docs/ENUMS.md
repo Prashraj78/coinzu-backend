@@ -290,6 +290,18 @@ Why a finished tile still wants attention. `null` when nothing is pending.
 |---|---|
 | `scratch_card_ready` | The quiz was answered correctly and the card it won has not been scratched. The tile's `action` switches to `scratch`. A correct answer is the only way to get a card. |
 
+### Dropdown type `reward_step_icon`
+
+Icons for the "How it Works" steps on a reward screen. `how_it_works[].icon_url` should be one of these options' `icon_url`.
+
+| Value | Meaning |
+|---|---|
+| `calendar` | Come back daily. |
+| `ticket` | Join the draw. |
+| `gift` | Win rewards. |
+| `mystery_box` | The mystery box artwork. |
+| `jackpot` | The jackpot sign. |
+
 ### Reward game `slug`
 
 The four cards on the Rewards screen. Admin-managed, so treat the set as open.

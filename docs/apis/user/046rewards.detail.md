@@ -43,6 +43,7 @@ Every field from the card, plus:
 | `entry_packs` | integer[] | The quick-pick buttons, in order, e.g. `[5,10,25,50,100,250]`. |
 | `how_it_works[].title` | string | One step of the explainer strip. |
 | `how_it_works[].description` | string \| null | Its supporting line. |
+| `how_it_works[].icon_url` | string \| null | The step's icon. Admin-picked from the `reward_step_icon` dropdown type. |
 | `terms_url` | string \| null | Behind "By entering you agree to our Terms". |
 | `prizes[].cz_reward_prize_id` | string (uuid) | Primary key. |
 | `prizes[].rank` | integer | 1 is the top prize. Already sorted. |
@@ -62,7 +63,19 @@ Every field from the card, plus:
 | `draw.average_entries` | number | What the average player holds — the "Below Average" comparison. |
 | `my_plays_today` | integer \| null | Instant games only: plays taken today. There is no cap. |
 | `last_play` | object \| null | Instant games only: the user's most recent result. |
-| `recent_winners[]` | object[] | The last three winners, masked. Same shape as `GET /api/rewards/:slug/winners`. |
+| `recent_winners[].cz_lucky_draw_winner_id` | string (uuid) | Primary key. |
+| `recent_winners[].cz_lucky_draw_id` | string (uuid) | The draw they won. |
+| `recent_winners[].game_slug` | string \| null | Which reward. Always this one here. |
+| `recent_winners[].game_title` | string \| null | Its display name. |
+| `recent_winners[].period_key` | string \| null | `2026-08-30` daily, `2026-W35` weekly. |
+| `recent_winners[].draw_date` | string (date-time) | When that draw settled. |
+| `recent_winners[].rank` | integer | 1 is first place. |
+| `recent_winners[].masked_name` | string | Masked server-side, e.g. `prash@****.com`. |
+| `recent_winners[].avatar_url` | string \| null | Their avatar. |
+| `recent_winners[].country` | string \| null | Two-letter code. |
+| `recent_winners[].prize_coins` | integer | Coins they were paid. |
+| `recent_winners[].prize_gems` | integer | Gems they were paid. |
+| `recent_winners[].entries_held` | integer | Entries they held when it settled. |
 
 ```json
 {
@@ -81,9 +94,21 @@ Every field from the card, plus:
     "max_entries": 250,
     "entry_packs": [5, 10, 25, 50, 100, 250],
     "how_it_works": [
-      { "title": "Come back every day", "description": "A new draw opens at midnight UTC." },
-      { "title": "Tap \"Play Now\" to join the draw", "description": "More entries, more chance." },
-      { "title": "Win exciting coin rewards", "description": "Winners are paid automatically." }
+      {
+        "title": "Come back every day",
+        "description": "A new draw opens at midnight UTC.",
+        "icon_url": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/dropdown-icons/903f4ecb-3ef5-409d-86b0-960ff4136e79.png"
+      },
+      {
+        "title": "Tap \"Play Now\" to join the draw",
+        "description": "More entries, more chance.",
+        "icon_url": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/dropdown-icons/2856f0dd-70c8-4b54-abd6-952c64a4f553.png"
+      },
+      {
+        "title": "Win exciting coin rewards",
+        "description": "Winners are paid automatically.",
+        "icon_url": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/dropdown-icons/a5ce6d4a-dfd0-4545-8765-d05555a2411a.png"
+      }
     ],
     "terms_url": "https://coinzu.app/terms",
     "prizes": [
@@ -104,7 +129,38 @@ Every field from the card, plus:
     },
     "my_plays_today": null,
     "last_play": null,
-    "recent_winners": []
+    "recent_winners": [
+      {
+        "cz_lucky_draw_winner_id": "5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f7a8b9",
+        "cz_lucky_draw_id": "d720adca-19fe-4a69-9c5c-7d33be558a7a",
+        "game_slug": "daily_lucky_draw",
+        "game_title": "Daily Lucky Draw",
+        "period_key": "2026-08-30",
+        "draw_date": "2026-08-31T00:00:00.000Z",
+        "rank": 1,
+        "masked_name": "prash@****.com",
+        "avatar_url": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatars/9f1c.png",
+        "country": "IN",
+        "prize_coins": 500,
+        "prize_gems": 0,
+        "entries_held": 5
+      },
+      {
+        "cz_lucky_draw_winner_id": "6f7a8b9c-0d1e-4f2a-b3c4-d5e6f7a8b9c0",
+        "cz_lucky_draw_id": "c619bcb9-08ed-4b58-8b4b-6c22a447d669",
+        "game_slug": "daily_lucky_draw",
+        "game_title": "Daily Lucky Draw",
+        "period_key": "2026-08-29",
+        "draw_date": "2026-08-30T00:00:00.000Z",
+        "rank": 1,
+        "masked_name": "pagef@****.com",
+        "avatar_url": null,
+        "country": "US",
+        "prize_coins": 500,
+        "prize_gems": 0,
+        "entries_held": 25
+      }
+    ]
   }
 }
 ```
@@ -150,6 +206,8 @@ curl http://localhost:4000/api/rewards/daily_lucky_draw \
 - **`prizes[]` is a ladder to display, not what a winner receives.** An admin sets it to communicate the shape of the prize; the money that is actually paid comes from the pot, split first-place-heavy across however many winners the turnout earns.
 - **`draw` can be `null` on a live draw game** in the seconds between one period settling and the next opening. Show the card as "opening shortly" rather than erroring.
 - **`average_entries` is what "Below Average" compares against.** Compare it to `my_entries` yourself; the server does not send a verdict.
+- **`recent_winners` is the last three, newest draw first**, already masked and ready to render as the "Lucky Draw Winners 🏆" list. It is empty until the first draw settles — show the panel with an empty state rather than hiding it. "Show More" opens `GET /api/rewards/{slug}/winners`, which returns the identical row shape with paging and date filters.
+- **`how_it_works[].icon_url` is admin-picked** from the `reward_step_icon` dropdown type, so the strip's artwork changes without an app release. Handle `null` — a step is valid with no icon.
 - **`entry_packs` drives the quick-pick buttons.** Multiply each by `entry_cost_gems` to show the gem price. Anything between `min_entries` and `max_entries` is also valid, so keep the free-entry keypad.
 - **On an instant game, `draw` is ** and `my_plays_today` / `last_play` are populated instead. There is no daily cap — a user can buy and spin as often as their gems allow.
 - Everything is UTC.
