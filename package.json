@@ -19,7 +19,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:migrate:generate": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/typeorm.config.ts migration:generate src/database/migrations/init",
     "db:migrate:run": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/typeorm.config.ts migration:run",
-    "db:migrate:revert": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/typeorm.config.ts migration:revert"
+    "db:migrate:revert": "node -r dotenv/config -r ts-node/register -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/typeorm.config.ts migration:revert",
+    "postinstall": "node -e \"process.env.RENDER && require('child_process').execSync('npm run build',{stdio:'inherit'})\""
   },
   "dependencies": {
     "@aws-sdk/client-rekognition": "^3.1119.0",
