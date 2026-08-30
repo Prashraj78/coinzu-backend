@@ -1,0 +1,104 @@
+# Render deploy config. Keeping it in the repo means the build and start
+# commands are reviewed with the code rather than typed into a dashboard.
+services:
+  - type: web
+    name: coinzu-backend
+    runtime: node
+    plan: starter
+    region: singapore
+    branch: main
+
+    # The repo ships package-lock.json, so npm is the manager. `yarn` alone
+    # installs but never compiles, which is what left dist/ missing.
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render sets PORT itself; main.ts already reads it.
+      - key: NODE_VERSION
+        value: 22.11.0
+
+      # Everything below is secret or environment-specific: set the values in
+      # the Render dashboard. `sync: false` keeps them out of the repo and
+      # stops Render inheriting them from another service.
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_SSL
+        sync: false
+      - key: JWT_AUTH_TOKEN
+        sync: false
+      - key: JWT_REFRESH_TOKEN
+        sync: false
+      - key: JWT_EXPIRES_IN
+        sync: false
+      - key: JWT_REFRESH_EXPIRES_IN
+        sync: false
+      - key: ADMIN_ROLES
+        sync: false
+      - key: ENCRYPTION_KEY
+        sync: false
+
+      - key: REDIS_ENABLED
+        sync: false
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+      - key: REDIS_USERNAME
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      - key: REDIS_TLS
+        sync: false
+      - key: REDIS_KEY_PREFIX
+        sync: false
+
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET_NAME
+        sync: false
+      - key: R2_ENDPOINT
+        sync: false
+      - key: R2_PUBLIC_URL
+        sync: false
+
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SENDGRID_FROM_ADDRESS
+        sync: false
+      - key: SENDGRID_FROM_NAME
+        sync: false
+
+      - key: GIFT_CARD_API_URL
+        sync: false
+      - key: GIFT_CARD_API_KEY
+        sync: false
+
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+
+      - key: CORS_ORIGINS
+        sync: false
+      - key: APP_BASE_URL
+        sync: false
