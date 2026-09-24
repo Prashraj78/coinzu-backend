@@ -165,11 +165,13 @@ export const Env = {
       return Boolean(this.projectId && this.clientEmail && this.privateKey);
     },
   },
+  // From name must agree with the sending domain ("Coinzu" alone did not) and
+  // reply-to must be a role address, not a personal mailbox.
   sendgrid: {
     apiKey: str('SENDGRID_API_KEY'),
     fromAddress: str('SENDGRID_FROM_ADDRESS', 'no-reply@rewardtym.online'),
-    fromName: str('SENDGRID_FROM_NAME', 'Coinzu'),
-    replyToAddress: str('SENDGRID_REPLY_TO', 'prashant@rewardtym.online'),
+    fromName: str('SENDGRID_FROM_NAME', 'Coinzu by RewardTym'),
+    replyToAddress: str('SENDGRID_REPLY_TO', 'rahul@rewardtym.online'),
   },
   giftCard: {
     apiUrl: str('GIFT_CARD_API_URL'),

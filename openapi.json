@@ -1,0 +1,7690 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/storage/avatar": {
+      "post": {
+        "operationId": "StorageController_uploadAvatar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload an avatar image and get its public URL",
+        "tags": [
+          "storage"
+        ]
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "operationId": "NotificationsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My notifications, newest first, with my unread count",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications/push-events": {
+      "post": {
+        "operationId": "NotificationsController_reportPushEvent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportPushEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Report that a push was delivered, opened, or had a button tapped",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationsController_markRead",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark one notification as read",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Readiness probe — verifies the DB connection",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create an account, send an email code, issue tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Exchange email and password for tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/google": {
+      "post": {
+        "operationId": "AuthController_google",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Sign in with a Google ID token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Exchange a refresh token for a new token pair",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/email/verify": {
+      "post": {
+        "operationId": "AuthController_verifyEmailLink",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyEmailLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Verify the emailed confirm-email link token and issue tokens",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/password/forgot": {
+      "post": {
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Email a password-reset link, if the address is registered",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/password/reset": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Consume a password-reset link token and set the new password",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "operationId": "UsersController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get the signed-in user profile",
+        "tags": [
+          "users"
+        ]
+      },
+      "patch": {
+        "operationId": "UsersController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update the signed-in user profile",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/onboarding/info": {
+      "post": {
+        "operationId": "UsersController_onboardingInfo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingInfoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Account setup step 1 — name, gender, age, country",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/onboarding/permissions": {
+      "post": {
+        "operationId": "UsersController_onboardingPermissions",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingPermissionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Account setup step 2 — notification permission",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/onboarding/interests": {
+      "post": {
+        "operationId": "UsersController_onboardingInterests",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingInterestsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Account setup step 3 — interests",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/onboarding/goal": {
+      "post": {
+        "operationId": "UsersController_onboardingGoal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingGoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Account setup step 4 — goal, finishes onboarding",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/notification-preferences": {
+      "patch": {
+        "operationId": "UsersController_updateNotificationPreferences",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNotificationPreferencesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Turn push categories on or off, and set quiet hours opt-in",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/device": {
+      "post": {
+        "operationId": "UsersController_registerDevice",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Register or refresh this device — fraud signals and push notification targeting",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/wallet": {
+      "get": {
+        "operationId": "WalletController_getBalance",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Coin and gem balances with their cash/coin value and live rates",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/api/wallet/rates": {
+      "get": {
+        "operationId": "WalletController_getRates",
+        "parameters": [
+          {
+            "name": "gem_amount",
+            "required": false,
+            "in": "query",
+            "description": "Gems to price. Returns exactly what converting them would pay.",
+            "schema": {
+              "example": 12000,
+              "type": "number"
+            }
+          },
+          {
+            "name": "coin_amount",
+            "required": false,
+            "in": "query",
+            "description": "Coins to price. Returns exactly what converting them would pay.",
+            "schema": {
+              "example": 500,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Coin, gem, convert and withdrawal rate definitions, with an optional exact preview",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/api/wallet/transactions": {
+      "get": {
+        "operationId": "WalletController_listTransactions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List wallet transactions, newest first",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/api/wallet/convert": {
+      "post": {
+        "operationId": "WalletController_convert",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConvertCurrencyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Convert coins to gems or gems to coins",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/api/wallet/withdrawals": {
+      "post": {
+        "operationId": "WalletController_createWithdrawal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Request a payout of coins to real money",
+        "tags": [
+          "wallet"
+        ]
+      },
+      "get": {
+        "operationId": "WalletController_listWithdrawals",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List my withdrawal requests",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
+    "/api/achievements": {
+      "get": {
+        "operationId": "AchievementsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every achievement with my progress on each, plus my unlocked count and points",
+        "tags": [
+          "achievements"
+        ]
+      }
+    },
+    "/api/referrals/invite": {
+      "get": {
+        "operationId": "ReferralsController_invite",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Everything the Invite a Friend screen needs: link, reward ladder, caps, stats and invited friends",
+        "tags": [
+          "referrals"
+        ]
+      }
+    },
+    "/api/offers": {
+      "get": {
+        "operationId": "OffersController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "games",
+              "type": "string"
+            }
+          },
+          {
+            "name": "platform",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "android",
+              "type": "string",
+              "enum": [
+                "ios",
+                "android",
+                "web"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "coin",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List live offers available to me",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/offers/categories": {
+      "get": {
+        "operationId": "OffersController_categories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List the categories that currently have offers",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/offers/mine": {
+      "get": {
+        "operationId": "OffersController_mine",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Offers I started, with their reward status",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/offers/{id}": {
+      "get": {
+        "operationId": "OffersController_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get one offer",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/offers/{id}/click": {
+      "post": {
+        "operationId": "OffersController_click",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Start an offer and get its tracking URL",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/offers/postback/{provider_id}": {
+      "get": {
+        "operationId": "OffersController_postbackGet",
+        "parameters": [
+          {
+            "name": "provider_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Provider reward webhook (GET). Public.",
+        "tags": [
+          "offers"
+        ]
+      },
+      "post": {
+        "operationId": "OffersController_postbackPost",
+        "parameters": [
+          {
+            "name": "provider_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Provider reward webhook (POST). Public.",
+        "tags": [
+          "offers"
+        ]
+      }
+    },
+    "/api/daily/challenges": {
+      "get": {
+        "operationId": "DailyController_challengeBoard",
+        "parameters": [
+          {
+            "name": "date",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The whole Daily Challenge screen — tiles, progress, master chest, calendar and what is playable",
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    "/api/daily/challenges/chest": {
+      "post": {
+        "operationId": "DailyController_claimChest",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Claim the daily master chest, once every challenge is finished",
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    "/api/daily/challenges/{id}/claim": {
+      "post": {
+        "operationId": "DailyController_claimChallenge",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Claim the reward for a completed challenge",
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    "/api/daily/streak": {
+      "get": {
+        "operationId": "DailyController_streakBoard",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My 30-day streak board — the whole Rewards screen, called on app open",
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    "/api/daily/streak/claim": {
+      "post": {
+        "operationId": "DailyController_claimStreak",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Claim today's streak day. This is the daily check-in.",
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    "/api/games/spin": {
+      "get": {
+        "operationId": "GamesController_getWheel",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Wheel segments and my remaining spins",
+        "tags": [
+          "games"
+        ]
+      },
+      "post": {
+        "operationId": "GamesController_spin",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Spin the wheel once",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/spin/history": {
+      "get": {
+        "operationId": "GamesController_spinHistory",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My past spins",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/quiz": {
+      "get": {
+        "operationId": "GamesController_getQuiz",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Today's quiz question",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/quiz/{id}/answer": {
+      "post": {
+        "operationId": "GamesController_answerQuiz",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Answer a quiz question",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/quiz/history": {
+      "get": {
+        "operationId": "GamesController_quizHistory",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My past quiz attempts",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/scratch": {
+      "get": {
+        "operationId": "GamesController_scratchStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "How many scratch cards I have left today",
+        "tags": [
+          "games"
+        ]
+      },
+      "post": {
+        "operationId": "GamesController_scratch",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Scratch one card",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/games/scratch/history": {
+      "get": {
+        "operationId": "GamesController_scratchHistory",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My past scratch cards",
+        "tags": [
+          "games"
+        ]
+      }
+    },
+    "/api/rewards": {
+      "get": {
+        "operationId": "RewardsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The Rewards screen: every card with its countdown",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/rewards/winners": {
+      "get": {
+        "operationId": "RewardsController_allWinners",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "One exact draw day.",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Winners across every reward, filterable by date",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/rewards/{slug}": {
+      "get": {
+        "operationId": "RewardsController_detail",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One reward: pot, countdown, my entries, prizes, winners",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/rewards/{slug}/winners": {
+      "get": {
+        "operationId": "RewardsController_winners",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "date",
+            "required": false,
+            "in": "query",
+            "description": "One exact draw day.",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Winners of one reward, filterable by date",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/rewards/{slug}/entries": {
+      "post": {
+        "operationId": "RewardsController_buyEntries",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyEntriesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buys entries into a draw with gems",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/rewards/{slug}/play": {
+      "post": {
+        "operationId": "RewardsController_play",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Pays for one instant play and resolves it",
+        "tags": [
+          "rewards"
+        ]
+      }
+    },
+    "/api/redeem/products": {
+      "get": {
+        "operationId": "RedeemController_listProducts",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "shopping",
+              "type": "string"
+            }
+          },
+          {
+            "name": "brand",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "Amazon",
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_featured",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Browse the gift card catalog",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/categories": {
+      "get": {
+        "operationId": "RedeemController_categories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gift card categories that currently have products",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/products/{id}": {
+      "get": {
+        "operationId": "RedeemController_getProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get one gift card product",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/products/{id}/order": {
+      "post": {
+        "operationId": "RedeemController_order",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Spend coins on a gift card",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/orders": {
+      "get": {
+        "operationId": "RedeemController_listOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My gift card orders",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/orders/{id}": {
+      "get": {
+        "operationId": "RedeemController_getOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get one of my orders",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/redeem/orders/{id}/code": {
+      "get": {
+        "operationId": "RedeemController_revealCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reveal the gift card code for a fulfilled order",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "operationId": "LeaderboardController_top",
+        "parameters": [
+          {
+            "name": "window",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "week",
+              "type": "string",
+              "enum": [
+                "today",
+                "week",
+                "all_time"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows to return, max 100.",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Top earners for today, this week, or all time",
+        "tags": [
+          "leaderboard"
+        ]
+      }
+    },
+    "/api/leaderboard/me": {
+      "get": {
+        "operationId": "LeaderboardController_myRank",
+        "parameters": [
+          {
+            "name": "window",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "week",
+              "type": "string",
+              "enum": [
+                "today",
+                "week",
+                "all_time"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows to return, max 100.",
+            "schema": {
+              "example": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My own rank in the chosen window",
+        "tags": [
+          "leaderboard"
+        ]
+      }
+    },
+    "/api/kyc/verify": {
+      "post": {
+        "operationId": "KycController_submitSelfie",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit a selfie and get the whole decision back. The only KYC call the app makes.",
+        "tags": [
+          "kyc"
+        ]
+      }
+    },
+    "/api/support/tickets": {
+      "post": {
+        "operationId": "SupportController_createTicket",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTicketDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Raise a support ticket, problem report, or feedback",
+        "tags": [
+          "support"
+        ]
+      },
+      "get": {
+        "operationId": "SupportController_listTickets",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "My tickets",
+        "tags": [
+          "support"
+        ]
+      }
+    },
+    "/api/support/tickets/{id}": {
+      "get": {
+        "operationId": "SupportController_getTicket",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get one of my tickets",
+        "tags": [
+          "support"
+        ]
+      }
+    },
+    "/api/support/faqs": {
+      "get": {
+        "operationId": "SupportController_listFaqs",
+        "parameters": [
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Category slug from GET /api/support/faq-categories. Omit for every FAQ.",
+            "schema": {
+              "example": "payment",
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_id",
+            "required": false,
+            "in": "query",
+            "description": "Same filter by id, for callers that already hold one.",
+            "schema": {
+              "example": "0f1b2c3d-4e5f-6789-abcd-ef0123456789",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every FAQ with its categories, optionally filtered to one category. Public.",
+        "tags": [
+          "support"
+        ]
+      }
+    },
+    "/api/admin/dropdown/types": {
+      "get": {
+        "operationId": "AdminDropdownController_listTypes",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against the type key or its label.",
+            "schema": {
+              "example": "inter",
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dropdown categories with their option counts, paginated (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      },
+      "post": {
+        "operationId": "AdminDropdownController_createType",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDropdownTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Onboard a new dropdown category (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/dropdown/types/{id}": {
+      "patch": {
+        "operationId": "AdminDropdownController_updateType",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDropdownTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a dropdown category (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/dropdown/options": {
+      "get": {
+        "operationId": "AdminDropdownController_listOptions",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Only options in this category.",
+            "schema": {
+              "example": "interest",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against value or label.",
+            "schema": {
+              "example": "gam",
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Dropdown options, inactive included, paginated (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      },
+      "post": {
+        "operationId": "AdminDropdownController_createOption",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertDropdownOptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a dropdown option (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/dropdown/options/{id}": {
+      "patch": {
+        "operationId": "AdminDropdownController_updateOption",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertDropdownOptionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a dropdown option (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/dropdown/options/icon": {
+      "post": {
+        "operationId": "AdminDropdownController_uploadIcon",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload a dropdown option icon and get its public URL (admin only)",
+        "tags": [
+          "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/faqs/categories": {
+      "get": {
+        "operationId": "AdminFaqsController_listCategories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "FAQ categories, inactive included (admin only)",
+        "tags": [
+          "admin-faqs"
+        ]
+      }
+    },
+    "/api/admin/faqs": {
+      "get": {
+        "operationId": "AdminFaqsController_list",
+        "parameters": [
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "payment",
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every FAQ with its category, inactive included, filterable by category (admin only)",
+        "tags": [
+          "admin-faqs"
+        ]
+      },
+      "post": {
+        "operationId": "AdminFaqsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFaqDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a FAQ to a category (admin only)",
+        "tags": [
+          "admin-faqs"
+        ]
+      }
+    },
+    "/api/admin/faqs/{id}": {
+      "patch": {
+        "operationId": "AdminFaqsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFaqDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Edit a FAQ, or hide it with is_active (admin only)",
+        "tags": [
+          "admin-faqs"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminFaqsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a FAQ for good (admin only)",
+        "tags": [
+          "admin-faqs"
+        ]
+      }
+    },
+    "/api/admin/kyc": {
+      "get": {
+        "operationId": "AdminKycController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "shubham",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Submitted on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Submitted on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every KYC attempt with its user, filterable, plus outcome counts (admin only)",
+        "tags": [
+          "admin-kyc"
+        ]
+      }
+    },
+    "/api/admin/kyc/{cz_kyc_verification_id}": {
+      "get": {
+        "operationId": "AdminKycController_detail",
+        "parameters": [
+          {
+            "name": "cz_kyc_verification_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One attempt with the user and their full attempt history (admin only)",
+        "tags": [
+          "admin-kyc"
+        ]
+      }
+    },
+    "/api/admin/kyc/{cz_kyc_verification_id}/decision": {
+      "post": {
+        "operationId": "AdminKycController_decide",
+        "parameters": [
+          {
+            "name": "cz_kyc_verification_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideKycDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Approve or reject an attempt awaiting review (super admin only)",
+        "tags": [
+          "admin-kyc"
+        ]
+      }
+    },
+    "/api/admin/push": {
+      "get": {
+        "operationId": "AdminPushController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "bonus",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "scheduled",
+                "sending",
+                "sent",
+                "partial",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "audience_type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "users",
+                "country",
+                "platform",
+                "segment"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "announcement",
+                "promotion",
+                "reward",
+                "transaction",
+                "system"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Push campaigns, newest first, filterable (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      },
+      "post": {
+        "operationId": "AdminPushController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePushDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a campaign and send it now, schedule it, or save a draft (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/preview": {
+      "post": {
+        "operationId": "AdminPushController_preview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewAudienceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "How many users and devices an audience reaches, and who drops out, without sending (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/test": {
+      "post": {
+        "operationId": "AdminPushController_test",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestPushDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Send the message to a few named accounts without recording a campaign (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/{cz_push_campaign_id}/send": {
+      "post": {
+        "operationId": "AdminPushController_send",
+        "parameters": [
+          {
+            "name": "cz_push_campaign_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Run a draft, or resend a campaign (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/{cz_push_campaign_id}/cancel": {
+      "post": {
+        "operationId": "AdminPushController_cancel",
+        "parameters": [
+          {
+            "name": "cz_push_campaign_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cancel a draft or a scheduled campaign (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/{cz_push_campaign_id}/duplicate": {
+      "post": {
+        "operationId": "AdminPushController_duplicate",
+        "parameters": [
+          {
+            "name": "cz_push_campaign_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Copy a campaign into a new draft (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push/{cz_push_campaign_id}": {
+      "get": {
+        "operationId": "AdminPushController_detail",
+        "parameters": [
+          {
+            "name": "cz_push_campaign_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One campaign with its results and what its audience reaches today (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push-templates": {
+      "get": {
+        "operationId": "AdminPushTemplateController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "weekend",
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "announcement",
+                "promotion",
+                "reward",
+                "transaction",
+                "system"
+              ]
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "description": "Only active templates when true.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Saved push templates, most used first (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      },
+      "post": {
+        "operationId": "AdminPushTemplateController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePushTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Save a reusable push template (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/push-templates/{cz_push_template_id}": {
+      "patch": {
+        "operationId": "AdminPushTemplateController_update",
+        "parameters": [
+          {
+            "name": "cz_push_template_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePushTemplateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Edit a template or deactivate it (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminPushTemplateController_remove",
+        "parameters": [
+          {
+            "name": "cz_push_template_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a template permanently (admin only)",
+        "tags": [
+          "admin-push"
+        ]
+      }
+    },
+    "/api/admin/streak": {
+      "get": {
+        "operationId": "AdminStreakController_getLadder",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The 30-day streak ladder, its payout totals and where users sit (admin only)",
+        "tags": [
+          "admin-streak"
+        ]
+      },
+      "put": {
+        "operationId": "AdminStreakController_saveLadder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveStreakLadderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Replaces the whole 30-day ladder in one transaction (admin only)",
+        "tags": [
+          "admin-streak"
+        ]
+      }
+    },
+    "/api/admin/streak/reset": {
+      "post": {
+        "operationId": "AdminStreakController_resetLadder",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Restores the shipped 5,000-coin / 2,000-gem ladder (admin only)",
+        "tags": [
+          "admin-streak"
+        ]
+      }
+    },
+    "/api/admin/dashboard/streak": {
+      "get": {
+        "operationId": "AdminDashboardController_streak",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Daily streak participation, depth and payout for the dashboard (admin only)",
+        "tags": [
+          "admin-dashboard"
+        ]
+      }
+    },
+    "/api/admin/cron": {
+      "get": {
+        "operationId": "AdminCronController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every scheduled job, its schedule and how it last went (admin only)",
+        "tags": [
+          "admin-cron"
+        ]
+      }
+    },
+    "/api/admin/cron/{key}/run": {
+      "post": {
+        "operationId": "AdminCronController_run",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Runs one job now, on demand (admin only)",
+        "tags": [
+          "admin-cron"
+        ]
+      }
+    },
+    "/api/admin/cron/{key}/enabled": {
+      "patch": {
+        "operationId": "AdminCronController_setEnabled",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetCronEnabledDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Pauses or resumes one job (admin only)",
+        "tags": [
+          "admin-cron"
+        ]
+      }
+    },
+    "/api/admin/cron/{key}/schedule": {
+      "put": {
+        "operationId": "AdminCronController_setSchedule",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetCronScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Overrides one job's cron expression (admin only)",
+        "tags": [
+          "admin-cron"
+        ]
+      }
+    },
+    "/api/admin/cron/{key}/reset": {
+      "post": {
+        "operationId": "AdminCronController_resetSchedule",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Drops the override and restores the shipped schedule (admin only)",
+        "tags": [
+          "admin-cron"
+        ]
+      }
+    },
+    "/api/admin/achievements": {
+      "get": {
+        "operationId": "AdminAchievementsController_list",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "offer",
+              "type": "string"
+            }
+          },
+          {
+            "name": "rarity",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "rare",
+                "epic",
+                "rarest"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every medal with how many users hold it (admin only)",
+        "tags": [
+          "admin-achievements"
+        ]
+      }
+    },
+    "/api/admin/achievements/{slug}/users": {
+      "get": {
+        "operationId": "AdminAchievementsController_holders",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "prashant",
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "description": "Unlocked, or still working towards it.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "unlocked",
+                "in_progress"
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "IN",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tier",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "silver",
+                "gold",
+                "platinum",
+                "diamond"
+              ]
+            }
+          },
+          {
+            "name": "kyc_status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "suspended",
+                "banned",
+                "deleted"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The users holding one medal, filterable and paginated (admin only)",
+        "tags": [
+          "admin-achievements"
+        ]
+      }
+    },
+    "/api/admin/daily/dashboard": {
+      "get": {
+        "operationId": "AdminDailyController_getDashboard",
+        "parameters": [
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to 30 days ago.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "description": "Defaults to today.",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "required": false,
+            "in": "query",
+            "description": "Narrow to one payout source.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "spin",
+                "scratch",
+                "quiz",
+                "challenge",
+                "chest"
+              ]
+            }
+          },
+          {
+            "name": "currency",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "coin",
+                "gem"
+              ]
+            }
+          },
+          {
+            "name": "granularity",
+            "required": false,
+            "in": "query",
+            "description": "Buckets for the series.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week"
+              ]
+            }
+          },
+          {
+            "name": "top",
+            "required": false,
+            "in": "query",
+            "description": "How many rows in the leaderboards.",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Where the daily rewards went, and how much, over a date range (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/challenges": {
+      "get": {
+        "operationId": "AdminDailyController_overview",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The daily challenge tiles, the master chest, and recent activity (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/config": {
+      "patch": {
+        "operationId": "AdminDailyController_updateConfig",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDailyConfigDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Sets the master chest reward and the scratch allowance (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/challenges/{cz_daily_challenge_id}": {
+      "patch": {
+        "operationId": "AdminDailyController_updateChallenge",
+        "parameters": [
+          {
+            "name": "cz_daily_challenge_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChallengeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Edit one challenge tile (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/spin-wheel": {
+      "get": {
+        "operationId": "AdminDailyController_getWheel",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Wheel segments with their real odds (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      },
+      "put": {
+        "operationId": "AdminDailyController_saveWheel",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveSpinWheelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Replaces the whole wheel in one transaction (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/scratch-cards": {
+      "get": {
+        "operationId": "AdminDailyController_getScratch",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Scratch prizes with their real odds (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      },
+      "put": {
+        "operationId": "AdminDailyController_saveScratch",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveScratchCardsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Replaces the whole prize pool in one transaction (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/quizzes": {
+      "get": {
+        "operationId": "AdminDailyController_listQuizzes",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Window start.",
+            "schema": {
+              "example": "2026-08-25",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Window end.",
+            "schema": {
+              "example": "2026-09-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Matches question or options.",
+            "schema": {
+              "example": "cowboy",
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "past",
+                "today",
+                "upcoming"
+              ]
+            }
+          },
+          {
+            "name": "has_image",
+            "required": false,
+            "in": "query",
+            "description": "Only quizzes that do or do not carry an image.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The quiz schedule, with attempts and any unfilled days (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      },
+      "post": {
+        "operationId": "AdminDailyController_upsertQuiz",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Schedules a quiz for a date, replacing any already on it (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/quizzes/{cz_quiz_id}/repeat": {
+      "post": {
+        "operationId": "AdminDailyController_repeatQuiz",
+        "parameters": [
+          {
+            "name": "cz_quiz_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepeatQuizDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Copies a quiz onto another day (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/quizzes/image": {
+      "post": {
+        "operationId": "AdminDailyController_uploadQuizImage",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Uploads a quiz image and returns its public URL (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/daily/quizzes/{cz_quiz_id}": {
+      "delete": {
+        "operationId": "AdminDailyController_deleteQuiz",
+        "parameters": [
+          {
+            "name": "cz_quiz_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Removes a scheduled quiz (admin only)",
+        "tags": [
+          "admin-daily"
+        ]
+      }
+    },
+    "/api/admin/rewards/dashboard": {
+      "get": {
+        "operationId": "AdminRewardsController_dashboard",
+        "parameters": [
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "wheel_of_fortune",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gems collected, coins paid, and the trend (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/games": {
+      "get": {
+        "operationId": "AdminRewardsController_listGames",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every reward card with its live figures (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/games/{cz_reward_game_id}": {
+      "patch": {
+        "operationId": "AdminRewardsController_updateGame",
+        "parameters": [
+          {
+            "name": "cz_reward_game_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRewardGameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Edits one reward card (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/games/{cz_reward_game_id}/prizes": {
+      "get": {
+        "operationId": "AdminRewardsController_getPrizes",
+        "parameters": [
+          {
+            "name": "cz_reward_game_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The prize ladder or wheel face (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      },
+      "put": {
+        "operationId": "AdminRewardsController_savePrizes",
+        "parameters": [
+          {
+            "name": "cz_reward_game_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavePrizesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Replaces the whole prize ladder (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/games/{cz_reward_game_id}/payout-rules": {
+      "get": {
+        "operationId": "AdminRewardsController_getRules",
+        "parameters": [
+          {
+            "name": "cz_reward_game_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "How the pot scales with turnout (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      },
+      "put": {
+        "operationId": "AdminRewardsController_saveRules",
+        "parameters": [
+          {
+            "name": "cz_reward_game_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavePayoutRulesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Replaces the turnout-to-pot ladder (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/draws": {
+      "get": {
+        "operationId": "AdminRewardsController_listDraws",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "slug",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "daily_lucky_draw",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "drawing",
+                "resolved"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2026-08-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every draw instance with its winners (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/rewards/draws/run": {
+      "post": {
+        "operationId": "AdminRewardsController_runDraws",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Settles what is due and opens what is missing (admin only)",
+        "tags": [
+          "admin-rewards"
+        ]
+      }
+    },
+    "/api/admin/leaderboard": {
+      "get": {
+        "operationId": "AdminLeaderboardController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "window",
+            "required": false,
+            "in": "query",
+            "description": "Preset range. Ignored when date_from or date_end is sent.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "today",
+                "week",
+                "month",
+                "all_time"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Custom range start, UTC, yyyy-MM-dd. Overrides `window`.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Custom range end, UTC, yyyy-MM-dd inclusive. Overrides `window`.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against the user's email or name.",
+            "schema": {
+              "example": "shubham",
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_coins",
+            "required": false,
+            "in": "query",
+            "description": "Only users who earned at least this many coins in the range.",
+            "schema": {
+              "example": 500,
+              "type": "number"
+            }
+          },
+          {
+            "name": "country",
+            "required": false,
+            "in": "query",
+            "description": "ISO country code, exact match.",
+            "schema": {
+              "example": "IN",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Coin earners ranked, paginated and filterable by range, country and minimum (admin only)",
+        "tags": [
+          "admin-leaderboard"
+        ]
+      }
+    },
+    "/api/admin/offerwall/partners": {
+      "get": {
+        "operationId": "AdminOfferwallController_listPartners",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every offerwall partner, inactive included, paginated (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      },
+      "post": {
+        "operationId": "AdminOfferwallController_createPartner",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOfferwallPartnerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Onboard a new offerwall partner (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      }
+    },
+    "/api/admin/offerwall/partners/logo": {
+      "post": {
+        "operationId": "AdminOfferwallController_uploadLogo",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload an offerwall partner logo and get its public URL (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      }
+    },
+    "/api/admin/offerwall/partners/{id}": {
+      "patch": {
+        "operationId": "AdminOfferwallController_updatePartner",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferwallPartnerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update rank, badge, URL template or any other partner field (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      }
+    },
+    "/api/admin/offerwall/partners/{id}/postback-url": {
+      "get": {
+        "operationId": "AdminOfferwallController_getPostbackUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The full postback URL to hand this partner (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      }
+    },
+    "/api/admin/offerwall/postbacks": {
+      "get": {
+        "operationId": "AdminOfferwallController_listPostbacks",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "partner_id",
+            "required": false,
+            "in": "query",
+            "description": "Filter to one partner.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "credited",
+                "reversed",
+                "duplicate",
+                "invalid_secret",
+                "user_not_found",
+                "invalid_payload"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Received on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Received on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Postback audit log, newest first, filterable by partner and status (admin only)",
+        "tags": [
+          "admin-offerwall"
+        ]
+      }
+    },
+    "/api/admin/referral-rules": {
+      "get": {
+        "operationId": "AdminReferralRulesController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "The referral reward ladder plus every available trigger (admin only)",
+        "tags": [
+          "admin-referral-rules"
+        ]
+      },
+      "post": {
+        "operationId": "AdminReferralRulesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReferralRuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add a rule for a trigger that has none yet (admin only)",
+        "tags": [
+          "admin-referral-rules"
+        ]
+      }
+    },
+    "/api/admin/referral-rules/{id}": {
+      "patch": {
+        "operationId": "AdminReferralRulesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReferralRuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a rule’s reward, threshold or active state (admin only)",
+        "tags": [
+          "admin-referral-rules"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminReferralRulesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove a rule from the ladder (admin only)",
+        "tags": [
+          "admin-referral-rules"
+        ]
+      }
+    },
+    "/api/admin/referrals": {
+      "get": {
+        "operationId": "AdminReferralsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against email, name, or referral code.",
+            "schema": {
+              "example": "shubham@coinzu.app",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Joined on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Joined on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          },
+          {
+            "name": "has_referrals",
+            "required": false,
+            "in": "query",
+            "description": "true keeps only users who invited at least one friend, false keeps only users who invited nobody. Omit to list everyone.",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every user with their referral counts and coins earned, paginated (admin only)",
+        "tags": [
+          "admin-referrals"
+        ]
+      }
+    },
+    "/api/admin/referrals/{cz_user_id}": {
+      "get": {
+        "operationId": "AdminReferralsController_detail",
+        "parameters": [
+          {
+            "name": "cz_user_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One user's referral summary and everyone they invited, paginated (admin only)",
+        "tags": [
+          "admin-referrals"
+        ]
+      }
+    },
+    "/api/admin/settings": {
+      "get": {
+        "operationId": "AdminSettingsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every tunable setting, grouped, with its value and bounds (admin only)",
+        "tags": [
+          "admin-settings"
+        ]
+      },
+      "patch": {
+        "operationId": "AdminSettingsController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update one or more settings; nothing is written unless all pass (admin only)",
+        "tags": [
+          "admin-settings"
+        ]
+      }
+    },
+    "/api/admin/tickets": {
+      "get": {
+        "operationId": "AdminTicketsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Matches the user's email or name, the subject, or the description.",
+            "schema": {
+              "example": "coins",
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "email_support",
+                "report_problem",
+                "feedback"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "in_progress",
+                "resolved"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "Withdrawals",
+              "type": "string"
+            }
+          },
+          {
+            "name": "issue_type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "Coins not credited",
+              "type": "string"
+            }
+          },
+          {
+            "name": "rating",
+            "required": false,
+            "in": "query",
+            "description": "Exact star rating. Only feedback rows carry one.",
+            "schema": {
+              "example": 5,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cz_user_id",
+            "required": false,
+            "in": "query",
+            "description": "Only this user’s reports.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Reported on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Reported on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every problem report and support ticket with its user, filterable (admin only)",
+        "tags": [
+          "admin-tickets"
+        ]
+      }
+    },
+    "/api/admin/tickets/{cz_support_ticket_id}": {
+      "get": {
+        "operationId": "AdminTicketsController_detail",
+        "parameters": [
+          {
+            "name": "cz_support_ticket_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One ticket with its user and the full message thread (admin only)",
+        "tags": [
+          "admin-tickets"
+        ]
+      }
+    },
+    "/api/admin/transactions": {
+      "get": {
+        "operationId": "AdminTransactionsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against the user's email, name, or the row's note.",
+            "schema": {
+              "example": "shubham",
+              "type": "string"
+            }
+          },
+          {
+            "name": "cz_user_id",
+            "required": false,
+            "in": "query",
+            "description": "Only this user’s ledger.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "coin",
+                "gem"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "earn",
+                "spend",
+                "withdrawal",
+                "convert_in",
+                "convert_out",
+                "reversal"
+              ]
+            }
+          },
+          {
+            "name": "source_type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "offer",
+                "daily_checkin",
+                "referral",
+                "game",
+                "streak",
+                "withdrawal",
+                "redeem",
+                "lucky_draw",
+                "achievement",
+                "challenge",
+                "convert",
+                "admin_adjustment",
+                "offerwall"
+              ]
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Moved on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Moved on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every wallet movement across all users, filterable (admin only)",
+        "tags": [
+          "admin-transactions"
+        ]
+      }
+    },
+    "/api/admin/transactions/{cz_wallet_transaction_id}": {
+      "get": {
+        "operationId": "AdminTransactionsController_detail",
+        "parameters": [
+          {
+            "name": "cz_wallet_transaction_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One wallet movement with its user and the row that caused it (admin only)",
+        "tags": [
+          "admin-transactions"
+        ]
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "operationId": "AdminUsersController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Case-insensitive match against email, name, or phone.",
+            "schema": {
+              "example": "shubham@coinzu.app",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Exact account status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "suspended",
+                "banned",
+                "deleted"
+              ]
+            }
+          },
+          {
+            "name": "kyc_status",
+            "required": false,
+            "in": "query",
+            "description": "Exact KYC state.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          {
+            "name": "tier",
+            "required": false,
+            "in": "query",
+            "description": "Exact loyalty tier.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "silver",
+                "gold",
+                "platinum",
+                "diamond"
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "required": false,
+            "in": "query",
+            "description": "ISO country code, exact match.",
+            "schema": {
+              "example": "IN",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Joined on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Joined on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-08-29",
+              "type": "string"
+            }
+          },
+          {
+            "name": "medal",
+            "required": false,
+            "in": "query",
+            "description": "Only users who have unlocked this medal, by slug.",
+            "schema": {
+              "example": "first-blood",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every user with their wallet balance, paginated and searchable (admin only)",
+        "tags": [
+          "admin-users"
+        ]
+      }
+    },
+    "/api/admin/users/{cz_user_id}": {
+      "get": {
+        "operationId": "AdminUsersController_detail",
+        "parameters": [
+          {
+            "name": "cz_user_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One user's full profile: wallet, KYC, referrals, and recent activity (admin only)",
+        "tags": [
+          "admin-users"
+        ]
+      }
+    },
+    "/api/dropdown": {
+      "get": {
+        "operationId": "DropdownController_list",
+        "parameters": [
+          {
+            "name": "types",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated types to filter. Omit for every type.",
+            "schema": {
+              "example": "gender,interest",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Master dropdown options (gender, interest, and more), grouped by type",
+        "tags": [
+          "dropdown"
+        ]
+      }
+    },
+    "/api/offerwall": {
+      "get": {
+        "operationId": "OfferwallController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Active offerwalls, ranked, each with my user id in its URL",
+        "tags": [
+          "offerwall"
+        ]
+      }
+    },
+    "/api/offerwall/postback/{slug}/{token}": {
+      "get": {
+        "operationId": "OfferwallController_postbackGet",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Partner's reward webhook (GET). Public.",
+        "tags": [
+          "offerwall"
+        ]
+      },
+      "post": {
+        "operationId": "OfferwallController_postbackPost",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Partner's reward webhook (POST). Public.",
+        "tags": [
+          "offerwall"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Coinzu API",
+    "description": "Coinzu backend API",
+    "version": "0.0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "ReportPushEventDto": {
+        "type": "object",
+        "properties": {
+          "cz_push_campaign_id": {
+            "type": "string",
+            "description": "The campaign_id delivered in the FCM data payload."
+          },
+          "event": {
+            "type": "string",
+            "enum": [
+              "delivered",
+              "opened",
+              "clicked"
+            ]
+          },
+          "button_id": {
+            "type": "string",
+            "example": "open_offers",
+            "description": "Which action button was tapped, when the event is clicked."
+          }
+        },
+        "required": [
+          "cz_push_campaign_id",
+          "event"
+        ]
+      },
+      "RegisterDeviceDto": {
+        "type": "object",
+        "properties": {
+          "device_id": {
+            "type": "string",
+            "example": "b7e2b6b0-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
+            "description": "The app's persistent per-install device id."
+          },
+          "platform_type": {
+            "type": "string",
+            "example": "android",
+            "enum": [
+              "ios",
+              "android",
+              "web"
+            ],
+            "description": "Falls back to User-Agent sniffing when omitted."
+          },
+          "push_token": {
+            "type": "string",
+            "example": "fcm-or-apns-token",
+            "description": "Push notification token. Send again whenever it rotates."
+          },
+          "device_info": {
+            "type": "object",
+            "example": {
+              "app_version": "1.4.2",
+              "os_version": "17.4",
+              "model": "Pixel 8",
+              "brand": "Google",
+              "locale": "en-US",
+              "timezone": "Asia/Kolkata"
+            },
+            "description": "Free-form device metadata. Any JSON object — add fields as the app needs them, no migration required."
+          }
+        },
+        "required": [
+          "device_id"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@coinzu.app"
+          },
+          "password": {
+            "type": "string",
+            "example": "S3curePassw0rd",
+            "minLength": 8
+          },
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace"
+          },
+          "referral_code": {
+            "type": "string",
+            "example": "K7M2PQ4X",
+            "description": "A friend's code."
+          },
+          "device": {
+            "description": "Captured for fraud checks and push notifications. Send it here, or later via POST /api/users/me/device.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@coinzu.app"
+          },
+          "password": {
+            "type": "string",
+            "example": "S3curePassw0rd"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "GoogleLoginDto": {
+        "type": "object",
+        "properties": {
+          "id_token": {
+            "type": "string",
+            "description": "The ID token returned by Google Sign-In."
+          },
+          "referral_code": {
+            "type": "string",
+            "example": "K7M2PQ4X"
+          }
+        },
+        "required": [
+          "id_token"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "VerifyEmailLinkDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "a1b2c3...",
+            "description": "64-character hex token from the confirm-email link."
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@coinzu.app"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "a1b2c3...",
+            "description": "64-character hex token from the reset-password email link."
+          },
+          "password": {
+            "type": "string",
+            "example": "N3wS3curePassw0rd",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace"
+          },
+          "gender": {
+            "type": "string",
+            "example": "female"
+          },
+          "age_range": {
+            "type": "string",
+            "example": "25-34",
+            "enum": [
+              "18-24",
+              "25-34",
+              "35-44",
+              "45-54+"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "example": "GB",
+            "description": "ISO 3166-1 alpha-2."
+          },
+          "avatar_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/avatars/a.png"
+          },
+          "interests": {
+            "example": [
+              "gaming",
+              "shopping"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "phone": {
+            "type": "string",
+            "example": "+919875643266",
+            "description": "E.164 format, digits with an optional leading +."
+          }
+        }
+      },
+      "OnboardingInfoDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ada Lovelace"
+          },
+          "gender": {
+            "type": "string",
+            "example": "female"
+          },
+          "age_range": {
+            "type": "string",
+            "example": "25-34",
+            "enum": [
+              "18-24",
+              "25-34",
+              "35-44",
+              "45-54+"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "example": "GB",
+            "description": "ISO 3166-1 alpha-2."
+          }
+        },
+        "required": [
+          "name",
+          "gender",
+          "age_range",
+          "country"
+        ]
+      },
+      "OnboardingPermissionsDto": {
+        "type": "object",
+        "properties": {
+          "notifications_enabled": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "notifications_enabled"
+        ]
+      },
+      "OnboardingInterestsDto": {
+        "type": "object",
+        "properties": {
+          "interests": {
+            "example": [
+              "gaming",
+              "shopping",
+              "travel"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "interests"
+        ]
+      },
+      "OnboardingGoalDto": {
+        "type": "object",
+        "properties": {
+          "primary_goal": {
+            "type": "string",
+            "example": "earn_side_income"
+          }
+        },
+        "required": [
+          "primary_goal"
+        ]
+      },
+      "UpdateNotificationPreferencesDto": {
+        "type": "object",
+        "properties": {
+          "notifications_enabled": {
+            "type": "boolean",
+            "description": "Master switch for push on this account."
+          },
+          "announcement": {
+            "type": "boolean",
+            "description": "Product news and general announcements."
+          },
+          "promotion": {
+            "type": "boolean",
+            "description": "Offers, bonuses and campaigns."
+          },
+          "reward": {
+            "type": "boolean",
+            "description": "Streaks, achievements and reward nudges."
+          },
+          "quiet_hours": {
+            "type": "boolean",
+            "description": "Hold marketing back overnight. On by default."
+          }
+        }
+      },
+      "ConvertCurrencyDto": {
+        "type": "object",
+        "properties": {
+          "from_currency": {
+            "type": "string",
+            "example": "coin",
+            "enum": [
+              "coin",
+              "gem"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "example": 500,
+            "description": "Amount of from_currency to spend."
+          }
+        },
+        "required": [
+          "from_currency",
+          "amount"
+        ]
+      },
+      "CreateWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "amount_coins": {
+            "type": "number",
+            "example": 5000,
+            "description": "Coins to withdraw."
+          },
+          "method": {
+            "type": "string",
+            "example": "paypal",
+            "enum": [
+              "paypal",
+              "bank",
+              "crypto"
+            ]
+          },
+          "destination_details": {
+            "type": "object",
+            "example": {
+              "paypal_email": "user@coinzu.app"
+            },
+            "description": "Payout account details. Encrypted before it is stored."
+          }
+        },
+        "required": [
+          "amount_coins",
+          "method",
+          "destination_details"
+        ]
+      },
+      "AnswerQuizDto": {
+        "type": "object",
+        "properties": {
+          "selected_option": {
+            "type": "string",
+            "example": "Bitcoin",
+            "description": "Must be one of the quiz options."
+          }
+        },
+        "required": [
+          "selected_option"
+        ]
+      },
+      "BuyEntriesDto": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "example": 10,
+            "description": "How many entries to buy."
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
+      "CreateTicketDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "email_support",
+              "report_problem",
+              "feedback"
+            ],
+            "example": "report_problem"
+          },
+          "category": {
+            "type": "string",
+            "example": "Withdrawals",
+            "description": "Free text. The app picks it from a list it hard-codes, so options change without a release."
+          },
+          "issue_type": {
+            "type": "string",
+            "example": "Coins not credited",
+            "description": "Free text, same as category. The app hard-codes the options."
+          },
+          "occurred_at": {
+            "type": "string",
+            "example": "2026-08-28T14:30:00.000Z",
+            "description": "When the problem happened, from the \"When did the issue happen?\" picker."
+          },
+          "affected_area": {
+            "type": "string",
+            "example": "Offers page",
+            "description": "Where in the app it happened. Optional on the form."
+          },
+          "subject": {
+            "type": "string",
+            "example": "Coins missing after offer"
+          },
+          "description": {
+            "type": "string",
+            "example": "I completed the offer yesterday but got no coins."
+          },
+          "rating": {
+            "type": "number",
+            "example": 4,
+            "description": "Only used for feedback."
+          },
+          "attachment_urls": {
+            "example": [
+              "https://cdn.coinzu.app/support/a.png"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "description"
+        ]
+      },
+      "CreateDropdownTypeDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "payout_reason",
+            "description": "Immutable key the app sends and reads. Lowercase letters, digits and underscores only."
+          },
+          "label": {
+            "type": "string",
+            "example": "Payout reason"
+          },
+          "description": {
+            "type": "string",
+            "example": "Shown when a withdrawal is rejected."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "type",
+          "label"
+        ]
+      },
+      "UpdateDropdownTypeDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Payout reason"
+          },
+          "description": {
+            "type": "string",
+            "example": "Shown when a withdrawal is rejected."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "UpsertDropdownOptionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "interest",
+            "description": "Group this option belongs to. Free-form, not a fixed enum."
+          },
+          "value": {
+            "type": "string",
+            "example": "gaming",
+            "description": "Stored value the client sends back."
+          },
+          "label": {
+            "type": "string",
+            "example": "Gaming"
+          },
+          "icon_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/dropdown/interest/gaming.png"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "CreateFaqDto": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "string",
+            "description": "Category this FAQ belongs to."
+          },
+          "question": {
+            "type": "string",
+            "example": "How can I withdraw my earnings?"
+          },
+          "answer": {
+            "type": "string",
+            "example": "Go to Wallet and tap Withdraw."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "category_id",
+          "question",
+          "answer"
+        ]
+      },
+      "UpdateFaqDto": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string",
+            "example": "How can I withdraw my earnings?"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "DecideKycDto": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "example": "Face does not match the document on file.",
+            "description": "Shown to the user on a rejection. A default is used when omitted."
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "PreviewAudienceDto": {
+        "type": "object",
+        "properties": {
+          "cz_user_ids": {
+            "description": "Target these exact users.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "example": [
+              "IN",
+              "US"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ios",
+                "android",
+                "web"
+              ]
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "active",
+                "suspended",
+                "banned",
+                "deleted"
+              ]
+            }
+          },
+          "kyc_statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          "tiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "silver",
+                "gold",
+                "platinum",
+                "diamond"
+              ]
+            }
+          },
+          "min_coins": {
+            "type": "number",
+            "example": 1000,
+            "description": "Lifetime coins earned, at least."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "announcement",
+              "promotion",
+              "reward",
+              "transaction",
+              "system"
+            ],
+            "default": "announcement",
+            "description": "What the message is about. Users who muted this category drop out of the audience; transaction and system are never mutable."
+          },
+          "respect_quiet_hours": {
+            "type": "boolean",
+            "default": true,
+            "description": "Leave out anyone whose local time is inside the platform quiet hours. Ignored for transaction and system."
+          }
+        }
+      },
+      "PushButtonDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "open_offers",
+            "description": "Reported back as button_id."
+          },
+          "label": {
+            "type": "string",
+            "example": "Browse offers"
+          },
+          "deep_link": {
+            "type": "string",
+            "example": "coinzu://offers"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
+      },
+      "TestPushDto": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "type": "string",
+            "example": "🎉",
+            "description": "Shown before the title."
+          },
+          "title": {
+            "type": "string",
+            "example": "Your coins are waiting"
+          },
+          "body": {
+            "type": "string",
+            "example": "Finish one offer today and collect a bonus."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/push/banner.png"
+          },
+          "deep_link": {
+            "type": "string",
+            "example": "coinzu://offers"
+          },
+          "buttons": {
+            "description": "Up to 3 actions.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushButtonDto"
+            }
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal"
+            ],
+            "default": "high"
+          },
+          "ttl_seconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Seconds FCM keeps retrying."
+          },
+          "collapse_key": {
+            "type": "string",
+            "example": "daily_bonus"
+          },
+          "android_channel_id": {
+            "type": "string",
+            "example": "rewards"
+          },
+          "sound": {
+            "type": "string",
+            "example": "default"
+          },
+          "badge": {
+            "type": "number",
+            "example": 1,
+            "description": "iOS app-icon badge number."
+          },
+          "cz_user_ids": {
+            "description": "Up to 10 users to try it on.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "body",
+          "cz_user_ids"
+        ]
+      },
+      "CreatePushDto": {
+        "type": "object",
+        "properties": {
+          "cz_user_ids": {
+            "description": "Target these exact users.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "countries": {
+            "example": [
+              "IN",
+              "US"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ios",
+                "android",
+                "web"
+              ]
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "active",
+                "suspended",
+                "banned",
+                "deleted"
+              ]
+            }
+          },
+          "kyc_statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          "tiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "silver",
+                "gold",
+                "platinum",
+                "diamond"
+              ]
+            }
+          },
+          "min_coins": {
+            "type": "number",
+            "example": 1000,
+            "description": "Lifetime coins earned, at least."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "announcement",
+              "promotion",
+              "reward",
+              "transaction",
+              "system"
+            ],
+            "default": "announcement",
+            "description": "What the message is about. Users who muted this category drop out of the audience; transaction and system are never mutable."
+          },
+          "respect_quiet_hours": {
+            "type": "boolean",
+            "default": true,
+            "description": "Leave out anyone whose local time is inside the platform quiet hours. Ignored for transaction and system."
+          },
+          "emoji": {
+            "type": "string",
+            "example": "🎉",
+            "description": "Shown before the title."
+          },
+          "title": {
+            "type": "string",
+            "example": "Your coins are waiting"
+          },
+          "body": {
+            "type": "string",
+            "example": "Finish one offer today and collect a bonus."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/push/banner.png"
+          },
+          "deep_link": {
+            "type": "string",
+            "example": "coinzu://offers"
+          },
+          "buttons": {
+            "description": "Up to 3 actions.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushButtonDto"
+            }
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal"
+            ],
+            "default": "high"
+          },
+          "ttl_seconds": {
+            "type": "number",
+            "example": 86400,
+            "description": "Seconds FCM keeps retrying."
+          },
+          "collapse_key": {
+            "type": "string",
+            "example": "daily_bonus"
+          },
+          "android_channel_id": {
+            "type": "string",
+            "example": "rewards"
+          },
+          "sound": {
+            "type": "string",
+            "example": "default"
+          },
+          "badge": {
+            "type": "number",
+            "example": 1,
+            "description": "iOS app-icon badge number."
+          },
+          "send_now": {
+            "type": "boolean",
+            "example": true,
+            "description": "Default true. Pass false to save a draft, or set scheduled_at to queue it."
+          },
+          "scheduled_at": {
+            "type": "string",
+            "example": "2026-09-01T09:00:00.000Z",
+            "description": "UTC send time. Must be in the future. Takes precedence over send_now."
+          },
+          "cz_push_template_id": {
+            "type": "string",
+            "description": "Template this was composed from."
+          }
+        },
+        "required": [
+          "title",
+          "body"
+        ]
+      },
+      "CreatePushTemplateDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Weekend double coins",
+            "description": "Admin-facing name."
+          },
+          "emoji": {
+            "type": "string",
+            "example": "🎉"
+          },
+          "title": {
+            "type": "string",
+            "example": "Double coins all weekend"
+          },
+          "body": {
+            "type": "string",
+            "example": "Every offer you finish before Sunday pays twice."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/push/weekend.png"
+          },
+          "deep_link": {
+            "type": "string",
+            "example": "coinzu://offers"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "announcement",
+              "promotion",
+              "reward",
+              "transaction",
+              "system"
+            ],
+            "default": "announcement"
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushButtonDto"
+            }
+          },
+          "is_active": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "name",
+          "title",
+          "body"
+        ]
+      },
+      "UpdatePushTemplateDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Weekend double coins",
+            "description": "Admin-facing name."
+          },
+          "emoji": {
+            "type": "string",
+            "example": "🎉"
+          },
+          "title": {
+            "type": "string",
+            "example": "Double coins all weekend"
+          },
+          "body": {
+            "type": "string",
+            "example": "Every offer you finish before Sunday pays twice."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/push/weekend.png"
+          },
+          "deep_link": {
+            "type": "string",
+            "example": "coinzu://offers"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "announcement",
+              "promotion",
+              "reward",
+              "transaction",
+              "system"
+            ],
+            "default": "announcement"
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PushButtonDto"
+            }
+          },
+          "is_active": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "StreakDayDto": {
+        "type": "object",
+        "properties": {
+          "day_number": {
+            "type": "number",
+            "example": 7,
+            "description": "Position on the board, 1 to 30."
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 300,
+            "description": "Coins paid on this day. 0 for none."
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 200,
+            "description": "Gems paid on this day. 0 for none."
+          },
+          "label": {
+            "type": "string",
+            "example": "Week 1 bonus",
+            "description": "What the app prints on the tile."
+          },
+          "is_milestone": {
+            "type": "boolean",
+            "example": true,
+            "description": "Drawn with the gold border on the board."
+          }
+        },
+        "required": [
+          "day_number",
+          "reward_coins",
+          "reward_gems"
+        ]
+      },
+      "SaveStreakLadderDto": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "description": "All 30 days, in any order.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StreakDayDto"
+            }
+          }
+        },
+        "required": [
+          "days"
+        ]
+      },
+      "SetCronEnabledDto": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "example": false,
+            "description": "False pauses the job."
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
+      "SetCronScheduleDto": {
+        "type": "object",
+        "properties": {
+          "cron": {
+            "type": "string",
+            "example": "0 */4 * * *",
+            "description": "A standard 5- or 6-field cron expression, evaluated in UTC."
+          }
+        },
+        "required": [
+          "cron"
+        ]
+      },
+      "UpdateDailyConfigDto": {
+        "type": "object",
+        "properties": {
+          "chest_coins": {
+            "type": "number",
+            "example": 1000,
+            "description": "Coins the master chest pays."
+          },
+          "chest_gems": {
+            "type": "number",
+            "example": 1000,
+            "description": "Gems the master chest pays."
+          }
+        }
+      },
+      "UpdateChallengeDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Spin the Lucky Wheel"
+          },
+          "description": {
+            "type": "string",
+            "example": "Spin the wheel 1 time"
+          },
+          "target_count": {
+            "type": "number",
+            "example": 2,
+            "description": "How many actions finish it."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "spin",
+              "quiz",
+              "scratch",
+              "offers",
+              "referrals",
+              "games"
+            ],
+            "description": "Where the tile sends the app."
+          },
+          "icon_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/challenges/spin.png"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SpinSegmentDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "1000"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 1000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "probability_weight": {
+            "type": "number",
+            "example": 12,
+            "description": "Relative weight, not a percentage. The odds are normalised."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 3
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "probability_weight"
+        ]
+      },
+      "SaveSpinWheelDto": {
+        "type": "object",
+        "properties": {
+          "segments": {
+            "description": "The whole wheel, 2–20 segments.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpinSegmentDto"
+            }
+          }
+        },
+        "required": [
+          "segments"
+        ]
+      },
+      "ScratchCardDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "100 coins"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 100
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "reward_coins_max": {
+            "type": "number",
+            "example": 2000,
+            "description": "Upper end of the payout range. Omit to always pay the exact amount."
+          },
+          "reward_gems_max": {
+            "type": "number",
+            "example": 5,
+            "description": "Upper end of the gem range."
+          },
+          "probability_weight": {
+            "type": "number",
+            "example": 26,
+            "description": "Relative weight, not a percentage."
+          },
+          "min_medal_rarity": {
+            "type": "string",
+            "enum": [
+              "common",
+              "rare",
+              "epic",
+              "rarest"
+            ],
+            "description": "Only users whose best medal reaches this tier can win it. Omit for everyone."
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "probability_weight"
+        ]
+      },
+      "SaveScratchCardsDto": {
+        "type": "object",
+        "properties": {
+          "cards": {
+            "description": "The whole prize pool, 2–20.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScratchCardDto"
+            }
+          }
+        },
+        "required": [
+          "cards"
+        ]
+      },
+      "UpsertQuizDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-09-01",
+            "description": "One quiz per day."
+          },
+          "question": {
+            "type": "string",
+            "example": "What is the name of the toy cowboy in Toy Story?"
+          },
+          "options": {
+            "example": [
+              "SMITH",
+              "WOODY",
+              "JACK"
+            ],
+            "description": "Exactly 3.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correct_option": {
+            "type": "string",
+            "example": "WOODY",
+            "description": "Must be one of the options."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/quiz/toystory.png"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "date",
+          "question",
+          "options",
+          "correct_option"
+        ]
+      },
+      "RepeatQuizDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-09-19",
+            "description": "The day to copy this quiz onto."
+          }
+        },
+        "required": [
+          "date"
+        ]
+      },
+      "HowItWorksStepDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Come back every day"
+          },
+          "description": {
+            "type": "string",
+            "example": "The draw refreshes at midnight UTC."
+          },
+          "icon_url": {
+            "type": "string",
+            "example": "https://pub-….r2.dev/dropdown-icons/calendar.png",
+            "description": "Pick one from the `reward_step_icon` dropdown type."
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdateRewardGameDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Daily Lucky Draw"
+          },
+          "subtitle": {
+            "type": "string",
+            "example": "Win up to 5,000 Coins"
+          },
+          "icon_url": {
+            "type": "string",
+            "example": "https://cdn.coinzu.app/rewards/daily.png"
+          },
+          "headline_prize_coins": {
+            "type": "number",
+            "example": 5000,
+            "description": "The \"5,000 Coins\" line on the card."
+          },
+          "entry_cost_gems": {
+            "type": "number",
+            "example": 10,
+            "description": "Gems one entry costs."
+          },
+          "min_entries": {
+            "type": "number",
+            "example": 1
+          },
+          "max_entries": {
+            "type": "number",
+            "example": 250
+          },
+          "entry_packs": {
+            "example": [
+              5,
+              10,
+              25,
+              50,
+              100,
+              250
+            ],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "how_it_works": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HowItWorksStepDto"
+            }
+          },
+          "terms_url": {
+            "type": "string",
+            "example": "https://coinzu.app/terms"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "live",
+              "coming_soon",
+              "paused"
+            ]
+          },
+          "cadence": {
+            "type": "string",
+            "enum": [
+              "none",
+              "daily",
+              "weekly"
+            ]
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "RewardPrizeDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number",
+            "example": 1,
+            "description": "Defaults to the array position."
+          },
+          "label": {
+            "type": "string",
+            "example": "1st Prize"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "probability_weight": {
+            "type": "number",
+            "example": 12,
+            "description": "Instant games only. A draw ranks its prizes instead."
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "label",
+          "reward_coins",
+          "reward_gems"
+        ]
+      },
+      "SavePrizesDto": {
+        "type": "object",
+        "properties": {
+          "prizes": {
+            "description": "The whole ladder, 1–20 rows.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardPrizeDto"
+            }
+          }
+        },
+        "required": [
+          "prizes"
+        ]
+      },
+      "PayoutRuleDto": {
+        "type": "object",
+        "properties": {
+          "min_participants": {
+            "type": "number",
+            "example": 0,
+            "description": "Inclusive participant floor for this band."
+          },
+          "prize_pool_coins": {
+            "type": "number",
+            "example": 5000,
+            "description": "Coins shared across the winners."
+          },
+          "winners_count": {
+            "type": "number",
+            "example": 3
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "min_participants",
+          "prize_pool_coins",
+          "winners_count"
+        ]
+      },
+      "SavePayoutRulesDto": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "description": "The whole ladder, 1–20 bands.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutRuleDto"
+            }
+          }
+        },
+        "required": [
+          "rules"
+        ]
+      },
+      "OfferwallFieldMappingDto": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "example": "uid",
+            "description": "Field carrying our cz_user_id."
+          },
+          "external_transaction_id": {
+            "type": "string",
+            "example": "txn_id",
+            "description": "Field carrying the partner's transaction id."
+          },
+          "offer_name": {
+            "type": "string",
+            "example": "offer_name"
+          },
+          "milestone_name": {
+            "type": "string",
+            "example": "goal_name",
+            "description": "Field carrying which milestone/goal was just completed, for multi-step offers."
+          },
+          "payout": {
+            "type": "string",
+            "example": "payout"
+          },
+          "status": {
+            "type": "string",
+            "example": "status"
+          },
+          "approved_value": {
+            "type": "string",
+            "example": "1",
+            "description": "Value of the status field that means approved."
+          },
+          "reversed_value": {
+            "type": "string",
+            "example": "0",
+            "description": "Value of the status field that means reversed."
+          }
+        },
+        "required": [
+          "user_id",
+          "external_transaction_id"
+        ]
+      },
+      "CreateOfferwallPartnerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "AdGate Media"
+          },
+          "slug": {
+            "type": "string",
+            "example": "adgate-media",
+            "description": "URL-safe, unique. Used in the postback path."
+          },
+          "logo_url": {
+            "type": "string",
+            "example": "https://pub-xxx.r2.dev/offerwall-logos/adgate.png"
+          },
+          "description": {
+            "type": "string",
+            "example": "General offers wall, strong on surveys."
+          },
+          "click_url_template": {
+            "type": "string",
+            "example": "https://wall.adgatemedia.com/wall?userid={USER_ID}&app=coinzu",
+            "description": "Opened in the app iframe. {USER_ID} is replaced with cz_user_id."
+          },
+          "postback_method": {
+            "type": "string",
+            "example": "get",
+            "enum": [
+              "get",
+              "post"
+            ]
+          },
+          "postback_auth_type": {
+            "type": "string",
+            "example": "token",
+            "enum": [
+              "token",
+              "hmac_sha256"
+            ]
+          },
+          "postback_secret": {
+            "type": "string",
+            "description": "Path token or HMAC key. Auto-generated when omitted."
+          },
+          "postback_field_mapping": {
+            "$ref": "#/components/schemas/OfferwallFieldMappingDto"
+          },
+          "coins_per_payout_unit": {
+            "type": "number",
+            "example": 1,
+            "description": "Coins credited per 1 unit of the payout the partner sends."
+          },
+          "revenue_share_percent": {
+            "type": "number",
+            "example": 50,
+            "description": "Percent of the payout field passed to the user, when the partner sends raw dollars with no rev-share applied. Omit when the payout field is already the final amount."
+          },
+          "rank": {
+            "type": "number",
+            "example": 10,
+            "description": "Higher shows first in the app offerwall list."
+          },
+          "badge_label": {
+            "type": "string",
+            "example": "Trending"
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "click_url_template",
+          "postback_field_mapping"
+        ]
+      },
+      "UpdateOfferwallPartnerDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "AdGate Media"
+          },
+          "slug": {
+            "type": "string",
+            "example": "adgate-media"
+          },
+          "logo_url": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "click_url_template": {
+            "type": "string"
+          },
+          "postback_method": {
+            "type": "string",
+            "enum": [
+              "get",
+              "post"
+            ]
+          },
+          "postback_auth_type": {
+            "type": "string",
+            "enum": [
+              "token",
+              "hmac_sha256"
+            ]
+          },
+          "postback_secret": {
+            "type": "string"
+          },
+          "postback_field_mapping": {
+            "$ref": "#/components/schemas/OfferwallFieldMappingDto"
+          },
+          "coins_per_payout_unit": {
+            "type": "number",
+            "example": 1
+          },
+          "revenue_share_percent": {
+            "type": "number",
+            "example": 50,
+            "description": "Percent of the payout field passed to the user, when the partner sends raw dollars with no rev-share applied. Omit when the payout field is already the final amount."
+          },
+          "rank": {
+            "type": "number",
+            "example": 10
+          },
+          "badge_label": {
+            "type": "string",
+            "example": "Trending"
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "CreateReferralRuleDto": {
+        "type": "object",
+        "properties": {
+          "trigger": {
+            "type": "string",
+            "enum": [
+              "signup",
+              "email_verified",
+              "onboarding_completed",
+              "kyc_verified",
+              "first_withdrawal",
+              "first_redeem",
+              "offers_completed",
+              "daily_checkins",
+              "streak_reached",
+              "withdrawals_completed",
+              "redeems_completed",
+              "referrals_made"
+            ]
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 500,
+            "description": "Coins paid to the referrer."
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 100,
+            "description": "Gems paid to the referrer."
+          },
+          "threshold": {
+            "type": "number",
+            "example": 10,
+            "description": "Only used by `offers_completed` — offers the friend must finish. Forced to 1 on other triggers."
+          },
+          "label": {
+            "type": "string",
+            "example": "Friend completes 10 offers"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "trigger",
+          "reward_coins"
+        ]
+      },
+      "UpdateReferralRuleDto": {
+        "type": "object",
+        "properties": {
+          "reward_coins": {
+            "type": "number",
+            "example": 500
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 100
+          },
+          "threshold": {
+            "type": "number",
+            "example": 10
+          },
+          "label": {
+            "type": "string",
+            "example": "Friend completes 10 offers"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 0
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "UpdateSettingItemDto": {
+        "type": "object",
+        "properties": {
+          "setting_key": {
+            "type": "string",
+            "example": "coins_per_gem"
+          },
+          "setting_value": {
+            "type": "string",
+            "example": "0.025",
+            "description": "Always a string. The catalogue decides how it is parsed — \"12\", \"0.025\" or \"true\"."
+          }
+        },
+        "required": [
+          "setting_key",
+          "setting_value"
+        ]
+      },
+      "UpdateSettingsDto": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateSettingItemDto"
+            }
+          }
+        },
+        "required": [
+          "settings"
+        ]
+      }
+    }
+  }
+}
