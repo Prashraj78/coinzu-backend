@@ -2,6 +2,8 @@ import { Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/commo
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
 import { Public } from '../../common/decorators/public.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import type { RequestUser } from '../../common/auth/request-user.types';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -55,6 +57,13 @@ export class AuthController {
   @ApiOperation({ summary: 'Verify the emailed confirm-email link token and issue tokens' })
   verifyEmailLink(@Body() dto: VerifyEmailLinkDto) {
     return this.authService.verifyEmailLink(dto);
+  }
+
+  @Post('email/resend')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Resend the confirm-email link to the signed-in user' })
+  resendVerification(@CurrentUser() user: RequestUser) {
+    return this.authService.resendVerification(user.cz_user_id);
   }
 
   @Public()

@@ -117,7 +117,7 @@ None.
 | 401 | `CZDAUTH003` | Your session has expired. Please sign in again. | Access token expired. | `SessionExpiredIcon` |
 | 401 | `CZDAUTH004` | Your session is no longer valid. Please sign in again. | Access token could not be verified. | `SessionInvalidIcon` |
 | 403 | `CZDAUTH007` | You do not have permission to do that. | Token `product_access` claim is neither `both` nor `coinzu`, or — on a token issued before that claim existed — the `role` claim is not listed in `ADMIN_ROLES`. | `PermissionDeniedIcon` |
-| 409 | `CZDOFW003` | That offerwall slug is already in use. | A partner with this `slug` already exists. | `DuplicateOptionIcon` |
+| 409 | `CZDOFW003` | That offerwall identifier is already in use. Please choose another. | A partner with this `slug` already exists. | `DuplicateOptionIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, an unknown field was sent, or `click_url_template` is missing. | `ValidationFailedIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
 | 500 | `CZDCOMM002` | Something went wrong. Please try again. | Unhandled server error. | `ServerErrorIcon` |
@@ -126,7 +126,7 @@ None.
 {
   "success": false,
   "cz_error_code": "CZDOFW003",
-  "cz_error_message": "That offerwall slug is already in use.",
+  "cz_error_message": "That offerwall identifier is already in use. Please choose another.",
   "cz_error_description": "An offerwall_partners row already has this slug.",
   "cz_error_icon": "DuplicateOptionIcon",
   "statusCode": 409,

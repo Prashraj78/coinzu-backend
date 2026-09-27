@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Env } from '../../common/config/env';
+import { CzAuthErrorCodes } from '../../common/errors/error.constants';
 import { SendgridMailExternal } from '../../external/sendgrid-mail.external';
+import { RedisExternal } from '../../external/redis.external';
 import { LinkTokenService } from './link-token.service';
 import { buildActionEmailHtml } from './mail-templates';
 
@@ -13,7 +15,33 @@ export class EmailVerificationService {
   constructor(
     private readonly mailer: SendgridMailExternal,
     private readonly linkTokens: LinkTokenService,
+    private readonly redis: RedisExternal,
   ) {}
+
+  private cooldownKey(cz_user_id: string): string {
+    return `verify_email:resend_cooldown:${cz_user_id}`;
+  }
+
+  /**
+   * User-initiated resend. Enforces a per-user cooldown so the endpoint can't be
+   * used to spam a mailbox; throws with the remaining wait time when it's active.
+   */
+  async resendVerifyLink(email: string, cz_user_id: string): Promise<void> {
+    const ttlSeconds = Env.linkToken.resendCooldownMinutes * 60;
+    const fresh = await this.redis.acquireLock(this.cooldownKey(cz_user_id), ttlSeconds);
+    if (!fresh) {
+      const remaining = await this.redis.ttl(this.cooldownKey(cz_user_id));
+      throw new HttpException(
+        {
+          cz_error_code: CzAuthErrorCodes.VERIFICATION_RESEND_COOLDOWN,
+          cz_error_description: `Resend blocked; ${remaining}s left on the cooldown.`,
+          retry_after_seconds: remaining,
+        },
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+    await this.sendVerifyLink(email, cz_user_id);
+  }
 
   async sendVerifyLink(email: string, cz_user_id: string): Promise<void> {
     const token = await this.linkTokens.issue('verify_email', {

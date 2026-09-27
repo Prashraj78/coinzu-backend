@@ -21,6 +21,8 @@ export const CzAuthErrorCodes = {
   PASSWORD_NOT_SET: 'CZDAUTH013',
   REFERRAL_CODE_INVALID: 'CZDAUTH014',
   LINK_EXPIRED: 'CZDAUTH015',
+  VERIFICATION_RESEND_COOLDOWN: 'CZDAUTH016',
+  EMAIL_NOT_REGISTERED: 'CZDAUTH017',
 } as const;
 
 /** User module error codes */
@@ -287,12 +289,12 @@ export const CzErrorMap: Record<
   { message: string; description: string; icon: string }
 > = {
   [CzAuthErrorCodes.INVALID_CREDENTIALS]: {
-    message: 'Invalid email or password.',
+    message: 'The email or password you entered is incorrect.',
     description: 'Login failed. Invalid email or password.',
     icon: CzErrorIcon.INVALID_CREDENTIALS,
   },
   [CzAuthErrorCodes.ACCOUNT_INACTIVE]: {
-    message: 'Account is inactive. Please contact support.',
+    message: 'Your account is inactive. Please contact support.',
     description: 'Login failed. Your account is inactive.',
     icon: CzErrorIcon.ACCOUNT_INACTIVE,
   },
@@ -361,6 +363,16 @@ export const CzErrorMap: Record<
     description: 'The Redis key for this email/reset link token was evicted by its TTL, was already consumed, or never existed.',
     icon: CzErrorIcon.OTP_EXPIRED,
   },
+  [CzAuthErrorCodes.VERIFICATION_RESEND_COOLDOWN]: {
+    message: 'You just requested a link. Please wait a while before asking for another.',
+    description: 'A verify-email link was resent to this user within the cooldown window; retry_after_seconds carries the remaining wait.',
+    icon: CzErrorIcon.TOO_MANY_ATTEMPTS,
+  },
+  [CzAuthErrorCodes.EMAIL_NOT_REGISTERED]: {
+    message: "We couldn't find an account with that email. Please check it, or create a new account.",
+    description: 'Password reset requested for an email that has no user row.',
+    icon: CzErrorIcon.ACCOUNT_NOT_FOUND,
+  },
   [CzUserErrorCodes.EMAIL_ALREADY_REGISTERED]: {
     message: 'This email is already registered. Please sign in instead.',
     description: 'Registration failed. Email already exists.',
@@ -417,7 +429,7 @@ export const CzErrorMap: Record<
     icon: CzErrorIcon.INSUFFICIENT_GEMS,
   },
   [CzWalletErrorCodes.BELOW_MINIMUM_WITHDRAWAL]: {
-    message: 'This amount is below the minimum withdrawal.',
+    message: 'This amount is below the minimum you can withdraw.',
     description: 'amount_coins is under the min_withdrawal_coins setting.',
     icon: CzErrorIcon.BELOW_MINIMUM_WITHDRAWAL,
   },
@@ -859,7 +871,7 @@ export const CzErrorMap: Record<
     icon: CzErrorIcon.OFFER_UNAVAILABLE,
   },
   [CzOfferwallErrorCodes.SLUG_ALREADY_EXISTS]: {
-    message: 'That offerwall slug is already in use.',
+    message: 'That offerwall identifier is already in use. Please choose another.',
     description: 'An offerwall_partners row already has this slug.',
     icon: CzErrorIcon.DUPLICATE_OPTION,
   },
@@ -906,6 +918,8 @@ export interface CzApiErrorResponse {
   cz_error_icon: string;
   statusCode: number;
   timestamp: string;
+  /** Seconds the client should wait before retrying — set only on cooldown/rate-limit errors. */
+  retry_after_seconds?: number;
 }
 
 /** Standard success response returned by the API */

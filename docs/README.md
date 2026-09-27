@@ -47,6 +47,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/auth/google` | public | Signs in with a Google ID token, creating the account on first use. | [004](apis/user/004auth.google.md) |
 | `POST /api/auth/email/verify` | public | Consumes the token from the emailed confirm-email link, marks the email verified, and returns a signed-in session. | [023](apis/user/023auth.email-verify-link.md) |
 | `GET /api/auth/email/verify` | public | Branded HTML page opened from the confirm-email link; auto-calls the verify endpoint above and stores the access token. | [024](apis/user/024auth.email-verify-page.md) |
+| `POST /api/auth/email/resend` | user | Resends the confirm-email link to the signed-in user. No-op once verified. | [050](apis/user/050auth.email-resend.md) |
 | `POST /api/auth/password/forgot` | public | Emails a password-reset link if the address belongs to an account. Response never reveals whether the email exists. | [025](apis/user/025auth.password-forgot.md) |
 | `POST /api/auth/password/reset` | public | Consumes a password-reset link token and sets the new password. | [026](apis/user/026auth.password-reset.md) |
 | `GET /api/auth/password/reset` | public | Branded HTML page opened from the reset-password link, with the new-password form. | [027](apis/user/027auth.password-reset-page.md) |

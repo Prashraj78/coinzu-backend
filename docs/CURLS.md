@@ -88,6 +88,15 @@ Branded HTML page opened from the confirm-email link; auto-calls the verify endp
 curl "$BASE/auth/email/verify?token=aa7782ba386f30ba490d8375100fbf29014e60e2935e5b088e0e7170f07a4fe"
 ```
 
+### POST /api/auth/email/resend
+
+Resends the confirm-email link to the signed-in user. No-op once verified. Per-user 30-min cooldown → `429 CZDAUTH016` (carries `retry_after_seconds`). — [`apis/user/050auth.email-resend.md`](apis/user/050auth.email-resend.md)
+
+```bash
+curl -X POST $BASE/auth/email/resend \
+  -H "Authorization: Bearer $TOKEN"
+```
+
 ### POST /api/auth/password/forgot
 
 Emails a password-reset link if the address belongs to an account. Response never reveals whether the email exists. — [`apis/user/025auth.password-forgot.md`](apis/user/025auth.password-forgot.md)

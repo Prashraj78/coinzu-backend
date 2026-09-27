@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Env } from '../../common/config/env';
+import { CzAuthErrorCodes } from '../../common/errors/error.constants';
 import { SendgridMailExternal } from '../../external/sendgrid-mail.external';
 import { UsersService } from '../users/users.service';
 import { LinkTokenService } from './link-token.service';
@@ -13,11 +14,16 @@ export class PasswordResetService {
     private readonly mailer: SendgridMailExternal,
   ) {}
 
-  /** Silently no-ops for an unknown email so the response never reveals whether it's registered. */
+  /**
+   * Rejects an unknown email so the app can steer the user to sign up. This trades
+   * away email-enumeration protection for that guided flow — a deliberate product call.
+   */
   async requestReset(email: string): Promise<void> {
     const normalized = email.toLowerCase().trim();
     const user = await this.usersService.findByEmail(normalized);
-    if (!user) return;
+    if (!user) {
+      throw new NotFoundException({ cz_error_code: CzAuthErrorCodes.EMAIL_NOT_REGISTERED });
+    }
 
     const token = await this.linkTokens.issue('reset_password', {
       cz_user_id: user.cz_user_id,

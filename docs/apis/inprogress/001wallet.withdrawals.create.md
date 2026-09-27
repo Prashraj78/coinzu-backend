@@ -82,7 +82,7 @@ None.
 
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
-| 400 | `CZDWLT004` | This amount is below the minimum withdrawal. | The amount is below the `min_withdrawal_coins` setting. | `BelowMinimumWithdrawalIcon` |
+| 400 | `CZDWLT004` | This amount is below the minimum you can withdraw. | The amount is below the `min_withdrawal_coins` setting. | `BelowMinimumWithdrawalIcon` |
 | 403 | `CZDWLT007` | Please complete identity verification before withdrawing. | The `withdrawal_requires_kyc` setting is on and the user is not `verified`. | `KycRequiredIcon` |
 | 409 | `CZDWLT009` | You already have a withdrawal being reviewed. | The user already has a withdrawal in `pending`. | `WithdrawalPendingIcon` |
 | 400 | `CZDWLT002` | You do not have enough coins for this. | The coin balance is lower than `amount_coins`. | `InsufficientCoinsIcon` |
@@ -97,7 +97,7 @@ None.
 {
   "success": false,
   "cz_error_code": "CZDWLT004",
-  "cz_error_message": "This amount is below the minimum withdrawal.",
+  "cz_error_message": "This amount is below the minimum you can withdraw.",
   "cz_error_description": "amount_coins is under the min_withdrawal_coins setting.",
   "cz_error_icon": "BelowMinimumWithdrawalIcon",
   "statusCode": 400,

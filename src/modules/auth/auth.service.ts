@@ -1,9 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import type { Request } from 'express';
 import { Env } from '../../common/config/env';
-import { CzAuthErrorCodes } from '../../common/errors/error.constants';
+import {
+  CzAuthErrorCodes,
+  CzUserErrorCodes,
+} from '../../common/errors/error.constants';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { User } from '../../database/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -44,11 +51,27 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto, req: Request) {
-    const user = await this.usersService.create({
-      email: dto.email,
-      password: dto.password,
-      name: dto.name,
-    });
+    // A registration collides with an existing email only once that account is
+    // verified. An unverified row is a half-finished signup, so we let this
+    // attempt take it over: refresh the password and resend the verify link.
+    const existing = await this.usersService.findByEmail(dto.email);
+    if (existing?.email_verified_at) {
+      throw new ConflictException({
+        cz_error_code: CzUserErrorCodes.EMAIL_ALREADY_REGISTERED,
+      });
+    }
+
+    let user: User;
+    if (existing) {
+      await this.usersService.setPassword(existing.cz_user_id, dto.password);
+      user = existing;
+    } else {
+      user = await this.usersService.create({
+        email: dto.email,
+        password: dto.password,
+        name: dto.name,
+      });
+    }
 
     if (dto.referral_code) {
       await this.referralsService.attachReferrer(
@@ -166,6 +189,14 @@ export class AuthService {
     const payload = await this.linkTokens.consume('verify_email', dto.token);
     const verified = await this.usersService.markEmailVerified(payload.cz_user_id);
     return { user: this.publicUser(verified), ...this.issueTokens(verified) };
+  }
+
+  /** Resends the confirm-email link to the signed-in user. A no-op once verified. */
+  async resendVerification(cz_user_id: string): Promise<{ sent: boolean }> {
+    const user = await this.usersService.getOrFail(cz_user_id);
+    if (user.email_verified_at) return { sent: false };
+    await this.emailVerificationService.resendVerifyLink(user.email, user.cz_user_id);
+    return { sent: true };
   }
 
   async forgotPassword(dto: ForgotPasswordDto): Promise<{ sent: true }> {

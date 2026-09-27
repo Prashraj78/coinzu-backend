@@ -185,6 +185,7 @@ export const Env = {
   },
   linkToken: {
     ttlMinutes: num('LINK_TOKEN_TTL_MINUTES', 30),
+    resendCooldownMinutes: num('VERIFY_RESEND_COOLDOWN_MINUTES', 30),
   },
   urls: {
     frontend: str('FRONTEND_URL', 'http://localhost:3000'),

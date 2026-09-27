@@ -6,7 +6,7 @@ Every failure returns the same body. `cz_error_code` is the value to branch on; 
 {
   "success": false,
   "cz_error_code": "CZDAUTH001",
-  "cz_error_message": "Invalid email or password.",
+  "cz_error_message": "The email or password you entered is incorrect.",
   "cz_error_description": "No account matches that email, or the password did not match.",
   "cz_error_icon": "InvalidCredentialsIcon",
   "statusCode": 401,
@@ -30,8 +30,8 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 
 | Code | Status | Message (shown to user) | Cause | Icon |
 |---|---|---|---|---|
-| `CZDAUTH001` | 401 | Invalid email or password. | Login failed. Invalid email or password. | `InvalidCredentialsIcon` |
-| `CZDAUTH002` | 401 | Account is inactive. Please contact support. | Login failed. Your account is inactive. | `AccountInactiveIcon` |
+| `CZDAUTH001` | 401 | The email or password you entered is incorrect. | Login failed. The email or password you entered is incorrect. | `InvalidCredentialsIcon` |
+| `CZDAUTH002` | 401 | Your account is inactive. Please contact support. | Login failed. Your account is inactive. | `AccountInactiveIcon` |
 | `CZDAUTH003` | 401 | Your session has expired. Please sign in again. | Access token has expired. | `SessionExpiredIcon` |
 | `CZDAUTH004` | 401 | Your session is no longer valid. Please sign in again. | Access token is malformed or has been revoked. | `SessionInvalidIcon` |
 | `CZDAUTH005` | 401 | Please sign in to continue. | No Bearer token was provided in the Authorization header. | `SignInRequiredIcon` |
@@ -45,6 +45,8 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDAUTH013` | 401 | This account uses Google sign-in. Please continue with Google. | Account has no password_hash; it was created via Google. | `PasswordNotSetIcon` |
 | `CZDAUTH014` | 400 | That referral code is not valid. | No active user owns the supplied referral code. | `ReferralInvalidIcon` |
 | `CZDAUTH015` | 400 | This link has expired or was already used. Please request a new one. | The Redis key for this email/reset link token was evicted by its TTL, was already consumed, or never existed. | `OtpExpiredIcon` |
+| `CZDAUTH016` | 429 | You just requested a link. Please wait a while before asking for another. | A verify-email link was resent to this user within the cooldown window; `retry_after_seconds` carries the remaining wait. | `TooManyAttemptsIcon` |
+| `CZDAUTH017` | 404 | We couldn't find an account with that email. Please check it, or create a new account. | Password reset requested for an email that has no user row. | `AccountNotFoundIcon` |
 
 ## User — `CZDUSER`
 
@@ -65,7 +67,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDWLT001` | 404 | We could not load your wallet. Please try again. | *Reserved.* No wallet row exists for this user. | `WalletNotFoundIcon` |
 | `CZDWLT002` | 400 | You do not have enough coins for this. | Requested coin debit exceeds the current coin balance. | `InsufficientCoinsIcon` |
 | `CZDWLT003` | 400 | You do not have enough gems for this. | Requested gem debit exceeds the current gem balance. | `InsufficientGemsIcon` |
-| `CZDWLT004` | 400 | This amount is below the minimum withdrawal. | amount_coins is under the min_withdrawal_coins setting. | `BelowMinimumWithdrawalIcon` |
+| `CZDWLT004` | 400 | This amount is below the minimum you can withdraw. | amount_coins is under the min_withdrawal_coins setting. | `BelowMinimumWithdrawalIcon` |
 | `CZDWLT005` | 404 | We could not find that withdrawal. | *Retired.* Only the deleted admin withdrawal review endpoint threw this. Never thrown. | `WithdrawalNotFoundIcon` |
 | `CZDWLT006` | 409 | This withdrawal has already been reviewed. | *Retired.* Only the deleted admin withdrawal review endpoint threw this. Never thrown. | `WithdrawalReviewedIcon` |
 | `CZDWLT007` | 403 | Please complete identity verification before withdrawing. | User kyc_status is not verified. | `KycRequiredIcon` |
@@ -213,7 +215,7 @@ codebase throws them.
 |---|---|---|---|---|
 | `CZDOFW001` | 404 | We could not find that offerwall. | No `offerwall_partners` row exists for the given id or slug. | `ProviderNotFoundIcon` |
 | `CZDOFW002` | 403 | This offerwall is temporarily unavailable. | The offerwall partner is set inactive by an admin. | `OfferUnavailableIcon` |
-| `CZDOFW003` | 409 | That offerwall slug is already in use. | An `offerwall_partners` row already has this slug. | `DuplicateOptionIcon` |
+| `CZDOFW003` | 409 | That offerwall identifier is already in use. Please choose another. | An `offerwall_partners` row already has this slug. | `DuplicateOptionIcon` |
 | `CZDOFW004` | 401 | We could not verify this request. | The postback token or signature did not match the partner. | `RequestUnverifiedIcon` |
 | `CZDOFW005` | — | This reward has already been recorded. | Reserved — currently recorded as `data.status: "duplicate"` in a `200`, never thrown. | `DuplicateRewardIcon` |
 | `CZDOFW006` | — | We could not match this reward to a user. | Reserved — currently recorded as `data.status: "user_not_found"` in a `200`, never thrown. | `AccountNotFoundIcon` |

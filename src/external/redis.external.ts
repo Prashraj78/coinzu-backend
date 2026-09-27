@@ -64,6 +64,13 @@ export class RedisExternal implements OnModuleDestroy {
     return result === 'OK';
   }
 
+  /** Remaining life of a key in seconds; 0 when the key is missing or has no TTL. */
+  async ttl(key: string): Promise<number> {
+    if (!this.client) return 0;
+    const seconds = await this.client.ttl(key);
+    return seconds > 0 ? seconds : 0;
+  }
+
   async onModuleDestroy(): Promise<void> {
     if (this.client) await this.client.quit();
   }

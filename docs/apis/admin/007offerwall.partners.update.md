@@ -71,7 +71,7 @@ Same shape as [Create](006offerwall.partners.create.md#success--200), reflecting
 | 401 | `CZDAUTH004` | Your session is no longer valid. Please sign in again. | Access token could not be verified. | `SessionInvalidIcon` |
 | 403 | `CZDAUTH007` | You do not have permission to do that. | Token `product_access` claim is neither `both` nor `coinzu`, or — on a token issued before that claim existed — the `role` claim is not listed in `ADMIN_ROLES`. | `PermissionDeniedIcon` |
 | 404 | `CZDOFW001` | We could not find that offerwall. | No partner exists for `id`. | `ProviderNotFoundIcon` |
-| 409 | `CZDOFW003` | That offerwall slug is already in use. | Changing `slug` to one another partner already has. | `DuplicateOptionIcon` |
+| 409 | `CZDOFW003` | That offerwall identifier is already in use. Please choose another. | Changing `slug` to one another partner already has. | `DuplicateOptionIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation or an unknown field was sent. | `ValidationFailedIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
 | 500 | `CZDCOMM002` | Something went wrong. Please try again. | Unhandled server error. | `ServerErrorIcon` |

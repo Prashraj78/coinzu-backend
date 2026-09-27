@@ -276,6 +276,21 @@
         ]
       }
     },
+    "/api/auth/email/resend": {
+      "post": {
+        "operationId": "AuthController_resendVerification",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Resend the confirm-email link to the signed-in user",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/auth/password/forgot": {
       "post": {
         "operationId": "AuthController_forgotPassword",

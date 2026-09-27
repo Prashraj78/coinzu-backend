@@ -9,15 +9,17 @@ const REQUEST_TIMEOUT_MS = 15000;
  * Transactional email over SendGrid, on the same account Rewardtym uses.
  *
  * Everything the vendor needs lives in this file: the request, the payload
- * shape, and the plain-text-to-HTML formatting. Outside production, or with no
- * API key configured, the message is logged instead of sent.
+ * shape, and the plain-text-to-HTML formatting. With no API key configured the
+ * message is logged instead of sent.
  */
 @Injectable()
 export class SendgridMailExternal {
   private readonly logger = new Logger(SendgridMailExternal.name);
 
   async send(to: string, subject: string, body: string, html?: string): Promise<void> {
-    if (!Env.isProduction || !Env.sendgrid.apiKey) {
+    // Send whenever a key is configured, in any environment; without one, log the
+    // message so local runs still show what would have gone out.
+    if (!Env.sendgrid.apiKey) {
       this.logger.log(`[email -> ${to}] ${subject}: ${body}`);
       return;
     }

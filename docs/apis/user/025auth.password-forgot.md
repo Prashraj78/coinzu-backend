@@ -1,6 +1,6 @@
 # POST /api/auth/password/forgot
 
-Emails a password-reset link if the address belongs to an account. Always responds the same way regardless of whether the email is registered, so the response never reveals which emails exist.
+Emails a password-reset link to the account with this email. If no account uses the email, it returns `404 CZDAUTH017` so the app can prompt the user to create an account. (This deliberately trades away email-enumeration protection for a guided sign-up flow — a product decision for this app.)
 
 ## Overview
 
@@ -56,6 +56,7 @@ None.
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, or an unknown field was sent. | `ValidationFailedIcon` |
+| 404 | `CZDAUTH017` | We couldn't find an account with that email. Please check it, or create a new account. | No user row exists for the submitted email. | `AccountNotFoundIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
 | 500 | `CZDCOMM002` | Something went wrong. Please try again. | Unhandled server error. | `ServerErrorIcon` |
 
@@ -85,7 +86,7 @@ curl -X POST http://localhost:4000/api/auth/password/forgot \
 
 ## Notes
 
-- If no account matches the email, the call is a silent no-op — same `{ "sent": true }` response, no email sent. This is deliberate: it prevents using this endpoint to check which emails are registered.
+- If no account matches the email, the call returns `404 CZDAUTH017` instead of sending anything. The app uses this to surface a "Create an account" prompt. Note this makes the endpoint an email-enumeration oracle — an accepted trade-off for the guided sign-up flow; the global throttle + FFraud IP layer limit abuse.
 - On a match, issues a single-use token via the same Redis-backed `LinkTokenService` used for email verification (`link:reset_password:<token>`, TTL `LINK_TOKEN_TTL_MINUTES`, default 30) and emails a "Reset password" button linking to `GET /api/auth/password/reset?token=...`.
 - Calling this again for the same email issues a brand-new token; it does not invalidate a still-valid earlier one (each token lives under its own random key).
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.

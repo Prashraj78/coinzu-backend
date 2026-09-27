@@ -69,6 +69,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
             cz_error_icon: icon,
             statusCode: status,
             timestamp,
+            ...(typeof res.retry_after_seconds === 'number'
+              ? { retry_after_seconds: res.retry_after_seconds }
+              : {}),
           },
         };
       }

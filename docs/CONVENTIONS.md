@@ -26,8 +26,8 @@ Every failed response, always:
 {
   "success": false,
   "cz_error_code": "CZDAUTH001",
-  "cz_error_message": "Invalid email or password.",
-  "cz_error_description": "Login failed. Invalid email or password.",
+  "cz_error_message": "The email or password you entered is incorrect.",
+  "cz_error_description": "Login failed. The email or password you entered is incorrect.",
   "cz_error_icon": "InvalidCredentialsIcon",
   "statusCode": 401,
   "timestamp": "2026-08-27T07:43:04.183Z"
