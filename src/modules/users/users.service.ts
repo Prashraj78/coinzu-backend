@@ -127,6 +127,74 @@ export class UsersService {
     return user;
   }
 
+  /**
+   * Hard-deletes a user and every row that references them, by email, in one
+   * transaction. There are no ON DELETE cascades on the user id, so each child
+   * table is cleared explicitly and the users row goes last. Mirrors the
+   * scripts/delete-user.ts maintenance utility; the admin delete endpoint calls
+   * this. Irreversible — the caller is trusted (admin-only route).
+   */
+  async hardDeleteByEmail(
+    email: string,
+  ): Promise<{ cz_user_id: string; email: string }> {
+    const found = await this.findByEmail(email);
+    if (!found) {
+      throw new NotFoundException({
+        cz_error_code: CzUserErrorCodes.USER_NOT_FOUND,
+      });
+    }
+    const userId = found.cz_user_id;
+
+    // Tables keyed by user_id; created_by tables are admin-authored content and
+    // are detached (nulled) rather than deleted. Kept in sync with delete-user.ts.
+    const userIdTables = [
+      'daily_checkins',
+      'daily_chest_claims',
+      'gift_card_orders',
+      'kyc_verifications',
+      'lucky_draw_entries',
+      'lucky_draw_winners',
+      'notifications',
+      'offer_clicks',
+      'offerwall_postbacks',
+      'push_campaign_events',
+      'quiz_attempts',
+      'reward_plays',
+      'scratch_card_grants',
+      'scratch_history',
+      'spin_history',
+      'support_tickets',
+      'user_achievements',
+      'user_challenge_progress',
+      'wallet_transactions',
+      'withdrawal_requests',
+    ];
+    const czUserIdTables = ['user_devices', 'user_streaks', 'wallets'];
+    const createdByTables = ['push_campaigns', 'push_templates'];
+
+    await this.users.manager.transaction(async (tx) => {
+      for (const table of userIdTables) {
+        await tx.query(`DELETE FROM "${table}" WHERE user_id = $1`, [userId]);
+      }
+      for (const table of czUserIdTables) {
+        await tx.query(`DELETE FROM "${table}" WHERE cz_user_id = $1`, [userId]);
+      }
+      for (const table of createdByTables) {
+        await tx.query(
+          `UPDATE "${table}" SET created_by = NULL WHERE created_by = $1`,
+          [userId],
+        );
+      }
+      // Detach anyone this user referred so the users row can go.
+      await tx.query('UPDATE users SET referred_by = NULL WHERE referred_by = $1', [
+        userId,
+      ]);
+      await tx.query('DELETE FROM users WHERE cz_user_id = $1', [userId]);
+    });
+
+    return { cz_user_id: userId, email: found.email };
+  }
+
   async updateProfile(
     cz_user_id: string,
     dto: UpdateProfileDto,

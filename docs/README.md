@@ -260,6 +260,7 @@ renumbers the folder, so identify an endpoint by its method and path.
 |---|---|---|---|
 | `GET /api/admin/users` | admin token | Every user with their wallet balance, paginated and searchable by email/name/phone. The Users tab table. | [015](apis/admin/015users.list.md) |
 | `GET /api/admin/users/:cz_user_id` | admin token | One user's full profile — wallet, KYC, referral stats, recent activity — the shared detail page both the Users tab and the Referrals tab navigate to. | [016](apis/admin/016users.detail.md) |
+| `DELETE /api/admin/users` | admin token | Hard-delete a user and every row that references them, matched by email. Irreversible. The Delete User action. | [017](apis/admin/017users.delete.md) |
 
 ## Dropdown categories — 3 endpoints
 

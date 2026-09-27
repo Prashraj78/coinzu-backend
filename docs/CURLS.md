@@ -966,6 +966,17 @@ curl "$BASE/admin/users/f2eae717-1142-4c8b-b9d5-09d495d7b217" \
   -H 'Authorization: Bearer $ADMIN_TOKEN'
 ```
 
+### DELETE /api/admin/users
+
+Hard-delete a user and every row that references them, matched by email. Irreversible. — [`apis/admin/017users.delete.md`](apis/admin/017users.delete.md)
+
+```bash
+curl -X DELETE "$BASE/admin/users" \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -d '{ "email": "someone@example.com" }'
+```
+
 ### GET /api/admin/dropdown/types
 
 Every dropdown category with its option counts, paginated and searchable. — [`apis/admin/017dropdown.types.list.md`](apis/admin/017dropdown.types.list.md)

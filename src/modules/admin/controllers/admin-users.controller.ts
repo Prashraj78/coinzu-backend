@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../../common/decorators/roles.decorator';
+import { AdminDeleteUserDto } from '../../users/dto/admin-delete-user.dto';
 import { AdminListUsersDto } from '../../users/dto/admin-list-users.dto';
 import { UsersService } from '../../users/users.service';
 import { AdminUsersService } from '../services/admin-users.service';
@@ -29,5 +30,14 @@ export class AdminUsersController {
   })
   detail(@Param('cz_user_id') cz_user_id: string) {
     return this.adminUsersService.getAdminDetail(cz_user_id);
+  }
+
+  @Delete()
+  @ApiOperation({
+    summary:
+      'Hard-delete a user by email and every row that references them (admin only). Irreversible.',
+  })
+  remove(@Body() body: AdminDeleteUserDto) {
+    return this.usersService.hardDeleteByEmail(body.email);
   }
 }
