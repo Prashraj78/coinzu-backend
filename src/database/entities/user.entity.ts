@@ -111,6 +111,14 @@ export class User {
   @Column({ type: 'timestamptz', nullable: true })
   phone_verified_at: Date | null;
 
+  // Server-computed fraud aggregate across the user's devices (MAX of device
+  // risk_score). select:false so it never leaks into GET /users/me.
+  @Column({ type: 'int', default: 0, select: false })
+  fraud_score: number;
+
+  @Column({ type: 'jsonb', default: () => "'[]'::jsonb", select: false })
+  fraud_flags: string[];
+
   @Column({ type: 'timestamptz', nullable: true })
   last_login_at: Date | null;
 

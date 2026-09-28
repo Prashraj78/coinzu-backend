@@ -62,7 +62,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/users/me/onboarding/permissions` | user token | Account setup step 2 — records whether the user allowed push notifications. | [008](apis/user/008users.onboarding-permissions.md) |
 | `POST /api/users/me/onboarding/interests` | user token | Account setup step 3 — saves the interest tags the user picked. | [009](apis/user/009users.onboarding-interests.md) |
 | `POST /api/users/me/onboarding/goal` | user token | Account setup step 4 — saves the primary goal and marks onboarding complete. | [010](apis/user/010users.onboarding-goal.md) |
-| `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint fraud signals plus push-token targeting. | [028](apis/user/028users.register-device.md) |
+| `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. | [028](apis/user/028users.register-device.md) |
 | `PATCH /api/users/me/notification-preferences` | user token | Turns push categories on or off and sets the quiet-hours opt-in. | [032](apis/user/032users.notification-preferences.md) |
 
 ## Wallet — 6 endpoints

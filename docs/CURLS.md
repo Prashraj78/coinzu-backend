@@ -200,7 +200,7 @@ curl -X POST $BASE/users/me/onboarding/goal \
 
 ### POST /api/users/me/device
 
-Registers or refreshes this device — IP/ASN/fingerprint fraud signals plus push-token targeting. — [`apis/user/028users.register-device.md`](apis/user/028users.register-device.md)
+Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. — [`apis/user/028users.register-device.md`](apis/user/028users.register-device.md)
 
 ```bash
 curl -X POST $BASE/users/me/device \
@@ -209,6 +209,12 @@ curl -X POST $BASE/users/me/device \
   -d '{
     "device_id": "b7e2b6b0-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
     "platform_type": "android",
+    "hardware_id": "ff8a1c2d3e4f5a6b",
+    "sim_country_code": "IN",
+    "carrier": "Airtel",
+    "mcc_mnc": "404-45",
+    "is_emulator": false,
+    "is_rooted": false,
     "push_token": "fcm-or-apns-token",
     "device_info": { "app_version": "1.4.2", "os_version": "17.4", "model": "Pixel 8" }
   }'

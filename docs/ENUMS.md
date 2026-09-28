@@ -132,7 +132,21 @@ Registered by `POST /api/users/me/device` (and optionally at `POST /api/auth/reg
 
 ### `device_info` — free-form device metadata
 
-Not a fixed enum — a client-supplied JSON object stored as-is in `user_devices.device_info` (jsonb), so the app can add fields (app version, OS version, model, brand, locale, timezone, screen size, ...) without a migration.
+Not a fixed enum — a client-supplied JSON object stored as-is in `user_devices.device_info` (jsonb), so the app can add fields (app version, OS version, model, brand, locale, timezone, screen size, RAM, ...) without a migration.
+
+### `risk_flags` — device / user fraud flags
+
+The fraud signals that fired, stored on both `user_devices.risk_flags` and the user aggregate `users.fraud_flags` (jsonb array). Server-computed, never returned in any response. Scored and stored only — nothing is blocked on them yet.
+
+| Value | Meaning |
+|---|---|
+| `SHARED_HARDWARE_ID` | More than one account has been seen on this `hardware_id` (same physical device). Highest weight. |
+| `EMULATOR` | The app reported it is running on an emulator, not real hardware. |
+| `ROOTED` | The device appears rooted / jailbroken. |
+| `SIM_IP_COUNTRY_MISMATCH` | The SIM country and the IP-geolocation country differ. |
+| `VPN` | The IP resolves to a hosting / datacenter provider (VPN / proxy). |
+
+`hardware_id` is the reinstall-surviving device id — SSAID on Android, IDFV on iOS, null on web. `sim_country_code` is ISO 3166-1 alpha-2, like `country_code`.
 
 ## Wallet
 

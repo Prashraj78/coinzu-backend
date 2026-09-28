@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsIn, IsObject, IsOptional, IsString, Length } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class RegisterDeviceDto {
   @ApiProperty({
@@ -27,6 +34,56 @@ export class RegisterDeviceDto {
   @IsString()
   @Length(1, 255)
   push_token?: string;
+
+  @ApiPropertyOptional({
+    example: 'ff8a1c2d3e4f5a6b',
+    description:
+      'Reinstall-surviving device id (SSAID on Android, IDFV on iOS). Server links accounts sharing it. Fraud signal — server uses it, never returns it.',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(1, 255)
+  hardware_id?: string;
+
+  @ApiPropertyOptional({
+    example: 'IN',
+    description: 'SIM ISO 3166-1 alpha-2 country. Null on wifi-only / eSIM / web.',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(2, 2)
+  sim_country_code?: string;
+
+  @ApiPropertyOptional({ example: 'Airtel', description: 'SIM carrier name.' })
+  @IsOptional()
+  @IsString()
+  @Length(1, 120)
+  carrier?: string;
+
+  @ApiPropertyOptional({
+    example: '404-45',
+    description: 'Mobile country code + network code, "MCC-MNC".',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(1, 15)
+  mcc_mnc?: string;
+
+  @ApiPropertyOptional({
+    example: false,
+    description: 'True when the app is running on an emulator, not real hardware.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  is_emulator?: boolean;
+
+  @ApiPropertyOptional({
+    example: false,
+    description: 'True when the device appears rooted / jailbroken.',
+  })
+  @IsOptional()
+  @IsBoolean()
+  is_rooted?: boolean;
 
   @ApiPropertyOptional({
     example: {

@@ -5881,6 +5881,36 @@
             "example": "fcm-or-apns-token",
             "description": "Push notification token. Send again whenever it rotates."
           },
+          "hardware_id": {
+            "type": "string",
+            "example": "ff8a1c2d3e4f5a6b",
+            "description": "Reinstall-surviving device id (SSAID on Android, IDFV on iOS). Server links accounts sharing it. Fraud signal — server uses it, never returns it."
+          },
+          "sim_country_code": {
+            "type": "string",
+            "example": "IN",
+            "description": "SIM ISO 3166-1 alpha-2 country. Null on wifi-only / eSIM / web."
+          },
+          "carrier": {
+            "type": "string",
+            "example": "Airtel",
+            "description": "SIM carrier name."
+          },
+          "mcc_mnc": {
+            "type": "string",
+            "example": "404-45",
+            "description": "Mobile country code + network code, \"MCC-MNC\"."
+          },
+          "is_emulator": {
+            "type": "boolean",
+            "example": false,
+            "description": "True when the app is running on an emulator, not real hardware."
+          },
+          "is_rooted": {
+            "type": "boolean",
+            "example": false,
+            "description": "True when the device appears rooted / jailbroken."
+          },
           "device_info": {
             "type": "object",
             "example": {
