@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { OfferwallExternal } from '../../external/offerwall.external';
 import { OfferwallPartnersService } from './offerwall-partners.service';
 
-const USER_ID_MACRO = '{USER_ID}';
-
 export interface OfferwallListRow {
   cz_offerwall_partner_id: string;
   name: string;
@@ -21,13 +19,10 @@ export class OfferwallService {
     private readonly offerwallExternal: OfferwallExternal,
   ) {}
 
-  /**
-   * Active partners ranked highest first, each with this user's id already in its URL.
-   * A partner whose URL has no {USER_ID} is skipped: it could not open, or could never credit the user.
-   */
+  /** Active partners ranked highest first, each with this user's id already in its URL. */
   async listForUser(user_id: string): Promise<{ data: OfferwallListRow[]; total: number }> {
     const partners = await this.partnersService.listActive();
-    const data = partners.filter((partner) => partner.click_url_template.includes(USER_ID_MACRO)).map((partner) => ({
+    const data = partners.map((partner) => ({
       cz_offerwall_partner_id: partner.cz_offerwall_partner_id,
       name: partner.name,
       logo_url: partner.logo_url,
