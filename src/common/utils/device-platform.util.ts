@@ -23,6 +23,43 @@ export function resolveDevicePlatform(
   return 'web';
 }
 
+const UNKNOWN_COUNTRY = new Set(['XX', 'T1', 'ZZ', 'A1', 'A2']);
+
+/** Normalize to ISO-3166 alpha-2, or null when it is not a real country code. */
+export function normalizeCountryCode(
+  value: string | null | undefined,
+): string | null {
+  if (!value) return null;
+  const code = value.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(code) || UNKNOWN_COUNTRY.has(code)) return null;
+  return code;
+}
+
+/**
+ * Country from request headers only — CDN / edge signals first, then an
+ * explicit client header. Same order Rewardtym uses. Null when none present.
+ */
+export function resolveCountryFromRequestHeaders(req: Request): string | null {
+  const candidates = [
+    req.headers['cf-ipcountry'],
+    req.headers['cloudfront-viewer-country'],
+    req.headers['x-vercel-ip-country'],
+    req.headers['x-country-code'],
+    req.headers['x-appengine-country'],
+    req.headers['x-geo-country'],
+    req.headers['geo-country'],
+  ];
+
+  for (const raw of candidates) {
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    const code = normalizeCountryCode(
+      typeof value === 'string' ? value : undefined,
+    );
+    if (code) return code;
+  }
+  return null;
+}
+
 /** Header priority mirrors Rewardtym's fraud checks — CDN edge headers first, socket last. */
 export function extractRequestIp(req: Request): string | null {
   const forwardedFor = req.headers['x-forwarded-for'];

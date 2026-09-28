@@ -151,17 +151,17 @@ curl -X PATCH $BASE/users/me \
 
 ### POST /api/users/me/onboarding/info
 
-Account setup step 1 — saves name, gender, age range and country. — [`apis/user/007users.onboarding-info.md`](apis/user/007users.onboarding-info.md)
+Account setup step 1 — saves name, gender, age range. Country is server-derived (edge header → IP geo), not sent in the body. — [`apis/user/007users.onboarding-info.md`](apis/user/007users.onboarding-info.md)
 
 ```bash
 curl -X POST $BASE/users/me/onboarding/info \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer $TOKEN' \
+  -H 'x-country-code: IN' \
   -d '{
     "name": "Ada Lovelace",
     "gender": "female",
-    "age_range": "25-34",
-    "country": "GB"
+    "age_range": "25-34"
   }'
 ```
 

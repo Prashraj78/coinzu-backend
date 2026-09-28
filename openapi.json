@@ -413,7 +413,7 @@
             "bearer": []
           }
         ],
-        "summary": "Account setup step 1 — name, gender, age, country",
+        "summary": "Account setup step 1 — name, gender, age (country is server-derived)",
         "tags": [
           "users"
         ]
@@ -5637,6 +5637,34 @@
         "tags": [
           "admin-users"
         ]
+      },
+      "delete": {
+        "operationId": "AdminUsersController_remove",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminDeleteUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Hard-delete a user by email and every row that references them (admin only). Irreversible.",
+        "tags": [
+          "admin-users"
+        ]
       }
     },
     "/api/admin/users/{cz_user_id}": {
@@ -6061,18 +6089,12 @@
               "35-44",
               "45-54+"
             ]
-          },
-          "country": {
-            "type": "string",
-            "example": "GB",
-            "description": "ISO 3166-1 alpha-2."
           }
         },
         "required": [
           "name",
           "gender",
-          "age_range",
-          "country"
+          "age_range"
         ]
       },
       "OnboardingPermissionsDto": {
@@ -7698,6 +7720,19 @@
         },
         "required": [
           "settings"
+        ]
+      },
+      "AdminDeleteUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "someone@example.com",
+            "description": "Email of the Coinzu account to hard-delete. Case-insensitive. Irreversible."
+          }
+        },
+        "required": [
+          "email"
         ]
       }
     }

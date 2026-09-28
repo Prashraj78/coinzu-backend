@@ -17,9 +17,4 @@ export class OnboardingInfoDto {
   @ApiProperty({ example: '25-34', enum: ['18-24', '25-34', '35-44', '45-54+'] })
   @IsIn(['18-24', '25-34', '35-44', '45-54+'])
   age_range: UserAgeRange;
-
-  @ApiProperty({ example: 'GB', description: 'ISO 3166-1 alpha-2.' })
-  @IsString()
-  @Length(2, 2)
-  country: string;
 }

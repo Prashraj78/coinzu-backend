@@ -12,7 +12,7 @@ const BODY_LIMIT = '10mb';
 const API_PREFIX = 'api';
 
 const CORS_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
-const CORS_HEADERS = ['Content-Type', 'Authorization'];
+const CORS_HEADERS = ['Content-Type', 'Authorization', 'x-country-code'];
 const DEV_ORIGINS = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',

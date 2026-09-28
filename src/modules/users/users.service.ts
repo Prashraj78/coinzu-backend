@@ -10,6 +10,12 @@ import { User } from '../../database/entities/user.entity';
 import { CzUserErrorCodes } from '../../common/errors/error.constants';
 import { generateReferralCode } from '../../common/utils/random.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
+import {
+  extractRequestIp,
+  resolveCountryFromRequestHeaders,
+} from '../../common/utils/device-platform.util';
+import { GeoLookupExternal } from '../../external/geo-lookup.external';
+import type { Request } from 'express';
 import { WalletService } from '../wallet/wallet.service';
 import { ReferralRulesService } from '../referrals/referral-rules.service';
 import { AdminListUsersDto } from './dto/admin-list-users.dto';
@@ -43,6 +49,7 @@ export class UsersService {
     private readonly walletService: WalletService,
     private readonly referralRulesService: ReferralRulesService,
     private readonly achievementsService: AchievementsService,
+    private readonly geoLookup: GeoLookupExternal,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -222,14 +229,28 @@ export class UsersService {
   async saveOnboardingInfo(
     cz_user_id: string,
     dto: OnboardingInfoDto,
+    req: Request,
   ): Promise<User> {
     const user = await this.getOrFail(cz_user_id);
     user.name = dto.name;
     user.gender = dto.gender;
     user.age_range = dto.age_range;
-    user.country = dto.country;
+    // Country is server-derived, never trusted from the client — same as the
+    // device row and Rewardtym: edge header first, then IP geo, else leave it.
+    const country = await this.resolveCountry(req);
+    if (country) user.country = country;
     user.profile_completion_pct = this.completionPercent(user);
     return this.saveWithoutSecret(user);
+  }
+
+  /** ISO country from a request: CDN edge header first, then IP geo, else null. */
+  private async resolveCountry(req: Request): Promise<string | null> {
+    const fromHeader = resolveCountryFromRequestHeaders(req);
+    if (fromHeader) return fromHeader;
+    const ip = extractRequestIp(req);
+    if (!ip) return null;
+    const geo = await this.geoLookup.lookup(ip);
+    return geo.country_code;
   }
 
   async saveOnboardingPermissions(

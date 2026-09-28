@@ -1,6 +1,6 @@
 # POST /api/users/me/onboarding/info
 
-Account setup step 1 — saves name, gender, age range and country.
+Account setup step 1 — saves name, gender and age range. Country is **derived server-side** from the request (CDN edge header, then IP geolocation), never taken from the body.
 
 ## Overview
 
@@ -20,6 +20,7 @@ Account setup step 1 — saves name, gender, age range and country.
 |---|---|---|
 | `Content-Type` | yes | `application/json` |
 | `Authorization` | yes | `Bearer <access_token>` |
+| `x-country-code` | no | ISO 3166-1 alpha-2 country hint from the edge/CDN. When present and valid it sets the user's country; otherwise the server falls back to IP geolocation. Also accepts `cf-ipcountry`, `cloudfront-viewer-country`, `x-vercel-ip-country`, `x-appengine-country`, `x-geo-country`, `geo-country`. |
 
 ### Path / query params
 
@@ -32,14 +33,14 @@ None.
 | `name` | string | yes | 1–120 characters. | Display name. |
 | `gender` | string | yes | 1–20 characters. | Self-reported gender. |
 | `age_range` | string | yes | One of `18-24`, `25-34`, `35-44`, `45-54+`. | Age bracket. |
-| `country` | string | yes | Exactly 2 characters. | ISO 3166-1 alpha-2 country code. Offer targeting uses this. |
+
+`country` is **not** a body field. Sending it fails validation (`whitelist` + `forbidNonWhitelisted`). The server derives country from the request — the `x-country-code` header (or the other edge headers above) first, then IP geolocation — exactly like the device row.
 
 ```json
 {
   "name": "Ada Lovelace",
   "gender": "female",
-  "age_range": "25-34",
-  "country": "GB"
+  "age_range": "25-34"
 }
 ```
 
@@ -152,8 +153,7 @@ curl -X POST http://localhost:4000/api/users/me/onboarding/info \
   -d '{
     "name": "Ada Lovelace",
     "gender": "female",
-    "age_range": "25-34",
-    "country": "GB"
+    "age_range": "25-34"
   }'
 ```
 
@@ -161,5 +161,5 @@ curl -X POST http://localhost:4000/api/users/me/onboarding/info \
 
 - This is step 1 of 4. The steps are `info`, `permissions`, `interests`, `goal`.
 - Steps can be re-sent; the latest values win. `onboarding_completed` only flips on the goal step.
-- `country` drives which offers the user is shown, so it should match the device locale.
+- `country` drives which offers the user is shown. It is server-derived: the `x-country-code` (or other edge) header wins, else IP geolocation, else it stays as-is (a private/localhost IP in dev resolves to nothing, so the existing value is left untouched rather than nulled). The client must not send it.
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.

@@ -35,12 +35,13 @@ export class UsersController {
   }
 
   @Post('me/onboarding/info')
-  @ApiOperation({ summary: 'Account setup step 1 — name, gender, age, country' })
+  @ApiOperation({ summary: 'Account setup step 1 — name, gender, age (country is server-derived)' })
   onboardingInfo(
     @CurrentUser() user: RequestUser,
     @Body() dto: OnboardingInfoDto,
+    @Req() req: Request,
   ) {
-    return this.usersService.saveOnboardingInfo(user.cz_user_id, dto);
+    return this.usersService.saveOnboardingInfo(user.cz_user_id, dto, req);
   }
 
   @Post('me/onboarding/permissions')
