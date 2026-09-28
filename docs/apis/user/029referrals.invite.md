@@ -41,7 +41,7 @@ None.
 | `reward_steps[].cz_referral_rule_id` | string (uuid) | Stable id of the step. |
 | `reward_steps[].trigger` | string | What the friend has to do. See [Enum values](#enum-values). |
 | `reward_steps[].label` | string | Ready-to-render title, e.g. `Friend completes 10 offers`. Admin-written, falling back to the trigger's built-in name. |
-| `reward_steps[].description` | string | Ready-to-render explanation of when the step pays. |
+| `reward_steps[].description` | string | Ready-to-render, user-facing line saying when the step pays, with the threshold filled in. Never the admin panel's help text. |
 | `reward_steps[].threshold` | number \| null | How many of `threshold_unit` the friend needs. `null` on single-event steps. |
 | `reward_steps[].threshold_unit` | string \| null | What the threshold counts, e.g. `offers`. `null` on single-event steps. |
 | `reward_steps[].reward_coins` | number | Coins this step pays the referrer. |
@@ -76,7 +76,7 @@ None.
         "cz_referral_rule_id": "db5f97ce-2773-403c-997e-3e1462f4c1c5",
         "trigger": "signup",
         "label": "Friend signs up",
-        "description": "Pays the moment an invited friend creates their account with the code.",
+        "description": "You earn this as soon as your friend creates their Coinzu account with your code.",
         "threshold": null,
         "threshold_unit": null,
         "reward_coins": 50,
@@ -87,7 +87,7 @@ None.
         "cz_referral_rule_id": "0afefab9-97c6-4df2-98a8-e4dd6a7f3863",
         "trigger": "kyc_verified",
         "label": "Friend completes KYC",
-        "description": "Pays when the invited friend passes identity verification.",
+        "description": "You earn this once your friend verifies their identity.",
         "threshold": null,
         "threshold_unit": null,
         "reward_coins": 250,
@@ -98,7 +98,7 @@ None.
         "cz_referral_rule_id": "17907aa6-b42a-49f2-9305-e40df2b3d694",
         "trigger": "offers_completed",
         "label": "Friend completes 5 offers",
-        "description": "Pays each time the friend reaches an offer count you set. Add one step per milestone — 1, 5, 10, 25 and so on.",
+        "description": "You earn this when your friend has completed 5 offers.",
         "threshold": 5,
         "threshold_unit": "offers",
         "reward_coins": 500,
