@@ -97,6 +97,7 @@ curl http://localhost:4000/api/offerwall \
 ## Notes
 
 - Only `is_active: true` partners are returned. An admin hides a partner from the app by deactivating it — no delete.
+- A partner whose `click_url_template` has no `{USER_ID}` (for example an empty one) is left out, because its wall could not open or credit the user. Set the template in the admin panel and it shows up on the next call.
 - Ordering is by `rank` descending, then `name` ascending as a tiebreaker.
 - `offer_url` is built fresh on every call — a partner's `click_url_template` can change at any time with no client update needed.
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.
