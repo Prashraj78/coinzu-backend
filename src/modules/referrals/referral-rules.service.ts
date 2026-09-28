@@ -45,6 +45,8 @@ export const REFERRAL_TRIGGER_META: Record<
     /** `{n}` is replaced with the threshold to build a step's default label. */
     threshold_template: string | null;
     repeatable: boolean;
+    /** What the app shows under a ladder step; `{n}` is the threshold, `{s}`/`{people}` follow its plural. */
+    app_text: string;
   }
 > = {
   signup: {
@@ -55,6 +57,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this as soon as your friend creates their Coinzu account with your code.',
   },
   email_verified: {
     label: 'Friend verifies their email',
@@ -63,6 +66,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this once your friend confirms their email address.',
   },
   onboarding_completed: {
     label: 'Friend finishes onboarding',
@@ -72,6 +76,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this once your friend finishes setting up their profile.',
   },
   kyc_verified: {
     label: 'Friend completes KYC',
@@ -80,6 +85,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this once your friend verifies their identity.',
   },
   first_withdrawal: {
     label: 'Friend’s first withdrawal',
@@ -88,6 +94,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this when your friend makes their first withdrawal.',
   },
   first_redeem: {
     label: 'Friend’s first gift card',
@@ -96,6 +103,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: null,
     threshold_template: null,
     repeatable: false,
+    app_text: 'You earn this when your friend redeems their first gift card.',
   },
   offers_completed: {
     label: 'Friend completes offers',
@@ -105,6 +113,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'offers',
     threshold_template: 'Friend completes {n} offers',
     repeatable: true,
+    app_text: 'You earn this when your friend has completed {n} offer{s}.',
   },
   daily_checkins: {
     label: 'Friend checks in',
@@ -114,6 +123,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'check-ins',
     threshold_template: 'Friend checks in {n} times',
     repeatable: true,
+    app_text: 'You earn this when your friend has checked in {n} time{s}.',
   },
   streak_reached: {
     label: 'Friend hits a streak',
@@ -123,6 +133,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'day streak',
     threshold_template: 'Friend hits a {n}-day streak',
     repeatable: true,
+    app_text: 'You earn this when your friend keeps a {n}-day streak.',
   },
   withdrawals_completed: {
     label: 'Friend withdraws',
@@ -132,6 +143,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'withdrawals',
     threshold_template: 'Friend makes {n} withdrawals',
     repeatable: true,
+    app_text: 'You earn this when your friend has made {n} withdrawal{s}.',
   },
   redeems_completed: {
     label: 'Friend redeems gift cards',
@@ -141,6 +153,7 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'gift cards',
     threshold_template: 'Friend redeems {n} gift cards',
     repeatable: true,
+    app_text: 'You earn this when your friend has redeemed {n} gift card{s}.',
   },
   referrals_made: {
     label: 'Friend invites others',
@@ -150,8 +163,16 @@ export const REFERRAL_TRIGGER_META: Record<
     threshold_unit: 'invites',
     threshold_template: 'Friend invites {n} people',
     repeatable: true,
+    app_text: 'You earn this when your friend has invited {n} {people} of their own.',
   },
 };
+
+function appText(template: string, n: number): string {
+  return template
+    .replace('{n}', String(n))
+    .replace('{s}', n === 1 ? '' : 's')
+    .replace('{people}', n === 1 ? 'person' : 'people');
+}
 
 /** Fallback reading order when the admin has not set display_order. */
 const TRIGGER_RANK: Record<ReferralTrigger, number> = {
@@ -245,7 +266,7 @@ export class ReferralRulesService {
         cz_referral_rule_id: r.cz_referral_rule_id,
         trigger: r.trigger,
         label: r.label ?? this.defaultLabel(r),
-        description: meta.description,
+        description: appText(meta.app_text, r.threshold),
         threshold: meta.uses_threshold ? r.threshold : null,
         threshold_unit: meta.threshold_unit,
         reward_coins: r.reward_coins,
