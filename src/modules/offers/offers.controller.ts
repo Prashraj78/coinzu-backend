@@ -20,7 +20,7 @@ import {
 } from '../../common/decorators/api-envelope.decorator';
 import { ListQueryDto } from '../../common/dto/list-query.dto';
 import { ListOffersDto } from './dto/list-offers.dto';
-import { MyOfferDto, OfferDto } from './dto/offers.response';
+import { MyOfferDto, OfferClickDto, OfferDto } from './dto/offers.response';
 import { OffersService } from './offers.service';
 import { PostbackService } from './postback.service';
 
@@ -68,6 +68,7 @@ export class OffersController {
 
   @Post(':id/click')
   @ApiOperation({ summary: 'Start an offer and get its tracking URL' })
+  @ApiData(OfferClickDto, 201)
   click(
     @CurrentUser() user: RequestUser,
     @Param('id') id: string,

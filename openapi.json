@@ -1133,7 +1133,27 @@
         ],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/OfferClickDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -6654,6 +6674,23 @@
           "status",
           "payout_coins",
           "credited_at"
+        ]
+      },
+      "OfferClickDto": {
+        "type": "object",
+        "properties": {
+          "click_id": {
+            "type": "string",
+            "example": "cz_9f2c8a11c4d7b3e5"
+          },
+          "tracking_url": {
+            "type": "string",
+            "example": "https://track.rewardtym.com/click?offer=RT-99120"
+          }
+        },
+        "required": [
+          "click_id",
+          "tracking_url"
         ]
       },
       "AnswerQuizDto": {

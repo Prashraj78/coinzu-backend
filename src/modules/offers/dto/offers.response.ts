@@ -77,3 +77,11 @@ export class MyOfferDto {
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   credited_at: Date | null;
 }
+
+export class OfferClickDto {
+  @ApiProperty({ example: 'cz_9f2c8a11c4d7b3e5' })
+  click_id: string;
+
+  @ApiProperty({ example: 'https://track.rewardtym.com/click?offer=RT-99120' })
+  tracking_url: string;
+}

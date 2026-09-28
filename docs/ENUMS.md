@@ -185,6 +185,7 @@ The fraud signals that fired, stored on both `user_devices.risk_flags` and the u
 | `convert` |
 | `admin_adjustment` |
 | `offerwall` |
+| `welcome_bonus` |
 
 ### Withdrawal `method`
 
@@ -545,7 +546,7 @@ One subtab each in the admin Configuration Settings tab. Returned by `GET /api/a
 
 ### `setting_key` — the tunable catalogue
 
-`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `push_quiet_hours_start`, `push_quiet_hours_end`
+`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end`
 
 A key outside this list is rejected by `PATCH /api/admin/settings` with `CZDADM004`.
 

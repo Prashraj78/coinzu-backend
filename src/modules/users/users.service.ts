@@ -17,6 +17,8 @@ import {
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import type { Request } from 'express';
 import { WalletService } from '../wallet/wallet.service';
+import { SettingsService } from '../settings/settings.service';
+import { SettingKeys } from '../settings/setting.keys';
 import { ReferralRulesService } from '../referrals/referral-rules.service';
 import { AdminListUsersDto } from './dto/admin-list-users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -50,6 +52,7 @@ export class UsersService {
     private readonly referralRulesService: ReferralRulesService,
     private readonly achievementsService: AchievementsService,
     private readonly geoLookup: GeoLookupExternal,
+    private readonly settingsService: SettingsService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -316,14 +319,35 @@ export class UsersService {
     cz_user_id: string,
     dto: OnboardingGoalDto,
   ): Promise<User> {
+    // Conditional flip so a double submit can't pay the welcome bonus twice.
+    const { affected } = await this.users.update(
+      { cz_user_id, onboarding_completed: false },
+      { onboarding_completed: true },
+    );
     const user = await this.getOrFail(cz_user_id);
     user.primary_goal = dto.primary_goal;
     user.onboarding_completed = true;
     user.profile_completion_pct = this.completionPercent(user);
     const saved = await this.saveWithoutSecret(user);
+    if (affected) await this.creditWelcomeBonus(cz_user_id);
     await this.referralRulesService.award(cz_user_id, 'onboarding_completed');
     await this.achievementsService.trackProgress(cz_user_id, 'onboarding_completed');
     return saved;
+  }
+
+  private async creditWelcomeBonus(cz_user_id: string): Promise<void> {
+    const gems = await this.settingsService.getNumber(
+      SettingKeys.WELCOME_BONUS_GEMS,
+    );
+    if (gems <= 0) return;
+    await this.walletService.credit({
+      user_id: cz_user_id,
+      currency: 'gem',
+      amount: Math.floor(gems),
+      type: 'earn',
+      source_type: 'welcome_bonus',
+      note: 'Welcome bonus',
+    });
   }
 
   async markEmailVerified(cz_user_id: string): Promise<User> {

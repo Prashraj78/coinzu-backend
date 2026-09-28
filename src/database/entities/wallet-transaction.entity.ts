@@ -29,7 +29,8 @@ export type WalletSourceType =
   | 'challenge'
   | 'convert'
   | 'admin_adjustment'
-  | 'offerwall';
+  | 'offerwall'
+  | 'welcome_bonus';
 
 @Entity({ name: 'wallet_transactions' })
 @Index(['user_id', 'created_at'])
