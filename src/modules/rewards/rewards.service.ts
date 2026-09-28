@@ -84,7 +84,8 @@ export class RewardsService {
     const now = Date.now();
     const data = games.map((g) => {
       const draw = drawByGame.get(g.cz_reward_game_id) ?? null;
-      const endsAt = draw?.draw_date ?? null;
+      // A draw game always shows its period's countdown, even in the moment before the scheduler opens the draw row.
+      const endsAt = draw?.draw_date ?? (g.kind === 'draw' ? periodEnd(g.cadence, new Date(now)) : null);
       return {
         cz_reward_game_id: g.cz_reward_game_id,
         slug: g.slug,
