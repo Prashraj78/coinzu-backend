@@ -44,3 +44,24 @@ export function ApiList(model: Type<unknown> | 'string', status = 200) {
     }),
   );
 }
+
+// A `{ [key]: model[] }` payload, for grouped lookups whose keys are data (dropdown types).
+export function ApiGrouped(model: Type<unknown>, status = 200) {
+  return applyDecorators(
+    ApiExtraModels(model),
+    ApiResponse({
+      status,
+      schema: {
+        type: 'object',
+        required: ['success', 'data'],
+        properties: {
+          success: { type: 'boolean', example: true },
+          data: {
+            type: 'object',
+            additionalProperties: { type: 'array', items: { $ref: getSchemaPath(model) } },
+          },
+        },
+      },
+    }),
+  );
+}

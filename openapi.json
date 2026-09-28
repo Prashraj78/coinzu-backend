@@ -6827,7 +6827,33 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/DropdownOptionDto"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "summary": "Master dropdown options (gender, interest, and more), grouped by type",
@@ -11791,6 +11817,29 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "DropdownOptionDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "example": "male"
+          },
+          "label": {
+            "type": "string",
+            "example": "Male"
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          }
+        },
+        "required": [
+          "value",
+          "label",
+          "icon_url"
         ]
       },
       "OfferwallDto": {

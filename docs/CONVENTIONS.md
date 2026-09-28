@@ -18,7 +18,7 @@ List endpoints:
 { "success": true, "data": { "data": [], "total": 0 } }
 ```
 
-In Swagger, describe the payload with `@ApiData(Dto)` or `@ApiList(Dto)` from `src/common/decorators/api-envelope.decorator.ts`. They document the envelope around the DTO, so `openapi.json` and the app's generated client get real response types. They are docs only and don't change the response. Response DTOs live in the module's `dto/<module>.response.ts`.
+In Swagger, describe the payload with `@ApiData(Dto)`, `@ApiList(Dto)` or `@ApiGrouped(Dto)` (a map of arrays keyed by data, like dropdown types) from `src/common/decorators/api-envelope.decorator.ts`. They document the envelope around the DTO, so `openapi.json` and the app's generated client get real response types. They are docs only and don't change the response. Response DTOs live in the module's `dto/<module>.response.ts`.
 
 ## Error
 
