@@ -636,7 +636,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WalletRatesDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -677,7 +697,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/WalletTransactionDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -707,7 +762,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WalletDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -737,7 +812,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WithdrawalDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -776,7 +871,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/WithdrawalDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1806,7 +1936,42 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RewardGameDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1873,7 +2038,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RewardWinnerDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1902,7 +2102,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RewardDetailDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1977,7 +2197,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/RewardWinnerDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2016,7 +2271,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RewardEntriesDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2045,7 +2320,27 @@
         ],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/RewardPlayDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2113,7 +2408,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GiftCardProductDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2133,7 +2463,42 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2162,7 +2527,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GiftCardProductDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2191,7 +2576,27 @@
         ],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GiftCardOrderDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2232,7 +2637,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/GiftCardOrderDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2261,7 +2701,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GiftCardOrderDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2290,7 +2750,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/GiftCardCodeDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -6658,6 +7138,316 @@
           "updated_at"
         ]
       },
+      "RateCoinDto": {
+        "type": "object",
+        "properties": {
+          "coins_per_usd": {
+            "type": "number",
+            "example": 1000
+          },
+          "usd_per_coin": {
+            "type": "string",
+            "example": "0.001000"
+          },
+          "definition": {
+            "type": "string",
+            "example": "1,000 coins = $1.00"
+          }
+        },
+        "required": [
+          "coins_per_usd",
+          "usd_per_coin",
+          "definition"
+        ]
+      },
+      "RateGemDto": {
+        "type": "object",
+        "properties": {
+          "coins_per_gem": {
+            "type": "number",
+            "example": 0.025
+          },
+          "gems_per_coin": {
+            "type": "number",
+            "example": 40
+          },
+          "definition": {
+            "type": "string",
+            "example": "40 gems = 1 coin"
+          }
+        },
+        "required": [
+          "coins_per_gem",
+          "gems_per_coin",
+          "definition"
+        ]
+      },
+      "GemToCoinPreviewDto": {
+        "type": "object",
+        "properties": {
+          "from_gems": {
+            "type": "number",
+            "example": 12000
+          },
+          "to_coins": {
+            "type": "number",
+            "example": 300
+          }
+        },
+        "required": [
+          "from_gems",
+          "to_coins"
+        ]
+      },
+      "GemToCoinDto": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "example": 0.025
+          },
+          "formula": {
+            "type": "string",
+            "example": "floor(gems * coins_per_gem)"
+          },
+          "definition": {
+            "type": "string"
+          },
+          "preview": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GemToCoinPreviewDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "rate",
+          "formula",
+          "definition",
+          "preview"
+        ]
+      },
+      "CoinToGemPreviewDto": {
+        "type": "object",
+        "properties": {
+          "from_coins": {
+            "type": "number",
+            "example": 300
+          },
+          "to_gems": {
+            "type": "number",
+            "example": 12000
+          }
+        },
+        "required": [
+          "from_coins",
+          "to_gems"
+        ]
+      },
+      "CoinToGemDto": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "example": 0.025
+          },
+          "formula": {
+            "type": "string",
+            "example": "floor(coins / coins_per_gem)"
+          },
+          "definition": {
+            "type": "string"
+          },
+          "preview": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CoinToGemPreviewDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "rate",
+          "formula",
+          "definition",
+          "preview"
+        ]
+      },
+      "RateConvertDto": {
+        "type": "object",
+        "properties": {
+          "gem_to_coin": {
+            "$ref": "#/components/schemas/GemToCoinDto"
+          },
+          "coin_to_gem": {
+            "$ref": "#/components/schemas/CoinToGemDto"
+          }
+        },
+        "required": [
+          "gem_to_coin",
+          "coin_to_gem"
+        ]
+      },
+      "RateWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "min_withdrawal_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "min_withdrawal_usd": {
+            "type": "string",
+            "example": "5.00"
+          },
+          "requires_kyc": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "min_withdrawal_coins",
+          "min_withdrawal_usd",
+          "requires_kyc"
+        ]
+      },
+      "WalletRatesDto": {
+        "type": "object",
+        "properties": {
+          "coin": {
+            "$ref": "#/components/schemas/RateCoinDto"
+          },
+          "gem": {
+            "$ref": "#/components/schemas/RateGemDto"
+          },
+          "convert": {
+            "$ref": "#/components/schemas/RateConvertDto"
+          },
+          "withdrawal": {
+            "$ref": "#/components/schemas/RateWithdrawalDto"
+          }
+        },
+        "required": [
+          "coin",
+          "gem",
+          "convert",
+          "withdrawal"
+        ]
+      },
+      "WalletTransactionDto": {
+        "type": "object",
+        "properties": {
+          "cz_wallet_transaction_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "coin",
+              "gem"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "earn",
+              "spend",
+              "withdrawal",
+              "convert_in",
+              "convert_out",
+              "reversal"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "example": 1000,
+            "description": "Signed: positive credits, negative debits."
+          },
+          "balance_after": {
+            "type": "number",
+            "example": 13000
+          },
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "offer",
+              "daily_checkin",
+              "referral",
+              "game",
+              "streak",
+              "withdrawal",
+              "redeem",
+              "lucky_draw",
+              "achievement",
+              "challenge",
+              "convert",
+              "admin_adjustment",
+              "offerwall",
+              "welcome_bonus"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_wallet_transaction_id",
+          "user_id",
+          "currency",
+          "type",
+          "amount",
+          "balance_after",
+          "source_type",
+          "source_id",
+          "note",
+          "created_at"
+        ]
+      },
+      "WalletDto": {
+        "type": "object",
+        "properties": {
+          "cz_user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "coin_balance": {
+            "type": "number",
+            "example": 12500
+          },
+          "gem_balance": {
+            "type": "number",
+            "example": 12000
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_user_id",
+          "coin_balance",
+          "gem_balance",
+          "updated_at"
+        ]
+      },
       "ConvertCurrencyDto": {
         "type": "object",
         "properties": {
@@ -6678,6 +7468,74 @@
         "required": [
           "from_currency",
           "amount"
+        ]
+      },
+      "WithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "cz_withdrawal_request_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "amount_usd": {
+            "type": "string",
+            "example": "5.00"
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "paypal",
+              "bank",
+              "crypto"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "paid"
+            ]
+          },
+          "reviewed_by": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "rejection_reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_withdrawal_request_id",
+          "user_id",
+          "amount_coins",
+          "amount_usd",
+          "method",
+          "status",
+          "reviewed_by",
+          "reviewed_at",
+          "rejection_reason",
+          "created_at"
         ]
       },
       "CreateWithdrawalDto": {
@@ -7677,6 +8535,492 @@
           "cards_left"
         ]
       },
+      "RewardGameDto": {
+        "type": "object",
+        "properties": {
+          "cz_reward_game_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "example": "daily_lucky_draw"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "instant",
+              "draw"
+            ]
+          },
+          "cadence": {
+            "type": "string",
+            "enum": [
+              "none",
+              "daily",
+              "weekly"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Daily Lucky Draw"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "headline_prize_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "entry_cost_gems": {
+            "type": "number",
+            "example": 10
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "live",
+              "coming_soon",
+              "paused"
+            ]
+          },
+          "is_playable": {
+            "type": "boolean"
+          },
+          "ends_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "seconds_remaining": {
+            "type": "number",
+            "nullable": true,
+            "example": 86694
+          },
+          "my_entries": {
+            "type": "number",
+            "example": 0
+          },
+          "cz_lucky_draw_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "cz_reward_game_id",
+          "slug",
+          "kind",
+          "cadence",
+          "title",
+          "subtitle",
+          "icon_url",
+          "headline_prize_coins",
+          "entry_cost_gems",
+          "status",
+          "is_playable",
+          "ends_at",
+          "seconds_remaining",
+          "my_entries",
+          "cz_lucky_draw_id",
+          "display_order"
+        ]
+      },
+      "RewardWinnerDto": {
+        "type": "object",
+        "properties": {
+          "cz_lucky_draw_winner_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cz_lucky_draw_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "game_slug": {
+            "type": "string",
+            "nullable": true
+          },
+          "game_title": {
+            "type": "string",
+            "nullable": true
+          },
+          "period_key": {
+            "type": "string",
+            "nullable": true
+          },
+          "draw_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rank": {
+            "type": "number",
+            "example": 1
+          },
+          "masked_name": {
+            "type": "string",
+            "example": "prash@****.com"
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "prize_coins": {
+            "type": "number"
+          },
+          "prize_gems": {
+            "type": "number"
+          },
+          "entries_held": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "cz_lucky_draw_winner_id",
+          "cz_lucky_draw_id",
+          "game_slug",
+          "game_title",
+          "period_key",
+          "draw_date",
+          "rank",
+          "masked_name",
+          "avatar_url",
+          "country",
+          "prize_coins",
+          "prize_gems",
+          "entries_held"
+        ]
+      },
+      "RewardStepDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "icon_url"
+        ]
+      },
+      "RewardPrizeDto": {
+        "type": "object",
+        "properties": {
+          "cz_reward_prize_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rank": {
+            "type": "number",
+            "example": 1
+          },
+          "label": {
+            "type": "string",
+            "example": "1st Prize"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "cz_reward_prize_id",
+          "rank",
+          "label",
+          "reward_coins",
+          "reward_gems"
+        ]
+      },
+      "LuckyDrawDto": {
+        "type": "object",
+        "properties": {
+          "cz_lucky_draw_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "period_key": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "opens_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "draw_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "seconds_remaining": {
+            "type": "number",
+            "example": 3600
+          },
+          "prize_pool_coins": {
+            "type": "number",
+            "example": 12000
+          },
+          "participants_count": {
+            "type": "number",
+            "example": 12364
+          },
+          "entries_count": {
+            "type": "number",
+            "example": 40210
+          },
+          "my_entries": {
+            "type": "number",
+            "example": 0
+          },
+          "average_entries": {
+            "type": "number",
+            "example": 3.2
+          }
+        },
+        "required": [
+          "cz_lucky_draw_id",
+          "period_key",
+          "opens_at",
+          "draw_date",
+          "seconds_remaining",
+          "prize_pool_coins",
+          "participants_count",
+          "entries_count",
+          "my_entries",
+          "average_entries"
+        ]
+      },
+      "RewardLastPlayDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "reward_coins": {
+            "type": "number"
+          },
+          "reward_gems": {
+            "type": "number"
+          },
+          "played_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "played_at"
+        ]
+      },
+      "RewardDetailDto": {
+        "type": "object",
+        "properties": {
+          "cz_reward_game_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "instant",
+              "draw"
+            ]
+          },
+          "cadence": {
+            "type": "string",
+            "enum": [
+              "none",
+              "daily",
+              "weekly"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "subtitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "headline_prize_coins": {
+            "type": "number"
+          },
+          "entry_cost_gems": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "live",
+              "coming_soon",
+              "paused"
+            ]
+          },
+          "is_playable": {
+            "type": "boolean"
+          },
+          "min_entries": {
+            "type": "number",
+            "example": 1
+          },
+          "max_entries": {
+            "type": "number",
+            "example": 250
+          },
+          "entry_packs": {
+            "example": [
+              5,
+              10,
+              25
+            ],
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "how_it_works": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardStepDto"
+            }
+          },
+          "terms_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "prizes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardPrizeDto"
+            }
+          },
+          "draw": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LuckyDrawDto"
+              }
+            ]
+          },
+          "my_plays_today": {
+            "type": "number",
+            "nullable": true
+          },
+          "last_play": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RewardLastPlayDto"
+              }
+            ]
+          },
+          "recent_winners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RewardWinnerDto"
+            }
+          }
+        },
+        "required": [
+          "cz_reward_game_id",
+          "slug",
+          "kind",
+          "cadence",
+          "title",
+          "subtitle",
+          "icon_url",
+          "headline_prize_coins",
+          "entry_cost_gems",
+          "status",
+          "is_playable",
+          "min_entries",
+          "max_entries",
+          "entry_packs",
+          "how_it_works",
+          "terms_url",
+          "prizes",
+          "draw",
+          "my_plays_today",
+          "last_play",
+          "recent_winners"
+        ]
+      },
+      "RewardEntriesDto": {
+        "type": "object",
+        "properties": {
+          "cz_lucky_draw_entry_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cz_lucky_draw_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entries_bought": {
+            "type": "number"
+          },
+          "gems_spent": {
+            "type": "number"
+          },
+          "my_entries": {
+            "type": "number"
+          },
+          "participants_count": {
+            "type": "number"
+          },
+          "entries_count": {
+            "type": "number"
+          },
+          "draw_date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_lucky_draw_entry_id",
+          "cz_lucky_draw_id",
+          "entries_bought",
+          "gems_spent",
+          "my_entries",
+          "participants_count",
+          "entries_count",
+          "draw_date"
+        ]
+      },
       "BuyEntriesDto": {
         "type": "object",
         "properties": {
@@ -7688,6 +9032,198 @@
         },
         "required": [
           "count"
+        ]
+      },
+      "RewardPlayDto": {
+        "type": "object",
+        "properties": {
+          "cz_reward_play_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cz_reward_prize_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string"
+          },
+          "reward_coins": {
+            "type": "number"
+          },
+          "reward_gems": {
+            "type": "number"
+          },
+          "gems_spent": {
+            "type": "number"
+          },
+          "played_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_reward_play_id",
+          "cz_reward_prize_id",
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "gems_spent",
+          "played_at"
+        ]
+      },
+      "GiftCardProductDto": {
+        "type": "object",
+        "properties": {
+          "cz_gift_card_product_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider_name": {
+            "type": "string"
+          },
+          "external_product_id": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string",
+            "example": "Steam"
+          },
+          "denomination": {
+            "type": "string",
+            "example": "£200"
+          },
+          "price_coins": {
+            "type": "number",
+            "example": 2000
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "example": "gaming"
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_featured": {
+            "type": "boolean"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "synced_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "cz_gift_card_product_id",
+          "provider_name",
+          "external_product_id",
+          "brand",
+          "denomination",
+          "price_coins",
+          "category",
+          "image_url",
+          "is_featured",
+          "is_active",
+          "synced_at"
+        ]
+      },
+      "GiftCardOrderDto": {
+        "type": "object",
+        "properties": {
+          "cz_gift_card_order_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "product_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "price_coins": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "fulfilled",
+              "failed"
+            ]
+          },
+          "provider_order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "failure_reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fulfilled_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "brand": {
+            "type": "string",
+            "nullable": true
+          },
+          "denomination": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "cz_gift_card_order_id",
+          "user_id",
+          "product_id",
+          "price_coins",
+          "status",
+          "provider_order_id",
+          "failure_reason",
+          "created_at",
+          "fulfilled_at",
+          "brand",
+          "denomination",
+          "image_url"
+        ]
+      },
+      "GiftCardCodeDto": {
+        "type": "object",
+        "properties": {
+          "cz_gift_card_order_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "example": "XXXX-XXXX-XXXX"
+          },
+          "fulfilled_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "cz_gift_card_order_id",
+          "code",
+          "fulfilled_at"
         ]
       },
       "CreateTicketDto": {
@@ -8738,41 +10274,6 @@
             "example": 1
           }
         }
-      },
-      "RewardPrizeDto": {
-        "type": "object",
-        "properties": {
-          "rank": {
-            "type": "number",
-            "example": 1,
-            "description": "Defaults to the array position."
-          },
-          "label": {
-            "type": "string",
-            "example": "1st Prize"
-          },
-          "reward_coins": {
-            "type": "number",
-            "example": 5000
-          },
-          "reward_gems": {
-            "type": "number",
-            "example": 0
-          },
-          "probability_weight": {
-            "type": "number",
-            "example": 12,
-            "description": "Instant games only. A draw ranks its prizes instead."
-          },
-          "is_active": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "label",
-          "reward_coins",
-          "reward_gems"
-        ]
       },
       "SavePrizesDto": {
         "type": "object",
