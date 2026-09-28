@@ -135,6 +135,25 @@ export class UsersService {
   }
 
   /**
+   * The user-level fraud aggregate (MAX of device risk_score + union of flags).
+   * Both columns are select:false so they never leak on GET /users/me — this
+   * reads them explicitly for the admin detail page only.
+   */
+  async getFraudSummary(
+    cz_user_id: string,
+  ): Promise<{ fraud_score: number; fraud_flags: string[] }> {
+    const row = await this.users
+      .createQueryBuilder('u')
+      .select(['u.fraud_score', 'u.fraud_flags'])
+      .where('u.cz_user_id = :cz_user_id', { cz_user_id })
+      .getOne();
+    return {
+      fraud_score: row?.fraud_score ?? 0,
+      fraud_flags: row?.fraud_flags ?? [],
+    };
+  }
+
+  /**
    * Hard-deletes a user and every row that references them, by email, in one
    * transaction. There are no ON DELETE cascades on the user id, so each child
    * table is cleared explicitly and the users row goes last. Mirrors the
@@ -359,6 +378,9 @@ export class UsersService {
         'u.referral_code',
         'u.created_at',
         'u.last_login_at',
+        // select:false columns — pulled in explicitly for the admin risk badge.
+        'u.fraud_score',
+        'u.fraud_flags',
       ])
       .orderBy('u.created_at', 'DESC')
       .skip(skip)
@@ -423,6 +445,9 @@ export class UsersService {
         gem_balance: wallet?.gem_balance ?? 0,
         /** Rarest medal they hold, for the row's badge. Null when none. */
         medal: medals.get(u.cz_user_id) ?? null,
+        /** User-level fraud aggregate for the row's risk badge. */
+        fraud_score: u.fraud_score ?? 0,
+        fraud_flags: u.fraud_flags ?? [],
       };
     });
 

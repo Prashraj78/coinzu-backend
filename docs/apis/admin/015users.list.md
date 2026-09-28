@@ -59,6 +59,8 @@ None.
 | `data[].joined_at` | string (date-time) | When the account was created. |
 | `data[].coin_balance` | number | Current coin balance. |
 | `data[].gem_balance` | number | Current gem balance. |
+| `data[].fraud_score` | integer | User-level fraud aggregate, 0–100 — the MAX of this user's device `risk_score` values. `0` when no risk signals. |
+| `data[].fraud_flags` | string[] | Union of every device `risk_flags` for this user. See the `Enum values` section. Empty array when none. |
 | `total` | integer | Total user rows matching `search` (or all users, if omitted), all pages. |
 
 ```json
@@ -81,7 +83,9 @@ None.
         "last_login_at": null,
         "joined_at": "2026-08-28T15:27:07.831Z",
         "coin_balance": 0,
-        "gem_balance": 0
+        "gem_balance": 0,
+        "fraud_score": 0,
+        "fraud_flags": []
       }
     ],
     "total": 1
@@ -120,6 +124,7 @@ None.
 | `data[].kyc_status` | `none`, `pending`, `verified`, `rejected`, `manual_review` | `none` is the value on a fresh account. |
 | `data[].role` | `user`, `admin` | Always `user` on this endpoint — see the field description above. |
 | `data[].status` | `active`, `suspended`, `banned`, `deleted` | Account state. |
+| `data[].fraud_flags[]` | `SHARED_HARDWARE_ID`, `EMULATOR`, `ROOTED`, `SIM_IP_COUNTRY_MISMATCH`, `VPN` | See `../../ENUMS.md` for the score weight of each. |
 
 ## Example
 

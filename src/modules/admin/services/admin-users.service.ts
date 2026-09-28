@@ -34,6 +34,7 @@ export class AdminUsersService {
       referral_summary,
       earning_summary,
       devices,
+      fraud,
       recent_wallet_transactions,
       recent_withdrawals,
       recent_redeem_orders,
@@ -45,6 +46,7 @@ export class AdminUsersService {
       this.referralsService.getSummary(cz_user_id),
       this.walletService.getEarningSummary(cz_user_id),
       this.userDevicesService.listForUserAdmin(cz_user_id),
+      this.usersService.getFraudSummary(cz_user_id),
       this.walletService.listTransactions(cz_user_id, 1, RECENT_LIMIT),
       this.withdrawalService.listForUser(cz_user_id, 1, RECENT_LIMIT),
       this.redeemService.listOrders(cz_user_id, 1, RECENT_LIMIT),
@@ -53,7 +55,7 @@ export class AdminUsersService {
     ]);
 
     return {
-      user,
+      user: { ...user, fraud_score: fraud.fraud_score, fraud_flags: fraud.fraud_flags },
       wallet: {
         coin_balance: wallet.coin_balance,
         gem_balance: wallet.gem_balance,

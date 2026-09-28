@@ -61,6 +61,8 @@ None.
 | `user.last_login_at` | string (date-time) \| null | Last sign-in. |
 | `user.created_at` | string (date-time) | When the account was created. |
 | `user.updated_at` | string (date-time) | Last profile update. |
+| `user.fraud_score` | integer | User-level fraud aggregate, 0–100 — the MAX of this user's device `risk_score` values. |
+| `user.fraud_flags` | string[] | Union of every device `risk_flags` for this user. See the `Enum values` section. Empty array when none. |
 | `wallet.coin_balance` | number | Current coin balance. |
 | `wallet.gem_balance` | number | Current gem balance. |
 | `wallet.updated_at` | string (date-time) | When the wallet last moved. |
@@ -94,9 +96,18 @@ None.
 | `devices.data[].asn` | string \| null | Autonomous system number of the IP. |
 | `devices.data[].isp` | string \| null | Network operator behind the IP. |
 | `devices.data[].is_vpn` | boolean | Whether the IP resolved to a VPN or proxy. |
+| `devices.data[].hardware_id` | string \| null | Reinstall-surviving id (SSAID on Android, IDFV on iOS, `null` on web). The same value across accounts means one physical phone. |
+| `devices.data[].sim_country_code` | string \| null | ISO country of the SIM. `null` on wifi-only, eSIM, iOS-restricted or web. |
+| `devices.data[].carrier` | string \| null | Mobile carrier name reported by the SIM. |
+| `devices.data[].mcc_mnc` | string \| null | `<MCC>-<MNC>` — mobile country + network code of the SIM. |
+| `devices.data[].is_emulator` | boolean \| null | `true` on an emulator, `false` on real hardware, `null` when it could not be determined. |
+| `devices.data[].is_rooted` | boolean \| null | `true` if root/jailbreak was detected, `false` if not, `null` when unavailable. |
+| `devices.data[].risk_score` | integer \| null | Per-device risk score, 0–100 (see `../../ENUMS.md`). |
+| `devices.data[].risk_flags` | string[] | Risk signals for this device. See the `Enum values` section. Empty array when none. |
 | `devices.data[].user_agent` | string \| null | Raw user agent last seen. |
 | `devices.data[].push_token` | string \| null | Push notification token, when registered. |
-| `devices.data[].device_info` | object | Free-form, app-supplied: `app_version`, `os_version`, `model`, `brand`, `locale`, `timezone` and similar. Keys are not guaranteed. |
+| `devices.data[].device_info` | object | Free-form, app-supplied: `app_version`, `os_version`, `model`, `brand`, `total_memory`, `screen`, `locale`, `timezone` and similar. Keys are not guaranteed. |
+| `devices.data[].first_seen_at` | string (date-time) \| null | When this device was first seen — an account-age signal. `null` for devices seen before this field existed. |
 | `devices.data[].last_seen_at` | string (date-time) | Last sign-in from this install. |
 | `devices.data[].created_at` | string (date-time) | When the install was first registered. |
 | `devices.total` | integer | How many installs this user has signed in from. Not paginated — every device is returned. |
@@ -140,7 +151,9 @@ None.
       "phone_verified_at": null,
       "last_login_at": null,
       "created_at": "2026-08-28T15:27:07.831Z",
-      "updated_at": "2026-08-28T15:33:19.102Z"
+      "updated_at": "2026-08-28T15:33:19.102Z",
+      "fraud_score": 0,
+      "fraud_flags": []
     },
     "wallet": {
       "coin_balance": 0,
@@ -181,6 +194,14 @@ None.
           "asn": "AS55836",
           "isp": "Reliance Jio Infocomm",
           "is_vpn": false,
+          "hardware_id": "b3a1f0c95d2e4a78",
+          "sim_country_code": "IN",
+          "carrier": "Jio",
+          "mcc_mnc": "405-857",
+          "is_emulator": false,
+          "is_rooted": false,
+          "risk_score": 0,
+          "risk_flags": [],
           "user_agent": "Coinzu/1.4.2 (Android 14; Pixel 7)",
           "push_token": null,
           "device_info": {
@@ -188,9 +209,12 @@ None.
             "os_version": "14",
             "model": "Pixel 7",
             "brand": "Google",
+            "total_memory": 8589934592,
+            "screen": { "width": 412, "height": 915, "scale": 2.625 },
             "locale": "en-IN",
             "timezone": "Asia/Kolkata"
           },
+          "first_seen_at": "2026-08-28T15:27:07.831Z",
           "last_seen_at": "2026-08-28T15:33:19.102Z",
           "created_at": "2026-08-28T15:27:07.831Z",
           "updated_at": "2026-08-28T15:33:19.102Z"
@@ -246,6 +270,7 @@ None.
 | `recent_withdrawals.data[].status` | `pending`, `approved`, `rejected`, `paid` | |
 | `recent_redeem_orders.data[].status` | `pending`, `fulfilled`, `failed` | |
 | `devices.data[].platform_type` | `ios`, `android`, `web` | |
+| `devices.data[].risk_flags[]` / `user.fraud_flags[]` | `SHARED_HARDWARE_ID`, `EMULATOR`, `ROOTED`, `SIM_IP_COUNTRY_MISMATCH`, `VPN` | See `../../ENUMS.md` for the score weight of each. |
 | `earning_summary.by_source[].source_type` | `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment`, `offerwall` | Only sources that actually credited this user appear. |
 
 ## Example
