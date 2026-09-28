@@ -84,5 +84,5 @@ curl -X POST "$BASE/admin/rewards/draws/run" -H 'Authorization: Bearer $ADMIN_TO
 - **It is safe to run when nothing is due.** `settled: 0, opened: 0` means everything is already in order. It is also safe to run twice — a pass never overlaps itself, and a settled draw is never settled again.
 - **Both cadences are handled in one pass**, so a weekly draw closing on the same midnight as a daily one is never missed.
 - **The next period starts where the last one ended**, not at the current wall clock. Settling ahead of midnight rolls the new draw forward to the next free period rather than reopening the one just closed.
-- **Use it when `summary.draws_missing` is above 0** on the [games list](076rewards.games.md) — a live draw game with no open instance cannot be entered by anybody.
+- **Use it when `summary.draws_missing` is above 0** on the [games list](077rewards.games.md) — a live draw game with no open instance cannot be entered by anybody.
 - The same runner is registered as the `reward_draw_settle` cron job, schedulable from Configuration Settings → Scheduled Jobs.

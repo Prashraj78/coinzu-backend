@@ -114,7 +114,7 @@ curl "$BASE/admin/daily/spin-wheel" \
 ## Notes
 
 - **Weights are relative.** A segment's real chance is its weight over the sum of active weights, which is what `chance_pct` reports — seeding them to add to 100 is a convenience, not a requirement.
-- **A wheel segment always pays an exact amount.** The wedge shows the user what it is worth before they spin, so a band would be a lie — payout bands belong to the [scratch pool](068daily.scratch.md), where the prize is hidden until it is scratched.
+- **A wheel segment always pays an exact amount.** The wedge shows the user what it is worth before they spin, so a band would be a lie — payout bands belong to the [scratch pool](069daily.scratch.md), where the prize is hidden until it is scratched.
 - **The user-facing wheel sends `reward_coins` and `reward_gems`, but never the weights.** The payout is printed on the wedge; the odds stay here.
 - **`expected_coins` is the cost of a spin to the business.** With a 1,000,000-coin segment at 0.1%, the average is dominated by the jackpot even though almost nobody wins it — watch this number when adding a big prize.
 - A segment paying nothing is normal: give it `reward_coins: 0` and `reward_gems: 0` and a label like "Better luck".

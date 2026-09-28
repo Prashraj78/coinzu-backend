@@ -556,7 +556,7 @@ A key outside this list is rejected by `PATCH /api/admin/settings` with `CZDADM0
 
 `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`
 
-Configured in the admin Referral Rewards tab. Six are single events holding one step each (`signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`); the other six are repeatable and hold one step per `threshold` (`offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`). Every step pays at most once per invited friend, and payouts are clamped by the `referral_max_*_per_friend` caps. The full firing conditions are in `docs/apis/admin/024referral-rules.list.md`.
+Configured in the admin Referral Rewards tab. Six are single events holding one step each (`signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`); the other six are repeatable and hold one step per `threshold` (`offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`). Every step pays at most once per invited friend, and payouts are clamped by the `referral_max_*_per_friend` caps. The full firing conditions are in `docs/apis/admin/025referral-rules.list.md`.
 
 ## FAQs
 

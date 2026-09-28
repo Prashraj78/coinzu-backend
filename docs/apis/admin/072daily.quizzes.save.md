@@ -92,7 +92,7 @@ curl -X POST "$BASE/admin/daily/quizzes" \
 ## Notes
 
 - **Upsert by date.** There is no separate update route: post the same date again with new content and it replaces what was there. That also makes the editor and the scheduler the same call.
-- **The prize is fixed and is not yours to set.** A right answer wins exactly one scratch card and pays no coins and no gems; what the card turns out to be worth is configured in the [scratch pool](069daily.scratch.save.md). Sending `reward_coins`, `reward_gems` or `grants_scratch_card` is a 400.
+- **The prize is fixed and is not yours to set.** A right answer wins exactly one scratch card and pays no coins and no gems; what the card turns out to be worth is configured in the [scratch pool](070daily.scratch.save.md). Sending `reward_coins`, `reward_gems` or `grants_scratch_card` is a 400.
 - **Scheduling a quiz is what switches Scratch & Win on for that day.** No quiz means no cards, for anybody.
 - **Exactly three options**, matching the app's layout. `correct_option` must be one of them — checked server-side, so a typo cannot ship an unanswerable quiz.
 - **Editing a past quiz does not rewrite attempts.** Users keep what they were paid; `accuracy_pct` for that day will then describe a question nobody actually saw, so prefer scheduling ahead.

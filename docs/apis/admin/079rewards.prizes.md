@@ -113,7 +113,7 @@ curl "$BASE/admin/rewards/games/$GAME_ID/prizes" -H 'Authorization: Bearer $ADMI
 
 ## Notes
 
-- **The two kinds use the same table for different jobs.** On an **instant** game these rows are the wheel: each carries a `probability_weight` and one is drawn per play. On a **draw** they are a display ladder — a ranked list the app shows as "what you could win" — and the money actually paid comes from the [payout rules](080rewards.rules.md) instead.
+- **The two kinds use the same table for different jobs.** On an **instant** game these rows are the wheel: each carries a `probability_weight` and one is drawn per play. On a **draw** they are a display ladder — a ranked list the app shows as "what you could win" — and the money actually paid comes from the [payout rules](081rewards.rules.md) instead.
 - **`expected_coins` is the cost of one spin to the business.** Compare it against the game's `entry_cost_gems` (converted at the configured rate) to see whether the wheel makes or loses money.
 - **`chance_pct` is derived, never stored.** Weights are relative and need not add to 100.
 - **The user-facing detail response sends the labels and amounts but never the weights**, so the odds stay here.

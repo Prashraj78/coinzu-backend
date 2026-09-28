@@ -224,6 +224,14 @@ export class UsersService {
     return { cz_user_id: userId, email: found.email };
   }
 
+  /** The in-app "Delete account" action: the same irreversible wipe the admin delete runs. */
+  async deleteSelf(
+    cz_user_id: string,
+  ): Promise<{ cz_user_id: string; email: string }> {
+    const user = await this.getOrFail(cz_user_id);
+    return this.hardDeleteByEmail(user.email);
+  }
+
   async updateProfile(
     cz_user_id: string,
     dto: UpdateProfileDto,

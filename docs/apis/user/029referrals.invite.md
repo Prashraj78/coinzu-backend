@@ -155,7 +155,7 @@ None.
 | Field | Allowed values | Notes |
 |---|---|---|
 | `friends[].status` | `pending`, `qualified` | |
-| `reward_steps[].trigger` | `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` | The six repeatable ones — `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` — carry a `threshold` and can appear several times, once per milestone. See `../admin/024referral-rules.list.md` for what each fires on. |
+| `reward_steps[].trigger` | `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` | The six repeatable ones — `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` — carry a `threshold` and can appear several times, once per milestone. See `../admin/025referral-rules.list.md` for what each fires on. |
 
 ## Example
 

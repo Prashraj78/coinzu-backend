@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { Request } from 'express';
+import { ApiData } from '../../common/decorators/api-envelope.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { OnboardingGoalDto } from './dto/onboarding-goal.dto';
@@ -10,6 +21,7 @@ import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
 import { UpdateNotificationPreferencesDto } from './dto/notification-preferences.dto';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { DeletedAccountDto, UserDto } from './dto/users.response';
 import { UserDevicesService } from './user-devices.service';
 import { UsersService } from './users.service';
 
@@ -24,14 +36,24 @@ export class UsersController {
 
   @Get('me')
   @ApiOperation({ summary: 'Get the signed-in user profile' })
+  @ApiData(UserDto)
   me(@CurrentUser() user: RequestUser) {
     return this.usersService.getOrFail(user.cz_user_id);
   }
 
   @Patch('me')
   @ApiOperation({ summary: 'Update the signed-in user profile' })
+  @ApiData(UserDto)
   updateMe(@CurrentUser() user: RequestUser, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(user.cz_user_id, dto);
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Permanently delete my account and all of its data' })
+  @ApiData(DeletedAccountDto)
+  deleteMe(@CurrentUser() user: RequestUser) {
+    return this.usersService.deleteSelf(user.cz_user_id);
   }
 
   @Post('me/onboarding/info')

@@ -142,8 +142,8 @@ curl "$BASE/admin/rewards/games" -H 'Authorization: Bearer $ADMIN_TOKEN'
 
 ## Notes
 
-- **`summary.draws_missing` is the one to watch.** A live draw game with no open instance cannot be entered by anybody — the card is visible but dead. Run [`POST /api/admin/rewards/draws/run`](083rewards.draws.run.md) to open one.
+- **`summary.draws_missing` is the one to watch.** A live draw game with no open instance cannot be entered by anybody — the card is visible but dead. Run [`POST /api/admin/rewards/draws/run`](084rewards.draws.run.md) to open one.
 - **`kind` and `slug` are not editable.** The slug is the app's address for the card, and the kind decides whether it is played or entered. Changing either would break a shipped client.
-- **`headline_prize_coins` is marketing copy, not a payout.** What a draw actually pays comes from the [payout rules](080rewards.rules.md); what a wheel pays comes from the [prizes](078rewards.prizes.md).
+- **`headline_prize_coins` is marketing copy, not a payout.** What a draw actually pays comes from the [payout rules](081rewards.rules.md); what a wheel pays comes from the [prizes](079rewards.prizes.md).
 - **Setting a game to `paused` hides it from the app entirely** — it is filtered out of the user's list rather than shown greyed. Use `coming_soon` for a card you want visible but unplayable.
-- `gems_collected` and `coins_paid` are lifetime figures, so a paused game still shows what it did. Use the [dashboard](075rewards.dashboard.md) for a date range.
+- `gems_collected` and `coins_paid` are lifetime figures, so a paused game still shows what it did. Use the [dashboard](076rewards.dashboard.md) for a date range.
