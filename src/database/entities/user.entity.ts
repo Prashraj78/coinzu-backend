@@ -67,6 +67,14 @@ export class User {
   @Column({ type: 'varchar', length: 500, nullable: true })
   avatar_url: string | null;
 
+  /** Set when the picture is one from the avatar library; null for an uploaded or Google photo. */
+  @Column({ type: 'uuid', nullable: true })
+  avatar_id: string | null;
+
+  /** The latest Google profile photo, kept so the user can switch back to it after picking an avatar. */
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  google_avatar_url: string | null;
+
   @Column({ type: 'jsonb', default: () => "'[]'::jsonb" })
   interests: string[];
 

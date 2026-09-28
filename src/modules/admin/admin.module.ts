@@ -30,6 +30,7 @@ import { User } from '../../database/entities/user.entity';
 import { OfferCompletion } from '../../database/entities/offer-completion.entity';
 import { OfferClick } from '../../database/entities/offer-click.entity';
 import { DropdownModule } from '../dropdown/dropdown.module';
+import { AvatarsModule } from '../avatars/avatars.module';
 import { OfferwallModule } from '../offerwall/offerwall.module';
 import { ReferralsModule } from '../referrals/referrals.module';
 import { UsersModule } from '../users/users.module';
@@ -39,6 +40,7 @@ import { RedeemModule } from '../redeem/redeem.module';
 import { SupportModule } from '../support/support.module';
 import { AchievementsModule } from '../achievements/achievements.module';
 import { AdminDropdownController } from './controllers/admin-dropdown.controller';
+import { AdminAvatarsController } from './controllers/admin-avatars.controller';
 import { AdminFaqsController } from './controllers/admin-faqs.controller';
 import { AdminKycController } from './controllers/admin-kyc.controller';
 import { AdminPushController } from './controllers/admin-push.controller';
@@ -127,6 +129,7 @@ import { AdminUsersService } from './services/admin-users.service';
       Notification,
     ]),
     DropdownModule,
+    AvatarsModule,
     OfferwallModule,
     ReferralsModule,
     UsersModule,
@@ -138,6 +141,7 @@ import { AdminUsersService } from './services/admin-users.service';
   ],
   controllers: [
     AdminDropdownController,
+    AdminAvatarsController,
     AdminFaqsController,
     AdminKycController,
     AdminPushController,

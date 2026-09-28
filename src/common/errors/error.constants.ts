@@ -36,6 +36,9 @@ export const CzUserErrorCodes = {
   PHONE_NOT_VERIFIED: 'CZDUSER005',
   ONBOARDING_ALREADY_DONE: 'CZDUSER006',
   PHONE_ALREADY_LINKED: 'CZDUSER007',
+  AVATAR_NOT_FOUND: 'CZDUSER008',
+  GOOGLE_PHOTO_UNAVAILABLE: 'CZDUSER009',
+  AVATAR_CHOICE_REQUIRED: 'CZDUSER010',
 } as const;
 
 /** Wallet module error codes */
@@ -413,6 +416,21 @@ export const CzErrorMap: Record<
     message: 'This phone number is already linked to another account.',
     description: 'PATCH /api/users/me phone conflicts with a different user.',
     icon: CzErrorIcon.PHONE_ALREADY_LINKED,
+  },
+  [CzUserErrorCodes.AVATAR_NOT_FOUND]: {
+    message: 'That avatar isn’t available any more. Please pick another one.',
+    description: 'cz_avatar_id does not exist or the avatar is inactive.',
+    icon: CzErrorIcon.NOT_FOUND,
+  },
+  [CzUserErrorCodes.GOOGLE_PHOTO_UNAVAILABLE]: {
+    message: 'We couldn’t find a Google photo on your account. Pick an avatar instead.',
+    description: 'use_google was sent but the user has no google_avatar_url (not a Google account, or Google returned no picture).',
+    icon: CzErrorIcon.NOT_FOUND,
+  },
+  [CzUserErrorCodes.AVATAR_CHOICE_REQUIRED]: {
+    message: 'Please choose an avatar or your Google photo.',
+    description: 'PATCH /api/users/me/avatar needs exactly one of cz_avatar_id or use_google: true.',
+    icon: CzErrorIcon.VALIDATION_FAILED,
   },
   [CzWalletErrorCodes.WALLET_NOT_FOUND]: {
     message: 'We could not load your wallet. Please try again.',

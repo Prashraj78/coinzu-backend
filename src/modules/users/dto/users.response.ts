@@ -25,8 +25,14 @@ export class UserDto {
   @ApiProperty({ type: String, nullable: true, example: 'GB' })
   country: string | null;
 
-  @ApiProperty({ type: String, nullable: true })
+  @ApiProperty({ type: String, nullable: true, description: 'The picture to show: a library avatar, the Google photo or an upload.' })
   avatar_url: string | null;
+
+  @ApiProperty({ type: String, format: 'uuid', nullable: true, description: 'Set when avatar_url is a library avatar.' })
+  avatar_id: string | null;
+
+  @ApiProperty({ type: String, nullable: true, description: 'Google profile photo, when the account signs in with Google.' })
+  google_avatar_url: string | null;
 
   @ApiProperty({ type: [String], example: ['action', 'puzzle'] })
   interests: string[];

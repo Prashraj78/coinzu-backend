@@ -60,6 +60,9 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDUSER005` | 403 | Please verify your phone number to continue. | *Retired.* Phone verification was removed with SMS. The number stays reserved and is never returned. | `PhoneUnverifiedIcon` |
 | `CZDUSER006` | 400 | Your account setup is already complete. | *Reserved.* onboarding_completed is already true for this user. | `OnboardingCompleteIcon` |
 | `CZDUSER007` | 409 | This phone number is already linked to another account. | `PATCH /api/users/me` `phone` conflicts with a different user's. | `PhoneAlreadyLinkedIcon` |
+| `CZDUSER008` | 404 | That avatar isn’t available any more. Please pick another one. | `cz_avatar_id` is unknown or the avatar is hidden. | `NotFoundIcon` |
+| `CZDUSER009` | 404 | We couldn’t find a Google photo on your account. Pick an avatar instead. | `use_google` on an account with no `google_avatar_url`. | `NotFoundIcon` |
+| `CZDUSER010` | 400 | Please choose an avatar or your Google photo. | `PATCH /api/users/me/avatar` got both fields or neither. | `ValidationFailedIcon` |
 
 ## Wallet — `CZDWLT`
 

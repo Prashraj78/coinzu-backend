@@ -17,7 +17,7 @@ export ADMIN_TOKEN=<rewardtym_admin_access_token>
 - List endpoints take `page` (1-based, default `1`) and `limit` (default `20`, capped at `100`) and return `{ data, total }`.
 - Unknown body fields are rejected, so send exactly the documented fields.
 
-# Part 1 — App API (70 endpoints)
+# Part 1 — App API (72 endpoints)
 
 What the mobile app and website call. No admin token reaches these.
 
@@ -149,6 +149,23 @@ curl -X PATCH $BASE/users/me \
   -d '{ "name": "Ada Lovelace", "country": "GB", "phone": "+919875643266" }'
 ```
 
+### PATCH /api/users/me/avatar
+
+Sets the profile picture to a library avatar, or back to the Google photo. Send exactly one field. — [`apis/user/052users.set-avatar.md`](apis/user/052users.set-avatar.md)
+
+```bash
+curl -X PATCH $BASE/users/me/avatar \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"cz_avatar_id": "e658401f-6bac-46e1-9897-22b312ad35f5"}'
+
+# Back to the Google photo
+curl -X PATCH $BASE/users/me/avatar \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"use_google": true}'
+```
+
 ### DELETE /api/users/me
 
 Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. — [`apis/inprogress/023users.delete-me.md`](apis/inprogress/023users.delete-me.md)
@@ -245,6 +262,16 @@ curl -X PATCH $BASE/users/me/notification-preferences \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer $TOKEN' \
   -d '{ "quiet_hours": false }'
+```
+
+## Avatars
+
+### GET /api/avatars
+
+The avatars a user can pick as their profile picture. — [`apis/user/051avatars.list.md`](apis/user/051avatars.list.md)
+
+```bash
+curl $BASE/avatars -H "Authorization: Bearer $TOKEN"
 ```
 
 ## Wallet
@@ -1799,3 +1826,50 @@ Settles what is due and opens what is missing. Pays real money. — [`083rewards
 curl -X POST "$BASE/admin/rewards/draws/run" -H 'Authorization: Bearer $ADMIN_TOKEN'
 ```
 
+## Avatars
+
+### GET /api/admin/avatars
+
+The avatar library, hidden avatars included. — [`apis/admin/085avatars.list.md`](apis/admin/085avatars.list.md)
+
+```bash
+curl "$BASE/admin/avatars?is_active=true&limit=50" -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+### POST /api/admin/avatars
+
+Adds an avatar to the library. — [`apis/admin/086avatars.create.md`](apis/admin/086avatars.create.md)
+
+```bash
+curl -X POST $BASE/admin/avatars \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{"label": "Aria", "image_url": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/5f1c.png"}'
+```
+
+### PATCH /api/admin/avatars/:id
+
+Renames, reorders, replaces or hides one avatar. — [`apis/admin/087avatars.update.md`](apis/admin/087avatars.update.md)
+
+```bash
+curl -X PATCH $BASE/admin/avatars/17fd2983-d166-40f1-a10b-6f1544d04613 \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{"is_active": false}'
+```
+
+### DELETE /api/admin/avatars/:id
+
+Removes an avatar; wearers keep their picture. — [`apis/admin/088avatars.delete.md`](apis/admin/088avatars.delete.md)
+
+```bash
+curl -X DELETE $BASE/admin/avatars/17fd2983-d166-40f1-a10b-6f1544d04613 -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+### POST /api/admin/avatars/image
+
+Uploads an avatar image to R2 and returns its URL. — [`apis/admin/089avatars.upload-image.md`](apis/admin/089avatars.upload-image.md)
+
+```bash
+curl -X POST $BASE/admin/avatars/image -H 'Authorization: Bearer $ADMIN_TOKEN' -F 'file=@aria.png'
+```

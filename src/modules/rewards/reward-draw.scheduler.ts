@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { RewardGame } from '../../database/entities/reward-game.entity';
@@ -17,7 +17,7 @@ import { currentPeriodKey, periodEnd, periodStart } from './reward-period.util';
  * closing on the same midnight as a daily one is never missed.
  */
 @Injectable()
-export class RewardDrawScheduler implements OnModuleInit {
+export class RewardDrawScheduler implements OnModuleInit, OnApplicationBootstrap {
   private readonly logger = new Logger(RewardDrawScheduler.name);
   private running = false;
 
@@ -38,6 +38,11 @@ export class RewardDrawScheduler implements OnModuleInit {
 
   onModuleInit(): void {
     this.registry.register('reward_draw_settle', () => this.run());
+  }
+
+  /** A deploy between midnights would otherwise leave draw cards without a draw (or a timer) until 00:00 UTC. */
+  onApplicationBootstrap(): void {
+    void this.run().catch((error) => this.logger.error(`Boot draw pass failed: ${String(error)}`));
   }
 
   /** Settle what has ended, then make sure every live game has an open draw. */

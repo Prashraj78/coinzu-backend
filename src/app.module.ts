@@ -30,6 +30,7 @@ import { SupportModule } from './modules/support/support.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { CronModule } from './modules/cron/cron.module';
 import { DropdownModule } from './modules/dropdown/dropdown.module';
+import { AvatarsModule } from './modules/avatars/avatars.module';
 import { OfferwallModule } from './modules/offerwall/offerwall.module';
 
 @Module({
@@ -62,6 +63,7 @@ import { OfferwallModule } from './modules/offerwall/offerwall.module';
     AdminModule,
     CronModule,
     DropdownModule,
+    AvatarsModule,
     OfferwallModule,
   ],
   providers: [

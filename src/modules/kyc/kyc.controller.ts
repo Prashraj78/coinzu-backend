@@ -15,6 +15,8 @@ import {
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import type { UploadedFile as StoredFile } from '../../external/r2-storage.external';
+import { ApiData } from '../../common/decorators/api-envelope.decorator';
+import { KycResultDto } from './dto/kyc.response';
 import { KycService } from './kyc.service';
 
 @ApiTags('kyc')
@@ -34,6 +36,7 @@ export class KycController {
   })
   @ApiOperation({ summary:
       'Submit a selfie and get the whole decision back. The only KYC call the app makes.' })
+  @ApiData(KycResultDto, 201)
   submitSelfie(
     @CurrentUser() user: RequestUser,
     @UploadedFile() file: StoredFile,

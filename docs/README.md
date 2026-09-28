@@ -52,12 +52,13 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/auth/password/reset` | public | Consumes a password-reset link token and sets the new password. | [026](apis/user/026auth.password-reset.md) |
 | `GET /api/auth/password/reset` | public | Branded HTML page opened from the reset-password link, with the new-password form. | [027](apis/user/027auth.password-reset-page.md) |
 
-## Users & onboarding — 8 endpoints
+## Users & onboarding — 9 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
 | `GET /api/users/me` | user token | Returns the full profile of the signed-in user. | [005](apis/user/005users.me.md) |
 | `PATCH /api/users/me` | user token | Updates the profile of the signed-in user. Only the fields you send are changed. | [006](apis/user/006users.update-me.md) |
+| `PATCH /api/users/me/avatar` | user token | Sets the profile picture to a library avatar, or back to the Google photo. | [052](apis/user/052users.set-avatar.md) |
 | `DELETE /api/users/me` | user token | Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. | [023](apis/inprogress/023users.delete-me.md) |
 | `POST /api/users/me/onboarding/info` | user token | Account setup step 1 — saves name, gender, age range (country is server-derived). | [007](apis/user/007users.onboarding-info.md) |
 | `POST /api/users/me/onboarding/permissions` | user token | Account setup step 2 — records whether the user allowed push notifications. | [008](apis/user/008users.onboarding-permissions.md) |
@@ -188,6 +189,12 @@ FAQs, plus the one endpoint behind **Report a Problem, Feedback and Email Suppor
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
 | `POST /api/storage/avatar` | user token | Uploads an avatar image and returns its public URL. | [020](apis/user/020storage.avatar.md) |
+
+## Avatars — 1 endpoint
+
+| Endpoint | Access | What it does | Doc |
+|---|---|---|---|
+| `GET /api/avatars` | user token | The avatars a user can pick as their profile picture. | [051](apis/user/051avatars.list.md) |
 
 ## Health — 2 endpoints
 
@@ -404,3 +411,13 @@ renumbers the folder, so identify an endpoint by its method and path.
 | `PUT /api/admin/rewards/games/:id/payout-rules` | admin token | Replaces the turnout-to-pot ladder. | [082](apis/admin/082rewards.rules.save.md) |
 | `GET /api/admin/rewards/draws` | admin token | Every draw instance with its turnout, pot and winners. | [083](apis/admin/083rewards.draws.md) |
 | `POST /api/admin/rewards/draws/run` | admin token | Settles what is due and opens what is missing. **Pays real money.** | [084](apis/admin/084rewards.draws.run.md) |
+
+## Avatars — 5 endpoints
+
+| Endpoint | Access | What it does | Doc |
+|---|---|---|---|
+| `GET /api/admin/avatars` | admin token | The avatar library, hidden avatars included. | [085](apis/admin/085avatars.list.md) |
+| `POST /api/admin/avatars` | admin token | Adds an avatar to the library. | [086](apis/admin/086avatars.create.md) |
+| `PATCH /api/admin/avatars/:id` | admin token | Renames, reorders, replaces or hides one avatar. | [087](apis/admin/087avatars.update.md) |
+| `DELETE /api/admin/avatars/:id` | admin token | Removes an avatar; wearers keep their picture. | [088](apis/admin/088avatars.delete.md) |
+| `POST /api/admin/avatars/image` | admin token | Uploads an avatar image to R2 and returns its URL. | [089](apis/admin/089avatars.upload-image.md) |
