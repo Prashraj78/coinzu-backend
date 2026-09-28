@@ -1229,8 +1229,9 @@
         "parameters": [
           {
             "name": "date",
-            "required": true,
+            "required": false,
             "in": "query",
+            "description": "A past UTC day, yyyy-MM-dd. Defaults to today.",
             "schema": {
               "type": "string"
             }
@@ -1238,7 +1239,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ChallengeBoardDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1258,7 +1279,27 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ChestClaimDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1307,7 +1348,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/StreakBoardDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1327,7 +1388,27 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/StreakClaimDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1347,7 +1428,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WheelDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1365,7 +1466,27 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SpinResultDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1426,7 +1547,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/QuizDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1465,7 +1606,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/QuizAnswerResultDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1526,7 +1687,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ScratchStatusDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1544,7 +1725,27 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ScratchResultDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -6693,6 +6894,717 @@
           "tracking_url"
         ]
       },
+      "MasterChestDto": {
+        "type": "object",
+        "properties": {
+          "reward_coins": {
+            "type": "number",
+            "example": 1000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 1000
+          },
+          "completed": {
+            "type": "number",
+            "example": 3
+          },
+          "total": {
+            "type": "number",
+            "example": 5
+          },
+          "progress_label": {
+            "type": "string",
+            "example": "3/5"
+          },
+          "percent": {
+            "type": "number",
+            "example": 60
+          },
+          "is_unlocked": {
+            "type": "boolean"
+          },
+          "is_claimed": {
+            "type": "boolean"
+          },
+          "can_claim": {
+            "type": "boolean"
+          },
+          "claimed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "reward_coins",
+          "reward_gems",
+          "completed",
+          "total",
+          "progress_label",
+          "percent",
+          "is_unlocked",
+          "is_claimed",
+          "can_claim",
+          "claimed_at"
+        ]
+      },
+      "MaxEarningDto": {
+        "type": "object",
+        "properties": {
+          "coins": {
+            "type": "number",
+            "example": 3500
+          },
+          "gems": {
+            "type": "number",
+            "example": 1500
+          }
+        },
+        "required": [
+          "coins",
+          "gems"
+        ]
+      },
+      "ChallengeAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "spin_available": {
+            "type": "boolean"
+          },
+          "spins_left": {
+            "type": "number",
+            "example": 1
+          },
+          "quiz_available": {
+            "type": "boolean"
+          },
+          "quiz_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "scratch_cards_left": {
+            "type": "number",
+            "example": 0
+          },
+          "scratch_cards_pending": {
+            "type": "number",
+            "example": 0
+          },
+          "scratch_available": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "spin_available",
+          "spins_left",
+          "quiz_available",
+          "quiz_id",
+          "scratch_cards_left",
+          "scratch_cards_pending",
+          "scratch_available"
+        ]
+      },
+      "ChallengeDayDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "label": {
+            "type": "string",
+            "example": "28"
+          },
+          "completed": {
+            "type": "number",
+            "example": 3
+          },
+          "total": {
+            "type": "number",
+            "example": 5
+          },
+          "is_today": {
+            "type": "boolean"
+          },
+          "is_locked": {
+            "type": "boolean"
+          },
+          "is_viewable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "date",
+          "label",
+          "completed",
+          "total",
+          "is_today",
+          "is_locked",
+          "is_viewable"
+        ]
+      },
+      "ChallengeTileDto": {
+        "type": "object",
+        "properties": {
+          "cz_daily_challenge_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "spin",
+              "quiz",
+              "game_install",
+              "invite",
+              "offer"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "example": "Spin the Lucky Wheel"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "spin",
+              "quiz",
+              "scratch",
+              "offers",
+              "referrals",
+              "games"
+            ]
+          },
+          "is_highlighted": {
+            "type": "boolean"
+          },
+          "highlight_reason": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "scratch_card_ready"
+            ]
+          },
+          "pending_scratch_cards": {
+            "type": "number",
+            "example": 0
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 500
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "target": {
+            "type": "number",
+            "example": 2
+          },
+          "progress": {
+            "type": "number",
+            "example": 1
+          },
+          "progress_label": {
+            "type": "string",
+            "example": "1/2"
+          },
+          "is_completed": {
+            "type": "boolean"
+          },
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "is_playable": {
+            "type": "boolean"
+          },
+          "has_pending_action": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cz_daily_challenge_id",
+          "type",
+          "title",
+          "description",
+          "icon_url",
+          "action",
+          "is_highlighted",
+          "highlight_reason",
+          "pending_scratch_cards",
+          "reward_coins",
+          "reward_gems",
+          "target",
+          "progress",
+          "progress_label",
+          "is_completed",
+          "completed_at",
+          "is_playable",
+          "has_pending_action"
+        ]
+      },
+      "ChallengeBoardDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "is_today": {
+            "type": "boolean"
+          },
+          "is_read_only": {
+            "type": "boolean"
+          },
+          "streak_days": {
+            "type": "number",
+            "example": 11
+          },
+          "master_chest": {
+            "$ref": "#/components/schemas/MasterChestDto"
+          },
+          "max_earning": {
+            "$ref": "#/components/schemas/MaxEarningDto"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/ChallengeAvailabilityDto"
+          },
+          "calendar": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChallengeDayDto"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChallengeTileDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": [
+          "date",
+          "is_today",
+          "is_read_only",
+          "streak_days",
+          "master_chest",
+          "max_earning",
+          "availability",
+          "calendar",
+          "data",
+          "total"
+        ]
+      },
+      "ChestClaimDto": {
+        "type": "object",
+        "properties": {
+          "claimed": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 1000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 1000
+          },
+          "claimed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "claimed",
+          "date",
+          "reward_coins",
+          "reward_gems",
+          "claimed_at"
+        ]
+      },
+      "StreakDayDto": {
+        "type": "object",
+        "properties": {
+          "day_number": {
+            "type": "number",
+            "example": 1
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 100
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "example": "Week 1 bonus"
+          },
+          "is_milestone": {
+            "type": "boolean"
+          },
+          "is_claimed": {
+            "type": "boolean"
+          },
+          "is_today": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "day_number",
+          "reward_coins",
+          "reward_gems",
+          "label",
+          "is_milestone",
+          "is_claimed",
+          "is_today"
+        ]
+      },
+      "StreakBoardDto": {
+        "type": "object",
+        "properties": {
+          "current_day": {
+            "type": "number",
+            "example": 11
+          },
+          "longest_day": {
+            "type": "number",
+            "example": 14
+          },
+          "last_claimed_date": {
+            "type": "string",
+            "nullable": true,
+            "example": "2026-09-27"
+          },
+          "can_claim_today": {
+            "type": "boolean"
+          },
+          "claimable_day": {
+            "type": "number",
+            "nullable": true,
+            "example": 12
+          },
+          "cycle_days": {
+            "type": "number",
+            "example": 30
+          },
+          "total_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "total_gems": {
+            "type": "number",
+            "example": 2000
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StreakDayDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 30
+          }
+        },
+        "required": [
+          "current_day",
+          "longest_day",
+          "last_claimed_date",
+          "can_claim_today",
+          "claimable_day",
+          "cycle_days",
+          "total_coins",
+          "total_gems",
+          "data",
+          "total"
+        ]
+      },
+      "StreakClaimDto": {
+        "type": "object",
+        "properties": {
+          "day_number": {
+            "type": "number",
+            "example": 12
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 100
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_milestone": {
+            "type": "boolean"
+          },
+          "current_day": {
+            "type": "number",
+            "example": 12
+          },
+          "longest_day": {
+            "type": "number",
+            "example": 14
+          },
+          "cycle_days": {
+            "type": "number",
+            "example": 30
+          },
+          "cycle_completed": {
+            "type": "boolean"
+          },
+          "claimed_date": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "total_checkins": {
+            "type": "number",
+            "example": 42
+          }
+        },
+        "required": [
+          "day_number",
+          "reward_coins",
+          "reward_gems",
+          "label",
+          "is_milestone",
+          "current_day",
+          "longest_day",
+          "cycle_days",
+          "cycle_completed",
+          "claimed_date",
+          "total_checkins"
+        ]
+      },
+      "WheelSegmentDto": {
+        "type": "object",
+        "properties": {
+          "cz_spin_wheel_config_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "example": "1000"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 1000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "cz_spin_wheel_config_id",
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "display_order"
+        ]
+      },
+      "WheelDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WheelSegmentDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 8
+          },
+          "spins_used": {
+            "type": "number",
+            "example": 0
+          },
+          "spins_left": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "spins_used",
+          "spins_left"
+        ]
+      },
+      "SpinResultDto": {
+        "type": "object",
+        "properties": {
+          "cz_spin_history_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cz_spin_wheel_config_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "example": "1000"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 1000
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "spins_left": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "cz_spin_history_id",
+          "cz_spin_wheel_config_id",
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "spins_left"
+        ]
+      },
+      "QuizAttemptDto": {
+        "type": "object",
+        "properties": {
+          "cz_quiz_attempt_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "selected_option": {
+            "type": "string",
+            "example": "Paris"
+          },
+          "is_correct": {
+            "type": "boolean"
+          },
+          "attempted_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_quiz_attempt_id",
+          "selected_option",
+          "is_correct",
+          "attempted_at"
+        ]
+      },
+      "QuizDto": {
+        "type": "object",
+        "properties": {
+          "cz_quiz_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-09-28"
+          },
+          "question": {
+            "type": "string",
+            "example": "What is the capital of France?"
+          },
+          "options": {
+            "example": [
+              "Paris",
+              "Rome",
+              "Madrid"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "already_attempted": {
+            "type": "boolean"
+          },
+          "my_attempt": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/QuizAttemptDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "cz_quiz_id",
+          "date",
+          "question",
+          "options",
+          "image_url",
+          "already_attempted",
+          "my_attempt"
+        ]
+      },
+      "QuizAnswerResultDto": {
+        "type": "object",
+        "properties": {
+          "cz_quiz_attempt_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "is_correct": {
+            "type": "boolean"
+          },
+          "correct_option": {
+            "type": "string",
+            "example": "Paris"
+          },
+          "scratch_card_granted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "cz_quiz_attempt_id",
+          "is_correct",
+          "correct_option",
+          "scratch_card_granted"
+        ]
+      },
       "AnswerQuizDto": {
         "type": "object",
         "properties": {
@@ -6704,6 +7616,65 @@
         },
         "required": [
           "selected_option"
+        ]
+      },
+      "ScratchStatusDto": {
+        "type": "object",
+        "properties": {
+          "cards_used": {
+            "type": "number",
+            "example": 0
+          },
+          "cards_left": {
+            "type": "number",
+            "example": 1
+          },
+          "granted_cards": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "cards_used",
+          "cards_left",
+          "granted_cards"
+        ]
+      },
+      "ScratchResultDto": {
+        "type": "object",
+        "properties": {
+          "cz_scratch_history_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "cz_scratch_card_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "example": "250 coins"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 250
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "cards_left": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "cz_scratch_history_id",
+          "cz_scratch_card_id",
+          "label",
+          "reward_coins",
+          "reward_gems",
+          "cards_left"
         ]
       },
       "BuyEntriesDto": {
@@ -7397,41 +8368,6 @@
             "default": true
           }
         }
-      },
-      "StreakDayDto": {
-        "type": "object",
-        "properties": {
-          "day_number": {
-            "type": "number",
-            "example": 7,
-            "description": "Position on the board, 1 to 30."
-          },
-          "reward_coins": {
-            "type": "number",
-            "example": 300,
-            "description": "Coins paid on this day. 0 for none."
-          },
-          "reward_gems": {
-            "type": "number",
-            "example": 200,
-            "description": "Gems paid on this day. 0 for none."
-          },
-          "label": {
-            "type": "string",
-            "example": "Week 1 bonus",
-            "description": "What the app prints on the tile."
-          },
-          "is_milestone": {
-            "type": "boolean",
-            "example": true,
-            "description": "Drawn with the gold border on the board."
-          }
-        },
-        "required": [
-          "day_number",
-          "reward_coins",
-          "reward_gems"
-        ]
       },
       "SaveStreakLadderDto": {
         "type": "object",

@@ -7,6 +7,15 @@ import { AnswerQuizDto } from './dto/answer-quiz.dto';
 import { SpinService } from './spin.service';
 import { QuizService } from './quiz.service';
 import { ScratchService } from './scratch.service';
+import { ApiData } from '../../common/decorators/api-envelope.decorator';
+import {
+  QuizAnswerResultDto,
+  QuizDto,
+  ScratchResultDto,
+  ScratchStatusDto,
+  SpinResultDto,
+  WheelDto,
+} from './dto/games.response';
 
 @ApiTags('games')
 @ApiBearerAuth()
@@ -20,12 +29,14 @@ export class GamesController {
 
   @Get('spin')
   @ApiOperation({ summary: 'Wheel segments and my remaining spins' })
+  @ApiData(WheelDto)
   getWheel(@CurrentUser() user: RequestUser) {
     return this.spinService.getWheel(user.cz_user_id);
   }
 
   @Post('spin')
   @ApiOperation({ summary: 'Spin the wheel once' })
+  @ApiData(SpinResultDto, 201)
   spin(@CurrentUser() user: RequestUser) {
     return this.spinService.spin(user.cz_user_id);
   }
@@ -38,12 +49,14 @@ export class GamesController {
 
   @Get('quiz')
   @ApiOperation({ summary: "Today's quiz question" })
+  @ApiData(QuizDto)
   getQuiz(@CurrentUser() user: RequestUser) {
     return this.quizService.getToday(user.cz_user_id);
   }
 
   @Post('quiz/:id/answer')
   @ApiOperation({ summary: 'Answer a quiz question' })
+  @ApiData(QuizAnswerResultDto, 201)
   answerQuiz(
     @CurrentUser() user: RequestUser,
     @Param('id') id: string,
@@ -60,12 +73,14 @@ export class GamesController {
 
   @Get('scratch')
   @ApiOperation({ summary: 'How many scratch cards I have left today' })
+  @ApiData(ScratchStatusDto)
   scratchStatus(@CurrentUser() user: RequestUser) {
     return this.scratchService.getStatus(user.cz_user_id);
   }
 
   @Post('scratch')
   @ApiOperation({ summary: 'Scratch one card' })
+  @ApiData(ScratchResultDto, 201)
   scratch(@CurrentUser() user: RequestUser) {
     return this.scratchService.scratch(user.cz_user_id);
   }
