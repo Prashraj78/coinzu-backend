@@ -67,7 +67,17 @@ None.
       "is_active": true
     }
     ],
-    "total": 12
+    "total": 12,
+    "categories": [
+      {
+        "cz_faq_category_id": "0f1b2c3d-4e5f-6789-abcd-ef0123456789",
+        "slug": "payment",
+        "name": "Payment",
+        "icon": null,
+        "display_order": 1,
+        "is_active": true
+      }
+    ]
   }
 }
 ```

@@ -140,7 +140,7 @@ curl "$BASE/admin/daily/challenges" \
 
 ## Notes
 
-- The chest amounts come back under `config`, and are changed through [`PATCH /api/admin/daily/config`](064daily.config.md). They are **not** in the settings catalogue — `PATCH /api/admin/settings` rejects them.
+- The chest amounts come back under `config`, and are changed through [`PATCH /api/admin/daily/config`](065daily.config.md). They are **not** in the settings catalogue — `PATCH /api/admin/settings` rejects them.
 - `summary.max_daily_coins` is the figure the app shows as "win up to". It counts active tiles only, plus the chest.
 - `completions_7d` counts progress rows that reached `completed` or `claimed`; a tile someone started but did not finish is not counted.
 - Deactivating a tile removes it from every user's board immediately, including today's. Progress already recorded is kept.

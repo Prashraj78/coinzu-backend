@@ -24,7 +24,7 @@ The Feedback screen is the smallest of the three. Stars plus the message, nothin
 
 `rating` is **required** here and rejected with `CZDCOMM001` if missing, because the stars are that screen's main input. `category`, `issue_type`, `occurred_at` and `affected_area` are all meaningless for feedback and can be left out.
 
-Admins read feedback back through `GET /api/admin/tickets?type=feedback`, which also returns a star summary. See [`../admin/033tickets.list.md`](../admin/033tickets.list.md).
+Admins read feedback back through `GET /api/admin/tickets?type=feedback`, which also returns a star summary. See [`../admin/034tickets.list.md`](../admin/034tickets.list.md).
 
 ## Overview
 

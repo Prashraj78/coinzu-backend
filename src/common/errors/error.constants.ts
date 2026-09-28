@@ -23,6 +23,7 @@ export const CzAuthErrorCodes = {
   LINK_EXPIRED: 'CZDAUTH015',
   VERIFICATION_RESEND_COOLDOWN: 'CZDAUTH016',
   EMAIL_NOT_REGISTERED: 'CZDAUTH017',
+  ACCOUNT_DELETED: 'CZDAUTH018',
 } as const;
 
 /** User module error codes */
@@ -372,6 +373,11 @@ export const CzErrorMap: Record<
     message: "We couldn't find an account with that email. Please check it, or create a new account.",
     description: 'Password reset requested for an email that has no user row.',
     icon: CzErrorIcon.ACCOUNT_NOT_FOUND,
+  },
+  [CzAuthErrorCodes.ACCOUNT_DELETED]: {
+    message: 'This account was deleted. Please contact support to reopen it.',
+    description: 'Login blocked: the account was soft-deleted by the user (status is "deleted").',
+    icon: CzErrorIcon.ACCOUNT_INACTIVE,
   },
   [CzUserErrorCodes.EMAIL_ALREADY_REGISTERED]: {
     message: 'This email is already registered. Please sign in instead.',

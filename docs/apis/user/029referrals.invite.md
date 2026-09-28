@@ -39,7 +39,6 @@ None.
 | `reward_steps` | object[] | **The reward ladder, in the order a friend clears it.** Render this as the "how it works" list — every step, what it needs and what it pays. Admin-editable, so never hardcode it. |
 | `reward_steps[].step` | number | 1-based position in the ladder, for numbering the list. |
 | `reward_steps[].cz_referral_rule_id` | string (uuid) | Stable id of the step. |
-| `friends[].status` | `pending`, `qualified` | |
 | `reward_steps[].trigger` | string | What the friend has to do. See [Enum values](#enum-values). |
 | `reward_steps[].label` | string | Ready-to-render title, e.g. `Friend completes 10 offers`. Admin-written, falling back to the trigger's built-in name. |
 | `reward_steps[].description` | string | Ready-to-render explanation of when the step pays. |
@@ -154,8 +153,7 @@ None.
 
 | Field | Allowed values | Notes |
 |---|---|---|
-| `friends[].status` | `pending`, `qualified` | |
-| `reward_steps[].trigger` | `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` | The six repeatable ones — `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` — carry a `threshold` and can appear several times, once per milestone. See `../admin/024referral-rules.list.md` for what each fires on. |
+| `reward_steps[].trigger` | `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` | The six repeatable ones — `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made` — carry a `threshold` and can appear several times, once per milestone. See `../admin/025referral-rules.list.md` for what each fires on. |
 
 ## Example
 

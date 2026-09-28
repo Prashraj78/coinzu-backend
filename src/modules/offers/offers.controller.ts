@@ -14,8 +14,13 @@ import type { Request } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
+import {
+  ApiData,
+  ApiList,
+} from '../../common/decorators/api-envelope.decorator';
 import { ListQueryDto } from '../../common/dto/list-query.dto';
 import { ListOffersDto } from './dto/list-offers.dto';
+import { MyOfferDto, OfferClickDto, OfferDto } from './dto/offers.response';
 import { OffersService } from './offers.service';
 import { PostbackService } from './postback.service';
 
@@ -30,12 +35,14 @@ export class OffersController {
 
   @Get()
   @ApiOperation({ summary: 'List live offers available to me' })
+  @ApiList(OfferDto)
   list(@CurrentUser() user: RequestUser, @Query() query: ListOffersDto) {
     return this.offersService.listForUser(user.cz_user_id, query);
   }
 
   @Get('categories')
   @ApiOperation({ summary: 'List the categories that currently have offers' })
+  @ApiList('string')
   async categories() {
     const data = await this.offersService.listCategories();
     return { data, total: data.length };
@@ -43,6 +50,7 @@ export class OffersController {
 
   @Get('mine')
   @ApiOperation({ summary: 'Offers I started, with their reward status' })
+  @ApiList(MyOfferDto)
   mine(@CurrentUser() user: RequestUser, @Query() query: ListQueryDto) {
     return this.offersService.listMyOffers(
       user.cz_user_id,
@@ -53,12 +61,14 @@ export class OffersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get one offer' })
+  @ApiData(OfferDto)
   getOne(@Param('id') id: string) {
     return this.offersService.getOrFail(id);
   }
 
   @Post(':id/click')
   @ApiOperation({ summary: 'Start an offer and get its tracking URL' })
+  @ApiData(OfferClickDto, 201)
   click(
     @CurrentUser() user: RequestUser,
     @Param('id') id: string,

@@ -18,9 +18,9 @@ its own **Enum values** section. This page is the full list.
 | `active` | Normal account. Can sign in and earn. |
 | `suspended` | Temporarily blocked by an admin. Sign-in is refused. |
 | `banned` | Permanently blocked by an admin. Sign-in is refused. |
-| `deleted` | The user asked for deletion. Sign-in is refused. |
+| `deleted` | Soft-deleted. The user deactivated their own account (`DELETE /api/users/me`) — the row and its data are kept, sign-in is refused. Not the admin hard delete, which removes the row entirely. |
 
-Set by `PATCH /api/admin/users/:id/status`.
+Set by `PATCH /api/admin/users/:id/status`, or by `DELETE /api/users/me` (which sets `deleted` and stamps `deleted_at`).
 
 ### `kyc_status` — identity check state on the user
 
@@ -185,6 +185,7 @@ The fraud signals that fired, stored on both `user_devices.risk_flags` and the u
 | `convert` |
 | `admin_adjustment` |
 | `offerwall` |
+| `welcome_bonus` |
 
 ### Withdrawal `method`
 
@@ -545,7 +546,7 @@ One subtab each in the admin Configuration Settings tab. Returned by `GET /api/a
 
 ### `setting_key` — the tunable catalogue
 
-`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `push_quiet_hours_start`, `push_quiet_hours_end`
+`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end`
 
 A key outside this list is rejected by `PATCH /api/admin/settings` with `CZDADM004`.
 
@@ -555,7 +556,7 @@ A key outside this list is rejected by `PATCH /api/admin/settings` with `CZDADM0
 
 `signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`, `offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`
 
-Configured in the admin Referral Rewards tab. Six are single events holding one step each (`signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`); the other six are repeatable and hold one step per `threshold` (`offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`). Every step pays at most once per invited friend, and payouts are clamped by the `referral_max_*_per_friend` caps. The full firing conditions are in `docs/apis/admin/024referral-rules.list.md`.
+Configured in the admin Referral Rewards tab. Six are single events holding one step each (`signup`, `email_verified`, `onboarding_completed`, `kyc_verified`, `first_withdrawal`, `first_redeem`); the other six are repeatable and hold one step per `threshold` (`offers_completed`, `daily_checkins`, `streak_reached`, `withdrawals_completed`, `redeems_completed`, `referrals_made`). Every step pays at most once per invited friend, and payouts are clamped by the `referral_max_*_per_friend` caps. The full firing conditions are in `docs/apis/admin/025referral-rules.list.md`.
 
 ## FAQs
 

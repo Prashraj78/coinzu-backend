@@ -289,13 +289,13 @@ Worth knowing when a campaign result looks odd.
 | [`apis/user/028users.register-device.md`](apis/user/028users.register-device.md) | Registering a device and its push token |
 | [`apis/user/031notifications.push-event.md`](apis/user/031notifications.push-event.md) | Reporting delivered, opened and clicked |
 | [`apis/user/032users.notification-preferences.md`](apis/user/032users.notification-preferences.md) | Per-category opt-outs and quiet hours |
-| [`apis/admin/039push.list.md`](apis/admin/039push.list.md) | Campaign list, filters, lifetime totals |
-| [`apis/admin/040push.preview.md`](apis/admin/040push.preview.md) | Audience reach and drop-off, without sending |
-| [`apis/admin/041push.create.md`](apis/admin/041push.create.md) | Create, schedule or draft |
-| [`apis/admin/042push.send.md`](apis/admin/042push.send.md) | Run a draft, or resend |
-| [`apis/admin/043push.cancel.md`](apis/admin/043push.cancel.md) | Stop a scheduled campaign |
-| [`apis/admin/044push.duplicate.md`](apis/admin/044push.duplicate.md) | Copy a campaign into a draft |
-| [`apis/admin/045push.test.md`](apis/admin/045push.test.md) | Test send to a few accounts |
-| [`apis/admin/046push.detail.md`](apis/admin/046push.detail.md) | One campaign's results |
-| [`apis/admin/047push-templates.list.md`](apis/admin/047push-templates.list.md) | Saved message templates |
+| [`apis/admin/040push.list.md`](apis/admin/040push.list.md) | Campaign list, filters, lifetime totals |
+| [`apis/admin/041push.preview.md`](apis/admin/041push.preview.md) | Audience reach and drop-off, without sending |
+| [`apis/admin/042push.create.md`](apis/admin/042push.create.md) | Create, schedule or draft |
+| [`apis/admin/043push.send.md`](apis/admin/043push.send.md) | Run a draft, or resend |
+| [`apis/admin/044push.cancel.md`](apis/admin/044push.cancel.md) | Stop a scheduled campaign |
+| [`apis/admin/045push.duplicate.md`](apis/admin/045push.duplicate.md) | Copy a campaign into a draft |
+| [`apis/admin/046push.test.md`](apis/admin/046push.test.md) | Test send to a few accounts |
+| [`apis/admin/047push.detail.md`](apis/admin/047push.detail.md) | One campaign's results |
+| [`apis/admin/048push-templates.list.md`](apis/admin/048push-templates.list.md) | Saved message templates |
 | [`ENUMS.md`](ENUMS.md#push-campaigns) | Every fixed value a campaign can carry |

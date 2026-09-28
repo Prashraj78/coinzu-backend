@@ -9,6 +9,7 @@ export const SettingKeys = {
   REFERRAL_MAX_GEMS_PER_FRIEND: 'referral_max_gems_per_friend',
   DAILY_CHEST_COINS: 'daily_chest_coins',
   DAILY_CHEST_GEMS: 'daily_chest_gems',
+  WELCOME_BONUS_GEMS: 'welcome_bonus_gems',
   PUSH_QUIET_HOURS_START: 'push_quiet_hours_start',
   PUSH_QUIET_HOURS_END: 'push_quiet_hours_end',
 } as const;
@@ -104,6 +105,16 @@ export const SettingCatalogue: Record<string, SettingMeta> = {
     min: 0,
     max: 10_000_000,
   },
+  [SettingKeys.WELCOME_BONUS_GEMS]: {
+    group: 'currency',
+    label: 'Welcome bonus',
+    description:
+      'Gems credited once, when a new user finishes account setup. The app shows this as the welcome bonus. Set 0 to switch it off.',
+    value_type: 'integer',
+    unit: 'gems',
+    min: 0,
+    max: 10_000_000,
+  },
   [SettingKeys.PUSH_QUIET_HOURS_START]: {
     group: 'notifications',
     label: 'Quiet hours start',
@@ -135,7 +146,8 @@ export const SettingGroupMeta: Record<
   },
   withdrawals: {
     label: 'Withdrawals & KYC',
-    description: 'The bar a user has to clear before money leaves the platform.',
+    description:
+      'The bar a user has to clear before money leaves the platform.',
   },
   referrals: {
     label: 'Referral rewards',
@@ -160,6 +172,7 @@ export const SettingDefaults: Record<string, string> = {
   [SettingKeys.REFERRAL_MAX_GEMS_PER_FRIEND]: '0',
   [SettingKeys.DAILY_CHEST_COINS]: '1000',
   [SettingKeys.DAILY_CHEST_GEMS]: '1000',
+  [SettingKeys.WELCOME_BONUS_GEMS]: '2000',
   [SettingKeys.PUSH_QUIET_HOURS_START]: '22',
   [SettingKeys.PUSH_QUIET_HOURS_END]: '8',
 };

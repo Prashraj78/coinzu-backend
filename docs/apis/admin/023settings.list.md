@@ -37,7 +37,7 @@ None.
 | `data[].group` | string | Machine key of the group. One of the `group` enum values below. |
 | `data[].label` | string | Group heading, e.g. `Currency & rates`. |
 | `data[].description` | string | What the group controls. |
-| `data[].settings[].setting_key` | `coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `push_quiet_hours_start`, `push_quiet_hours_end` | The key to send back on `PATCH /api/admin/settings`. |
+| `data[].settings[].setting_key` | `coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end` | The key to send back on `PATCH /api/admin/settings`. |
 | `data[].settings[].setting_value` | string | Current value. **Always a string**, whatever `value_type` says. |
 | `data[].settings[].default_value` | string | The value used when no row has been saved. |
 | `data[].settings[].is_default` | boolean | `true` when no `app_settings` row exists yet and `default_value` is in force. |
@@ -125,7 +125,7 @@ None.
 |---|---|---|
 | `data[].group` | `currency`, `withdrawals`, `referrals`, `notifications` | One subtab of the Configuration Settings tab each. |
 | `data[].settings[].value_type` | `integer`, `decimal`, `boolean` | `integer` rejects decimals; `decimal` accepts them; `boolean` accepts only the strings `"true"` and `"false"`. |
-| `data[].settings[].setting_key` | `coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `push_quiet_hours_start`, `push_quiet_hours_end` | The full catalogue. A key not listed here is rejected by `PATCH` with `CZDADM004`. |
+| `data[].settings[].setting_key` | `coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end` | The full catalogue. A key not listed here is rejected by `PATCH` with `CZDADM004`. |
 
 ## Example
 

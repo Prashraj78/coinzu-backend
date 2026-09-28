@@ -122,6 +122,11 @@ export class User {
   @Column({ type: 'timestamptz', nullable: true })
   last_login_at: Date | null;
 
+  // Set when the user soft-deletes their own account (status -> 'deleted').
+  // The row and its data stay; the admin hard delete is what wipes everything.
+  @Column({ type: 'timestamptz', nullable: true })
+  deleted_at: Date | null;
+
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
 

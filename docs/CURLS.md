@@ -149,6 +149,15 @@ curl -X PATCH $BASE/users/me \
   -d '{ "name": "Ada Lovelace", "country": "GB", "phone": "+919875643266" }'
 ```
 
+### DELETE /api/users/me
+
+Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. — [`apis/inprogress/023users.delete-me.md`](apis/inprogress/023users.delete-me.md)
+
+```bash
+curl -X DELETE $BASE/users/me \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
 ### POST /api/users/me/onboarding/info
 
 Account setup step 1 — saves name, gender, age range. Country is server-derived (edge header → IP geo), not sent in the body. — [`apis/user/007users.onboarding-info.md`](apis/user/007users.onboarding-info.md)
@@ -985,7 +994,7 @@ curl -X DELETE "$BASE/admin/users" \
 
 ### GET /api/admin/dropdown/types
 
-Every dropdown category with its option counts, paginated and searchable. — [`apis/admin/017dropdown.types.list.md`](apis/admin/017dropdown.types.list.md)
+Every dropdown category with its option counts, paginated and searchable. — [`apis/admin/018dropdown.types.list.md`](apis/admin/018dropdown.types.list.md)
 
 ```bash
 curl "$BASE/admin/dropdown/types?page=1&limit=20&search=inter&is_active=true" \
@@ -994,7 +1003,7 @@ curl "$BASE/admin/dropdown/types?page=1&limit=20&search=inter&is_active=true" \
 
 ### POST /api/admin/dropdown/types
 
-Onboards a new dropdown category. — [`apis/admin/018dropdown.types.create.md`](apis/admin/018dropdown.types.create.md)
+Onboards a new dropdown category. — [`apis/admin/019dropdown.types.create.md`](apis/admin/019dropdown.types.create.md)
 
 ```bash
 curl -X POST $BASE/admin/dropdown/types \
@@ -1011,7 +1020,7 @@ curl -X POST $BASE/admin/dropdown/types \
 
 ### PATCH /api/admin/dropdown/types/:id
 
-Updates a dropdown category's label, description, order, or active state. — [`apis/admin/019dropdown.types.update.md`](apis/admin/019dropdown.types.update.md)
+Updates a dropdown category's label, description, order, or active state. — [`apis/admin/020dropdown.types.update.md`](apis/admin/020dropdown.types.update.md)
 
 ```bash
 curl -X PATCH $BASE/admin/dropdown/types/3a91d2b7-6f0e-4c22-8a3f-11c7d9e4b5a0 \
@@ -1022,7 +1031,7 @@ curl -X PATCH $BASE/admin/dropdown/types/3a91d2b7-6f0e-4c22-8a3f-11c7d9e4b5a0 \
 
 ### GET /api/admin/transactions
 
-Every wallet movement across all users, filterable by user, currency, type, source and date. The Transactions tab table. — [`apis/admin/020transactions.list.md`](apis/admin/020transactions.list.md)
+Every wallet movement across all users, filterable by user, currency, type, source and date. The Transactions tab table. — [`apis/admin/021transactions.list.md`](apis/admin/021transactions.list.md)
 
 ```bash
 curl "$BASE/admin/transactions?page=1&limit=20&currency=coin&type=earn&source_type=offerwall&date_from=2026-08-01&date_end=2026-08-29" \
@@ -1031,7 +1040,7 @@ curl "$BASE/admin/transactions?page=1&limit=20&currency=coin&type=earn&source_ty
 
 ### GET /api/admin/transactions/:cz_wallet_transaction_id
 
-One wallet movement with its user, their live balance, and the row that caused it. — [`apis/admin/021transactions.detail.md`](apis/admin/021transactions.detail.md)
+One wallet movement with its user, their live balance, and the row that caused it. — [`apis/admin/022transactions.detail.md`](apis/admin/022transactions.detail.md)
 
 ```bash
 curl "$BASE/admin/transactions/9ebe339a-89b0-4a9a-bce7-268439611263" \
@@ -1040,7 +1049,7 @@ curl "$BASE/admin/transactions/9ebe339a-89b0-4a9a-bce7-268439611263" \
 
 ### GET /api/admin/settings
 
-Every tunable platform setting, grouped, with its value, default and bounds. The Configuration Settings tab. — [`apis/admin/022settings.list.md`](apis/admin/022settings.list.md)
+Every tunable platform setting, grouped, with its value, default and bounds. The Configuration Settings tab. — [`apis/admin/023settings.list.md`](apis/admin/023settings.list.md)
 
 ```bash
 curl "$BASE/admin/settings" \
@@ -1049,7 +1058,7 @@ curl "$BASE/admin/settings" \
 
 ### PATCH /api/admin/settings
 
-Saves one or more settings; validated all-or-nothing, then the cache is cleared. — [`apis/admin/023settings.update.md`](apis/admin/023settings.update.md)
+Saves one or more settings; validated all-or-nothing, then the cache is cleared. — [`apis/admin/024settings.update.md`](apis/admin/024settings.update.md)
 
 ```bash
 curl -X PATCH $BASE/admin/settings \
@@ -1065,7 +1074,7 @@ curl -X PATCH $BASE/admin/settings \
 
 ### GET /api/admin/referral-rules
 
-The referral reward ladder plus every trigger available to add. — [`apis/admin/024referral-rules.list.md`](apis/admin/024referral-rules.list.md)
+The referral reward ladder plus every trigger available to add. — [`apis/admin/025referral-rules.list.md`](apis/admin/025referral-rules.list.md)
 
 ```bash
 curl "$BASE/admin/referral-rules" \
@@ -1074,7 +1083,7 @@ curl "$BASE/admin/referral-rules" \
 
 ### POST /api/admin/referral-rules
 
-Adds one step to the referral reward ladder. — [`apis/admin/025referral-rules.create.md`](apis/admin/025referral-rules.create.md)
+Adds one step to the referral reward ladder. — [`apis/admin/026referral-rules.create.md`](apis/admin/026referral-rules.create.md)
 
 ```bash
 curl -X POST $BASE/admin/referral-rules \
@@ -1085,7 +1094,7 @@ curl -X POST $BASE/admin/referral-rules \
 
 ### PATCH /api/admin/referral-rules/:id
 
-Changes a step's reward, threshold, label or active state. — [`apis/admin/026referral-rules.update.md`](apis/admin/026referral-rules.update.md)
+Changes a step's reward, threshold, label or active state. — [`apis/admin/027referral-rules.update.md`](apis/admin/027referral-rules.update.md)
 
 ```bash
 curl -X PATCH $BASE/admin/referral-rules/7c1f0a2e-9b34-4d67-8e02-3f5a1c9d4b88 \
@@ -1096,7 +1105,7 @@ curl -X PATCH $BASE/admin/referral-rules/7c1f0a2e-9b34-4d67-8e02-3f5a1c9d4b88 \
 
 ### DELETE /api/admin/referral-rules/:id
 
-Removes a step from the referral reward ladder. — [`apis/admin/027referral-rules.delete.md`](apis/admin/027referral-rules.delete.md)
+Removes a step from the referral reward ladder. — [`apis/admin/028referral-rules.delete.md`](apis/admin/028referral-rules.delete.md)
 
 ```bash
 curl -X DELETE $BASE/admin/referral-rules/7c1f0a2e-9b34-4d67-8e02-3f5a1c9d4b88 \
@@ -1105,7 +1114,7 @@ curl -X DELETE $BASE/admin/referral-rules/7c1f0a2e-9b34-4d67-8e02-3f5a1c9d4b88 \
 
 ### GET /api/admin/faqs/categories
 
-FAQ categories, inactive included, for the filter and the FAQ form. — [`apis/admin/028faqs.categories.md`](apis/admin/028faqs.categories.md)
+FAQ categories, inactive included, for the filter and the FAQ form. — [`apis/admin/029faqs.categories.md`](apis/admin/029faqs.categories.md)
 
 ```bash
 curl "$BASE/admin/faqs/categories" \
@@ -1114,7 +1123,7 @@ curl "$BASE/admin/faqs/categories" \
 
 ### GET /api/admin/faqs
 
-Every FAQ with its category, inactive included, filterable by category. — [`apis/admin/029faqs.list.md`](apis/admin/029faqs.list.md)
+Every FAQ with its category, inactive included, filterable by category. — [`apis/admin/030faqs.list.md`](apis/admin/030faqs.list.md)
 
 ```bash
 curl "$BASE/admin/faqs?category=payment&is_active=true" \
@@ -1123,7 +1132,7 @@ curl "$BASE/admin/faqs?category=payment&is_active=true" \
 
 ### POST /api/admin/faqs
 
-Adds a question and answer to a category. — [`apis/admin/030faqs.create.md`](apis/admin/030faqs.create.md)
+Adds a question and answer to a category. — [`apis/admin/031faqs.create.md`](apis/admin/031faqs.create.md)
 
 ```bash
 curl -X POST $BASE/admin/faqs \
@@ -1138,7 +1147,7 @@ curl -X POST $BASE/admin/faqs \
 
 ### PATCH /api/admin/faqs/:id
 
-Edits a FAQ, moves it, reorders it, or hides it. — [`apis/admin/031faqs.update.md`](apis/admin/031faqs.update.md)
+Edits a FAQ, moves it, reorders it, or hides it. — [`apis/admin/032faqs.update.md`](apis/admin/032faqs.update.md)
 
 ```bash
 curl -X PATCH $BASE/admin/faqs/5a71c308-92e4-4bd7-8f60-1c3e07a9d254 \
@@ -1149,7 +1158,7 @@ curl -X PATCH $BASE/admin/faqs/5a71c308-92e4-4bd7-8f60-1c3e07a9d254 \
 
 ### DELETE /api/admin/faqs/:id
 
-Deletes a FAQ permanently. — [`apis/admin/032faqs.delete.md`](apis/admin/032faqs.delete.md)
+Deletes a FAQ permanently. — [`apis/admin/033faqs.delete.md`](apis/admin/033faqs.delete.md)
 
 ```bash
 curl -X DELETE $BASE/admin/faqs/5a71c308-92e4-4bd7-8f60-1c3e07a9d254 \
@@ -1158,7 +1167,7 @@ curl -X DELETE $BASE/admin/faqs/5a71c308-92e4-4bd7-8f60-1c3e07a9d254 \
 
 ### GET /api/admin/tickets
 
-Every problem report and support ticket with its user, filterable. The Problem Reports tab. — [`apis/admin/033tickets.list.md`](apis/admin/033tickets.list.md)
+Every problem report and support ticket with its user, filterable. The Problem Reports tab. — [`apis/admin/034tickets.list.md`](apis/admin/034tickets.list.md)
 
 ```bash
 # Problem Reports tab
@@ -1172,7 +1181,7 @@ curl "$BASE/admin/tickets?type=feedback&rating=5" \
 
 ### GET /api/admin/tickets/:cz_support_ticket_id
 
-One report with its user and the full message thread. — [`apis/admin/034tickets.detail.md`](apis/admin/034tickets.detail.md)
+One report with its user and the full message thread. — [`apis/admin/035tickets.detail.md`](apis/admin/035tickets.detail.md)
 
 ```bash
 curl "$BASE/admin/tickets/9d23c68e-14bd-4974-8aff-b38ea6af192e" \
@@ -1181,7 +1190,7 @@ curl "$BASE/admin/tickets/9d23c68e-14bd-4974-8aff-b38ea6af192e" \
 
 ### GET /api/admin/leaderboard
 
-Coin earners ranked, paginated and filterable by range, country and minimum. The Leaderboard tab. — [`apis/admin/035leaderboard.list.md`](apis/admin/035leaderboard.list.md)
+Coin earners ranked, paginated and filterable by range, country and minimum. The Leaderboard tab. — [`apis/admin/036leaderboard.list.md`](apis/admin/036leaderboard.list.md)
 
 ```bash
 # Preset window
@@ -1195,7 +1204,7 @@ curl "$BASE/admin/leaderboard?date_from=2026-08-01&date_end=2026-08-29&min_coins
 
 ### GET /api/admin/kyc
 
-Every verification attempt with its user, filterable, plus a count per outcome. The KYC tab. — [`036kyc.list.md`](apis/admin/036kyc.list.md)
+Every verification attempt with its user, filterable, plus a count per outcome. The KYC tab. — [`036kyc.list.md`](apis/admin/037kyc.list.md)
 
 ```bash
 curl "$BASE/admin/kyc?status=manual_review&date_from=2026-08-01&page=1&limit=20" \
@@ -1204,7 +1213,7 @@ curl "$BASE/admin/kyc?status=manual_review&date_from=2026-08-01&page=1&limit=20"
 
 ### GET /api/admin/kyc/:cz_kyc_verification_id
 
-One attempt with the user and their full attempt history. — [`037kyc.detail.md`](apis/admin/037kyc.detail.md)
+One attempt with the user and their full attempt history. — [`037kyc.detail.md`](apis/admin/038kyc.detail.md)
 
 ```bash
 curl "$BASE/admin/kyc/1c7a9f22-4d3b-4e08-9b51-6f0e2a7d3c14" \
@@ -1213,7 +1222,7 @@ curl "$BASE/admin/kyc/1c7a9f22-4d3b-4e08-9b51-6f0e2a7d3c14" \
 
 ### POST /api/admin/kyc/:cz_kyc_verification_id/decision
 
-Approves or rejects an attempt awaiting review. **Super admin only.** — [`038kyc.decide.md`](apis/admin/038kyc.decide.md)
+Approves or rejects an attempt awaiting review. **Super admin only.** — [`038kyc.decide.md`](apis/admin/039kyc.decide.md)
 
 ```bash
 # Approve
@@ -1229,7 +1238,7 @@ curl -X POST "$BASE/admin/kyc/d5ececdf-9fcc-4c6f-9e7d-6c6d5861351b/decision" \
 
 ### GET /api/admin/push
 
-Every push campaign, newest first, filterable, plus lifetime delivery and engagement totals. — [`039push.list.md`](apis/admin/039push.list.md)
+Every push campaign, newest first, filterable, plus lifetime delivery and engagement totals. — [`039push.list.md`](apis/admin/040push.list.md)
 
 ```bash
 curl "$BASE/admin/push?status=sent&category=promotion&date_from=2026-08-01&page=1&limit=20" \
@@ -1238,7 +1247,7 @@ curl "$BASE/admin/push?status=sent&category=promotion&date_from=2026-08-01&page=
 
 ### POST /api/admin/push/preview
 
-Who an audience reaches and who drops out, without sending. — [`040push.preview.md`](apis/admin/040push.preview.md)
+Who an audience reaches and who drops out, without sending. — [`040push.preview.md`](apis/admin/041push.preview.md)
 
 ```bash
 # Everyone with a live push token
@@ -1259,7 +1268,7 @@ curl -X POST "$BASE/admin/push/preview" \
 
 ### POST /api/admin/push
 
-Creates a campaign and sends it now, schedules it, or saves a draft. — [`041push.create.md`](apis/admin/041push.create.md)
+Creates a campaign and sends it now, schedules it, or saves a draft. — [`041push.create.md`](apis/admin/042push.create.md)
 
 ```bash
 # Send now, to one country
@@ -1292,7 +1301,7 @@ curl -X POST "$BASE/admin/push" \
 
 ### POST /api/admin/push/:cz_push_campaign_id/send
 
-Runs a draft, or resends against a freshly resolved audience. — [`042push.send.md`](apis/admin/042push.send.md)
+Runs a draft, or resends against a freshly resolved audience. — [`042push.send.md`](apis/admin/043push.send.md)
 
 ```bash
 curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/send" \
@@ -1301,7 +1310,7 @@ curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/send" \
 
 ### POST /api/admin/push/:cz_push_campaign_id/cancel
 
-Stops a draft or a scheduled campaign before it runs. — [`043push.cancel.md`](apis/admin/043push.cancel.md)
+Stops a draft or a scheduled campaign before it runs. — [`043push.cancel.md`](apis/admin/044push.cancel.md)
 
 ```bash
 curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/cancel" \
@@ -1310,7 +1319,7 @@ curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/cancel" \
 
 ### POST /api/admin/push/:cz_push_campaign_id/duplicate
 
-Copies a campaign into a fresh draft. — [`044push.duplicate.md`](apis/admin/044push.duplicate.md)
+Copies a campaign into a fresh draft. — [`044push.duplicate.md`](apis/admin/045push.duplicate.md)
 
 ```bash
 curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/duplicate" \
@@ -1319,7 +1328,7 @@ curl -X POST "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5/duplicate" \
 
 ### POST /api/admin/push/test
 
-A real send to a few named accounts, recorded nowhere. — [`045push.test.md`](apis/admin/045push.test.md)
+A real send to a few named accounts, recorded nowhere. — [`045push.test.md`](apis/admin/046push.test.md)
 
 ```bash
 curl -X POST "$BASE/admin/push/test" \
@@ -1331,7 +1340,7 @@ curl -X POST "$BASE/admin/push/test" \
 
 ### GET /api/admin/push/:cz_push_campaign_id
 
-One campaign with its results and what its audience reaches today. — [`046push.detail.md`](apis/admin/046push.detail.md)
+One campaign with its results and what its audience reaches today. — [`046push.detail.md`](apis/admin/047push.detail.md)
 
 ```bash
 curl "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5" \
@@ -1340,7 +1349,7 @@ curl "$BASE/admin/push/60dc116b-1ae4-4e25-b87d-1f217c2e2da5" \
 
 ### GET /api/admin/push-templates
 
-Saved push messages, most used first. — [`047push-templates.list.md`](apis/admin/047push-templates.list.md)
+Saved push messages, most used first. — [`047push-templates.list.md`](apis/admin/048push-templates.list.md)
 
 ```bash
 curl "$BASE/admin/push-templates?is_active=true&page=1&limit=50" \
@@ -1349,7 +1358,7 @@ curl "$BASE/admin/push-templates?is_active=true&page=1&limit=50" \
 
 ### POST /api/admin/push-templates
 
-Saves a reusable push message. — [`048push-templates.create.md`](apis/admin/048push-templates.create.md)
+Saves a reusable push message. — [`048push-templates.create.md`](apis/admin/049push-templates.create.md)
 
 ```bash
 curl -X POST "$BASE/admin/push-templates" \
@@ -1362,7 +1371,7 @@ curl -X POST "$BASE/admin/push-templates" \
 
 ### PATCH /api/admin/push-templates/:cz_push_template_id
 
-Edits a template, or hides it from the composer. — [`049push-templates.update.md`](apis/admin/049push-templates.update.md)
+Edits a template, or hides it from the composer. — [`049push-templates.update.md`](apis/admin/050push-templates.update.md)
 
 ```bash
 curl -X PATCH "$BASE/admin/push-templates/4675facb-3f13-4f59-b51a-d7293f579460" \
@@ -1372,7 +1381,7 @@ curl -X PATCH "$BASE/admin/push-templates/4675facb-3f13-4f59-b51a-d7293f579460" 
 
 ### DELETE /api/admin/push-templates/:cz_push_template_id
 
-Deletes a template permanently. — [`050push-templates.delete.md`](apis/admin/050push-templates.delete.md)
+Deletes a template permanently. — [`050push-templates.delete.md`](apis/admin/051push-templates.delete.md)
 
 ```bash
 curl -X DELETE "$BASE/admin/push-templates/4675facb-3f13-4f59-b51a-d7293f579460" \
@@ -1381,7 +1390,7 @@ curl -X DELETE "$BASE/admin/push-templates/4675facb-3f13-4f59-b51a-d7293f579460"
 
 ### GET /api/admin/streak
 
-The 30-day ladder, its payout totals against the targets, and where users sit. — [`051streak.ladder.md`](apis/admin/051streak.ladder.md)
+The 30-day ladder, its payout totals against the targets, and where users sit. — [`051streak.ladder.md`](apis/admin/052streak.ladder.md)
 
 ```bash
 curl "$BASE/admin/streak" \
@@ -1390,7 +1399,7 @@ curl "$BASE/admin/streak" \
 
 ### PUT /api/admin/streak
 
-Replaces the whole 30-day ladder in one transaction. All 30 days are required. — [`052streak.save.md`](apis/admin/052streak.save.md)
+Replaces the whole 30-day ladder in one transaction. All 30 days are required. — [`052streak.save.md`](apis/admin/053streak.save.md)
 
 ```bash
 curl -X PUT "$BASE/admin/streak" \
@@ -1404,7 +1413,7 @@ curl -X PUT "$BASE/admin/streak" \
 
 ### POST /api/admin/streak/reset
 
-Restores the shipped 5,000-coin / 2,000-gem ladder. Destructive, no undo. — [`053streak.reset.md`](apis/admin/053streak.reset.md)
+Restores the shipped 5,000-coin / 2,000-gem ladder. Destructive, no undo. — [`053streak.reset.md`](apis/admin/054streak.reset.md)
 
 ```bash
 curl -X POST "$BASE/admin/streak/reset" \
@@ -1413,7 +1422,7 @@ curl -X POST "$BASE/admin/streak/reset" \
 
 ### GET /api/admin/dashboard/streak
 
-Daily-streak participation, depth and payout for the Dashboard tab. — [`054dashboard.streak.md`](apis/admin/054dashboard.streak.md)
+Daily-streak participation, depth and payout for the Dashboard tab. — [`054dashboard.streak.md`](apis/admin/055dashboard.streak.md)
 
 ```bash
 curl "$BASE/admin/dashboard/streak" \
@@ -1422,7 +1431,7 @@ curl "$BASE/admin/dashboard/streak" \
 
 ### GET /api/admin/cron
 
-Every background job, its schedule and how the last run went. — [`055cron.list.md`](apis/admin/055cron.list.md)
+Every background job, its schedule and how the last run went. — [`055cron.list.md`](apis/admin/056cron.list.md)
 
 ```bash
 curl "$BASE/admin/cron" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1430,7 +1439,7 @@ curl "$BASE/admin/cron" -H 'Authorization: Bearer $ADMIN_TOKEN'
 
 ### POST /api/admin/cron/:key/run
 
-Runs one job immediately. Synchronous — the response carries the outcome. — [`056cron.run.md`](apis/admin/056cron.run.md)
+Runs one job immediately. Synchronous — the response carries the outcome. — [`056cron.run.md`](apis/admin/057cron.run.md)
 
 ```bash
 curl -X POST "$BASE/admin/cron/streak_check/run" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1438,7 +1447,7 @@ curl -X POST "$BASE/admin/cron/streak_check/run" -H 'Authorization: Bearer $ADMI
 
 ### PATCH /api/admin/cron/:key/enabled
 
-Pauses or resumes one job. A paused job can still be run by hand. — [`057cron.enabled.md`](apis/admin/057cron.enabled.md)
+Pauses or resumes one job. A paused job can still be run by hand. — [`057cron.enabled.md`](apis/admin/058cron.enabled.md)
 
 ```bash
 curl -X PATCH "$BASE/admin/cron/streak_check/enabled" \
@@ -1448,7 +1457,7 @@ curl -X PATCH "$BASE/admin/cron/streak_check/enabled" \
 
 ### PUT /api/admin/cron/:key/schedule
 
-Overrides when one job fires. Validated before it is stored. — [`058cron.schedule.md`](apis/admin/058cron.schedule.md)
+Overrides when one job fires. Validated before it is stored. — [`058cron.schedule.md`](apis/admin/059cron.schedule.md)
 
 ```bash
 curl -X PUT "$BASE/admin/cron/streak_check/schedule" \
@@ -1458,7 +1467,7 @@ curl -X PUT "$BASE/admin/cron/streak_check/schedule" \
 
 ### POST /api/admin/cron/:key/reset
 
-Drops the override and restores the shipped schedule. — [`059cron.reset.md`](apis/admin/059cron.reset.md)
+Drops the override and restores the shipped schedule. — [`059cron.reset.md`](apis/admin/060cron.reset.md)
 
 ```bash
 curl -X POST "$BASE/admin/cron/streak_check/reset" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1466,7 +1475,7 @@ curl -X POST "$BASE/admin/cron/streak_check/reset" -H 'Authorization: Bearer $AD
 
 ### GET /api/admin/achievements
 
-Every medal with how many users hold it and who is close. — [`060achievements.list.md`](apis/admin/060achievements.list.md)
+Every medal with how many users hold it and who is close. — [`060achievements.list.md`](apis/admin/061achievements.list.md)
 
 ```bash
 curl "$BASE/admin/achievements?rarity=rarest" \
@@ -1475,7 +1484,7 @@ curl "$BASE/admin/achievements?rarity=rarest" \
 
 ### GET /api/admin/achievements/:slug/users
 
-The users holding one medal, or still working towards it. — [`061achievements.holders.md`](apis/admin/061achievements.holders.md)
+The users holding one medal, or still working towards it. — [`061achievements.holders.md`](apis/admin/062achievements.holders.md)
 
 ```bash
 # Who holds it
@@ -1491,7 +1500,7 @@ curl "$BASE/admin/achievements/champion/users?state=in_progress" \
 
 ### GET /api/admin/daily/dashboard
 
-How much the daily games paid out, and exactly where it went. — [`062daily.dashboard.md`](apis/admin/062daily.dashboard.md)
+How much the daily games paid out, and exactly where it went. — [`062daily.dashboard.md`](apis/admin/063daily.dashboard.md)
 
 ```bash
 # The last 30 days, everything
@@ -1509,7 +1518,7 @@ curl "$BASE/admin/daily/dashboard?currency=coin&top=25" \
 
 ### GET /api/admin/daily/challenges
 
-The five tiles, the master chest, and how the last week went. — [`063daily.challenges.md`](apis/admin/063daily.challenges.md)
+The five tiles, the master chest, and how the last week went. — [`063daily.challenges.md`](apis/admin/064daily.challenges.md)
 
 ```bash
 curl "$BASE/admin/daily/challenges" \
@@ -1518,7 +1527,7 @@ curl "$BASE/admin/daily/challenges" \
 
 ### PATCH /api/admin/daily/config
 
-Sets the master chest reward. Not in the settings catalogue — this is the only way to change it. — [`064daily.config.md`](apis/admin/064daily.config.md)
+Sets the master chest reward. Not in the settings catalogue — this is the only way to change it. — [`064daily.config.md`](apis/admin/065daily.config.md)
 
 ```bash
 curl -X PATCH "$BASE/admin/daily/config" \
@@ -1528,7 +1537,7 @@ curl -X PATCH "$BASE/admin/daily/config" \
 
 ### PATCH /api/admin/daily/challenges/:cz_daily_challenge_id
 
-Edits one tile — wording, target, rewards, and where a tap sends the app. — [`065daily.challenges.update.md`](apis/admin/065daily.challenges.update.md)
+Edits one tile — wording, target, rewards, and where a tap sends the app. — [`065daily.challenges.update.md`](apis/admin/066daily.challenges.update.md)
 
 ```bash
 curl -X PATCH "$BASE/admin/daily/challenges/0f1e2d3c-4b5a-4c6d-8e7f-9a0b1c2d3e4f" \
@@ -1538,7 +1547,7 @@ curl -X PATCH "$BASE/admin/daily/challenges/0f1e2d3c-4b5a-4c6d-8e7f-9a0b1c2d3e4f
 
 ### GET /api/admin/daily/spin-wheel
 
-The wheel's segments with real odds, and the average payout per spin. — [`066daily.wheel.md`](apis/admin/066daily.wheel.md)
+The wheel's segments with real odds, and the average payout per spin. — [`066daily.wheel.md`](apis/admin/067daily.wheel.md)
 
 ```bash
 curl "$BASE/admin/daily/spin-wheel" \
@@ -1547,7 +1556,7 @@ curl "$BASE/admin/daily/spin-wheel" \
 
 ### PUT /api/admin/daily/spin-wheel
 
-Replaces the whole wheel. Send every segment — anything omitted is deleted. A segment pays exactly what its wedge shows — bands belong to the scratch pool. — [`067daily.wheel.save.md`](apis/admin/067daily.wheel.save.md)
+Replaces the whole wheel. Send every segment — anything omitted is deleted. A segment pays exactly what its wedge shows — bands belong to the scratch pool. — [`067daily.wheel.save.md`](apis/admin/068daily.wheel.save.md)
 
 ```bash
 curl -X PUT "$BASE/admin/daily/spin-wheel" \
@@ -1563,7 +1572,7 @@ curl -X PUT "$BASE/admin/daily/spin-wheel" \
 
 ### GET /api/admin/daily/scratch-cards
 
-The scratch prize pool with real odds, medal gating and payout bands. — [`068daily.scratch.md`](apis/admin/068daily.scratch.md)
+The scratch prize pool with real odds, medal gating and payout bands. — [`068daily.scratch.md`](apis/admin/069daily.scratch.md)
 
 ```bash
 curl "$BASE/admin/daily/scratch-cards" \
@@ -1572,7 +1581,7 @@ curl "$BASE/admin/daily/scratch-cards" \
 
 ### PUT /api/admin/daily/scratch-cards
 
-Replaces the whole prize pool. At least one active prize must stay ungated. — [`069daily.scratch.save.md`](apis/admin/069daily.scratch.save.md)
+Replaces the whole prize pool. At least one active prize must stay ungated. — [`069daily.scratch.save.md`](apis/admin/070daily.scratch.save.md)
 
 ```bash
 curl -X PUT "$BASE/admin/daily/scratch-cards" \
@@ -1588,7 +1597,7 @@ curl -X PUT "$BASE/admin/daily/scratch-cards" \
 
 ### GET /api/admin/daily/quizzes
 
-The quiz schedule, paged and filterable, plus the gaps in the next 15 days. — [`070daily.quizzes.md`](apis/admin/070daily.quizzes.md)
+The quiz schedule, paged and filterable, plus the gaps in the next 15 days. — [`070daily.quizzes.md`](apis/admin/071daily.quizzes.md)
 
 ```bash
 # The default page
@@ -1610,7 +1619,7 @@ curl "$BASE/admin/daily/quizzes?search=cowboy" \
 
 ### POST /api/admin/daily/quizzes
 
-Schedules a quiz for a date. Upsert — re-posting a date replaces it. A right answer wins a scratch card; there is no reward to set. — [`071daily.quizzes.save.md`](apis/admin/071daily.quizzes.save.md)
+Schedules a quiz for a date. Upsert — re-posting a date replaces it. A right answer wins a scratch card; there is no reward to set. — [`071daily.quizzes.save.md`](apis/admin/072daily.quizzes.save.md)
 
 ```bash
 curl -X POST "$BASE/admin/daily/quizzes" \
@@ -1626,7 +1635,7 @@ curl -X POST "$BASE/admin/daily/quizzes" \
 
 ### POST /api/admin/daily/quizzes/:cz_quiz_id/repeat
 
-Copies a quiz onto another day. — [`072daily.quizzes.repeat.md`](apis/admin/072daily.quizzes.repeat.md)
+Copies a quiz onto another day. — [`072daily.quizzes.repeat.md`](apis/admin/073daily.quizzes.repeat.md)
 
 ```bash
 curl -X POST "$BASE/admin/daily/quizzes/75130136-b35f-4e3b-b8ff-b672a1964aeb/repeat" \
@@ -1636,7 +1645,7 @@ curl -X POST "$BASE/admin/daily/quizzes/75130136-b35f-4e3b-b8ff-b672a1964aeb/rep
 
 ### POST /api/admin/daily/quizzes/image
 
-Uploads a quiz image and returns its public URL. — [`073daily.quizzes.image.md`](apis/admin/073daily.quizzes.image.md)
+Uploads a quiz image and returns its public URL. — [`073daily.quizzes.image.md`](apis/admin/074daily.quizzes.image.md)
 
 ```bash
 curl -X POST "$BASE/admin/daily/quizzes/image" \
@@ -1646,7 +1655,7 @@ curl -X POST "$BASE/admin/daily/quizzes/image" \
 
 ### DELETE /api/admin/daily/quizzes/:cz_quiz_id
 
-Removes a scheduled quiz. The day then has none. — [`074daily.quizzes.delete.md`](apis/admin/074daily.quizzes.delete.md)
+Removes a scheduled quiz. The day then has none. — [`074daily.quizzes.delete.md`](apis/admin/075daily.quizzes.delete.md)
 
 ```bash
 curl -X DELETE "$BASE/admin/daily/quizzes/75130136-b35f-4e3b-b8ff-b672a1964aeb" \
@@ -1705,7 +1714,7 @@ curl "$BASE/rewards/winners?date_from=2026-08-01&date_to=2026-08-31&page=2" -H '
 
 ### GET /api/admin/rewards/dashboard
 
-Gems collected against coins paid. — [`075rewards.dashboard.md`](apis/admin/075rewards.dashboard.md)
+Gems collected against coins paid. — [`075rewards.dashboard.md`](apis/admin/076rewards.dashboard.md)
 
 ```bash
 curl "$BASE/admin/rewards/dashboard?date_from=2026-08-01&date_to=2026-08-30" \
@@ -1714,7 +1723,7 @@ curl "$BASE/admin/rewards/dashboard?date_from=2026-08-01&date_to=2026-08-30" \
 
 ### GET /api/admin/rewards/games
 
-Every reward card with its live figures. — [`076rewards.games.md`](apis/admin/076rewards.games.md)
+Every reward card with its live figures. — [`076rewards.games.md`](apis/admin/077rewards.games.md)
 
 ```bash
 curl "$BASE/admin/rewards/games" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1722,7 +1731,7 @@ curl "$BASE/admin/rewards/games" -H 'Authorization: Bearer $ADMIN_TOKEN'
 
 ### PATCH /api/admin/rewards/games/:cz_reward_game_id
 
-Edits one card. — [`077rewards.games.update.md`](apis/admin/077rewards.games.update.md)
+Edits one card. — [`077rewards.games.update.md`](apis/admin/078rewards.games.update.md)
 
 ```bash
 curl -X PATCH "$BASE/admin/rewards/games/$GAME_ID" \
@@ -1732,7 +1741,7 @@ curl -X PATCH "$BASE/admin/rewards/games/$GAME_ID" \
 
 ### GET /api/admin/rewards/games/:cz_reward_game_id/prizes
 
-The prize ladder, or the wheel face with real odds. — [`078rewards.prizes.md`](apis/admin/078rewards.prizes.md)
+The prize ladder, or the wheel face with real odds. — [`078rewards.prizes.md`](apis/admin/079rewards.prizes.md)
 
 ```bash
 curl "$BASE/admin/rewards/games/$GAME_ID/prizes" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1740,7 +1749,7 @@ curl "$BASE/admin/rewards/games/$GAME_ID/prizes" -H 'Authorization: Bearer $ADMI
 
 ### PUT /api/admin/rewards/games/:cz_reward_game_id/prizes
 
-Replaces the whole ladder. — [`079rewards.prizes.save.md`](apis/admin/079rewards.prizes.save.md)
+Replaces the whole ladder. — [`079rewards.prizes.save.md`](apis/admin/080rewards.prizes.save.md)
 
 ```bash
 curl -X PUT "$BASE/admin/rewards/games/$GAME_ID/prizes" \
@@ -1750,7 +1759,7 @@ curl -X PUT "$BASE/admin/rewards/games/$GAME_ID/prizes" \
 
 ### GET /api/admin/rewards/games/:cz_reward_game_id/payout-rules
 
-How the pot scales with turnout. — [`080rewards.rules.md`](apis/admin/080rewards.rules.md)
+How the pot scales with turnout. — [`080rewards.rules.md`](apis/admin/081rewards.rules.md)
 
 ```bash
 curl "$BASE/admin/rewards/games/$GAME_ID/payout-rules" -H 'Authorization: Bearer $ADMIN_TOKEN'
@@ -1758,7 +1767,7 @@ curl "$BASE/admin/rewards/games/$GAME_ID/payout-rules" -H 'Authorization: Bearer
 
 ### PUT /api/admin/rewards/games/:cz_reward_game_id/payout-rules
 
-Replaces the turnout-to-pot ladder. The first band must start at 0. — [`081rewards.rules.save.md`](apis/admin/081rewards.rules.save.md)
+Replaces the turnout-to-pot ladder. The first band must start at 0. — [`081rewards.rules.save.md`](apis/admin/082rewards.rules.save.md)
 
 ```bash
 curl -X PUT "$BASE/admin/rewards/games/$GAME_ID/payout-rules" \
@@ -1775,7 +1784,7 @@ curl -X PUT "$BASE/admin/rewards/games/$GAME_ID/payout-rules" \
 
 ### GET /api/admin/rewards/draws
 
-Every draw instance with its winners. — [`082rewards.draws.md`](apis/admin/082rewards.draws.md)
+Every draw instance with its winners. — [`082rewards.draws.md`](apis/admin/083rewards.draws.md)
 
 ```bash
 curl "$BASE/admin/rewards/draws?slug=daily_lucky_draw&status=resolved" \
@@ -1784,7 +1793,7 @@ curl "$BASE/admin/rewards/draws?slug=daily_lucky_draw&status=resolved" \
 
 ### POST /api/admin/rewards/draws/run
 
-Settles what is due and opens what is missing. Pays real money. — [`083rewards.draws.run.md`](apis/admin/083rewards.draws.run.md)
+Settles what is due and opens what is missing. Pays real money. — [`083rewards.draws.run.md`](apis/admin/084rewards.draws.run.md)
 
 ```bash
 curl -X POST "$BASE/admin/rewards/draws/run" -H 'Authorization: Bearer $ADMIN_TOKEN'

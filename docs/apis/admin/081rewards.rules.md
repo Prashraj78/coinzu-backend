@@ -103,7 +103,7 @@ curl "$BASE/admin/rewards/games/$GAME_ID/payout-rules" -H 'Authorization: Bearer
 ## Notes
 
 - **The band whose floor the turnout clears wins, highest match first.** 7 players against the ladder above matches the `0+` band and pays 500 coins to one winner; 60 players matches `50+` and pays 5,000 across three.
-- **This decides the money; the [prize ladder](078rewards.prizes.md) only decides the display.** The two are deliberately separate — the app can advertise "1st Prize 5,000 Coins" while a quiet day actually pays 500, because the pot is honest about turnout.
+- **This decides the money; the [prize ladder](079rewards.prizes.md) only decides the display.** The two are deliberately separate — the app can advertise "1st Prize 5,000 Coins" while a quiet day actually pays 500, because the pot is honest about turnout.
 - **`max_participants` is derived, not stored.** It is always one below the next band's floor, so bands can never overlap or leave a gap.
 - **The pot is split first-place-heavy** at settlement, weighted 3:2:1 and so on, with any rounding remainder going to first place.
 - **Winners are capped at the number of players.** A band promising 10 winners on a day with 4 players pays 4.

@@ -44,7 +44,7 @@ None.
 | `data[].type` | string | One of `earn`, `spend`, `withdrawal`, `convert_in`, `convert_out`, `reversal`. |
 | `data[].amount` | number | Signed change. Positive credits, negative debits. |
 | `data[].balance_after` | number | Balance snapshot right after this row was written. |
-| `data[].source_type` | string | What caused the movement: `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment` or `offerwall`. |
+| `data[].source_type` | string | What caused the movement: `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment`, `offerwall` or `welcome_bonus`. |
 | `data[].source_id` | string (uuid) \| null | Primary key of the row that caused it, when there is one. |
 | `data[].note` | string \| null | Human-readable context, safe to render straight into the ledger row. For `offer` rows this is the offer title, plus the milestone after a colon when the offer pays in steps — `"Coin Master — reach level 25: Reach level 10"`. For `offerwall` rows it is the partner name plus the offer name — `"AdGate Media - Complete a survey"`. A reversal on either path is prefixed `"Reversed: "`. `null` for movements that don't need one. |
 | `data[].created_at` | string (iso date) | When the movement happened. |
@@ -127,7 +127,7 @@ Every value this endpoint can send or accept for its fixed-value fields.
 | Field | Allowed values | Notes |
 |---|---|---|
 | `currency` | `coin`, `gem` | — |
-| `source_type` | `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment`, `offerwall` | Says which feature moved the balance. |
+| `source_type` | `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment`, `offerwall`, `welcome_bonus` | Says which feature moved the balance. |
 | `type` | `earn`, `spend`, `withdrawal`, `convert_in`, `convert_out`, `reversal` | `reversal` is a debit written when an advertiser reverses an offerwall conversion that was already credited. |
 
 ## Example

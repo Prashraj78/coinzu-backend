@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
+import { ApiList } from '../../common/decorators/api-envelope.decorator';
+import { OfferwallDto } from './dto/offerwall.response';
 import { OfferwallService } from './offerwall.service';
 import { OfferwallPostbackService } from './offerwall-postback.service';
 
@@ -17,6 +19,7 @@ export class OfferwallController {
 
   @Get()
   @ApiOperation({ summary: 'Active offerwalls, ranked, each with my user id in its URL' })
+  @ApiList(OfferwallDto)
   list(@CurrentUser() user: RequestUser) {
     return this.offerwallService.listForUser(user.cz_user_id);
   }

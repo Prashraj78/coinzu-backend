@@ -47,6 +47,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDAUTH015` | 400 | This link has expired or was already used. Please request a new one. | The Redis key for this email/reset link token was evicted by its TTL, was already consumed, or never existed. | `OtpExpiredIcon` |
 | `CZDAUTH016` | 429 | You just requested a link. Please wait a while before asking for another. | A verify-email link was resent to this user within the cooldown window; `retry_after_seconds` carries the remaining wait. | `TooManyAttemptsIcon` |
 | `CZDAUTH017` | 404 | We couldn't find an account with that email. Please check it, or create a new account. | Password reset requested for an email that has no user row. | `AccountNotFoundIcon` |
+| `CZDAUTH018` | 401 | This account was deleted. Please contact support to reopen it. | Login blocked: the account was soft-deleted by the user (status is "deleted"). | `AccountInactiveIcon` |
 
 ## User — `CZDUSER`
 

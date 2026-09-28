@@ -92,7 +92,8 @@ None.
 |---|---|---|---|---|
 | 401 | `CZDAUTH001` | The email or password you entered is incorrect. | No account with that email, or the password does not match. | `InvalidCredentialsIcon` |
 | 401 | `CZDAUTH013` | This account uses Google sign-in. Please continue with Google. | The account was created with Google and has no password. | `PasswordNotSetIcon` |
-| 401 | `CZDAUTH002` | Your account is inactive. Please contact support. | The account status is not `active`. | `AccountInactiveIcon` |
+| 401 | `CZDAUTH002` | Your account is inactive. Please contact support. | The account status is `suspended` or `banned`. | `AccountInactiveIcon` |
+| 401 | `CZDAUTH018` | This account was deleted. Please contact support to reopen it. | The account was soft-deleted by the user (status is `deleted`). | `AccountInactiveIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, or an unknown field was sent. | `ValidationFailedIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
 | 500 | `CZDCOMM002` | Something went wrong. Please try again. | Unhandled server error. | `ServerErrorIcon` |

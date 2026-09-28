@@ -89,7 +89,7 @@ curl -X PUT "$BASE/admin/daily/spin-wheel" \
 
 - **All or nothing.** The write clears the wheel and re-inserts it inside a transaction, so a rejected payload leaves the old wheel exactly as it was.
 - **Send every segment, every time.** This is a `PUT`: anything you leave out is deleted. `cz_spin_wheel_config_id` values are regenerated each save, so never store them.
-- **A segment pays exactly what it says.** There is no payout band on the wheel: the wedge advertises its value to the user before they spin, so it has to be honest. Bands belong to the [scratch pool](069daily.scratch.save.md), where the prize is hidden until it is scratched.
+- **A segment pays exactly what it says.** There is no payout band on the wheel: the wedge advertises its value to the user before they spin, so it has to be honest. Bands belong to the [scratch pool](070daily.scratch.save.md), where the prize is hidden until it is scratched.
 - **The label is what the user reads on the wedge.** Name it for the prize (`1000`, `50 gems`, `Better luck`), not for a mechanic.
 - **A wheel with no winning weight is refused**, because the draw would have nothing to pick.
 - Spins already taken keep what they paid; `spin_history` is the record and is never rewritten.

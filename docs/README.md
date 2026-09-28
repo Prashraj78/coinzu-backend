@@ -1,12 +1,12 @@
 # Coinzu API docs
 
-154 endpoints across three folders. Every endpoint has its own file, numbered in reading order.
+157 endpoints across three folders. Every endpoint has its own file, numbered in reading order.
 
 | Folder | Count | What lives here |
 |---|---|---|
-| [`apis/user/`](apis/user) | 49 | **Live user-facing APIs.** Built, tested and safe for the app to integrate against. |
-| [`apis/inprogress/`](apis/inprogress) | 22 | **Not tested yet.** The endpoint exists and the doc is written, but it has not been verified end to end. Do not build against these without checking first. |
-| [`apis/admin/`](apis/admin) | 83 | **Admin panel APIs.** Called with a Rewardtym admin token, never by the app. |
+| [`apis/user/`](apis/user) | 50 | **Live user-facing APIs.** Built, tested and safe for the app to integrate against. |
+| [`apis/inprogress/`](apis/inprogress) | 23 | **Not tested yet.** The endpoint exists and the doc is written, but it has not been verified end to end. Do not build against these without checking first. |
+| [`apis/admin/`](apis/admin) | 84 | **Admin panel APIs.** Called with a Rewardtym admin token, never by the app. |
 
 A doc moves from `inprogress/` to `user/` once its endpoint has actually been exercised end to end. It takes a new number in its new folder, and both folders are renumbered to stay contiguous.
 
@@ -58,6 +58,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 |---|---|---|---|
 | `GET /api/users/me` | user token | Returns the full profile of the signed-in user. | [005](apis/user/005users.me.md) |
 | `PATCH /api/users/me` | user token | Updates the profile of the signed-in user. Only the fields you send are changed. | [006](apis/user/006users.update-me.md) |
+| `DELETE /api/users/me` | user token | Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. | [023](apis/inprogress/023users.delete-me.md) |
 | `POST /api/users/me/onboarding/info` | user token | Account setup step 1 — saves name, gender, age range (country is server-derived). | [007](apis/user/007users.onboarding-info.md) |
 | `POST /api/users/me/onboarding/permissions` | user token | Account setup step 2 — records whether the user allowed push notifications. | [008](apis/user/008users.onboarding-permissions.md) |
 | `POST /api/users/me/onboarding/interests` | user token | Account setup step 3 — saves the interest tags the user picked. | [009](apis/user/009users.onboarding-interests.md) |
@@ -266,140 +267,140 @@ renumbers the folder, so identify an endpoint by its method and path.
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/dropdown/types` | admin token | Every dropdown category with its option counts, paginated and searchable. | [017](apis/admin/017dropdown.types.list.md) |
-| `POST /api/admin/dropdown/types` | admin token | Onboards a new dropdown category. | [018](apis/admin/018dropdown.types.create.md) |
-| `PATCH /api/admin/dropdown/types/:id` | admin token | Updates a dropdown category's label, description, order, or active state. | [019](apis/admin/019dropdown.types.update.md) |
+| `GET /api/admin/dropdown/types` | admin token | Every dropdown category with its option counts, paginated and searchable. | [018](apis/admin/018dropdown.types.list.md) |
+| `POST /api/admin/dropdown/types` | admin token | Onboards a new dropdown category. | [019](apis/admin/019dropdown.types.create.md) |
+| `PATCH /api/admin/dropdown/types/:id` | admin token | Updates a dropdown category's label, description, order, or active state. | [020](apis/admin/020dropdown.types.update.md) |
 
 ## Transactions — 2 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/transactions` | admin token | Every wallet movement across all users, filterable by user, currency, type, source and date. The Transactions tab table. | [020](apis/admin/020transactions.list.md) |
-| `GET /api/admin/transactions/:cz_wallet_transaction_id` | admin token | One wallet movement with its user, their live balance, and the row that caused it. | [021](apis/admin/021transactions.detail.md) |
+| `GET /api/admin/transactions` | admin token | Every wallet movement across all users, filterable by user, currency, type, source and date. The Transactions tab table. | [021](apis/admin/021transactions.list.md) |
+| `GET /api/admin/transactions/:cz_wallet_transaction_id` | admin token | One wallet movement with its user, their live balance, and the row that caused it. | [022](apis/admin/022transactions.detail.md) |
 
 ## Configuration Settings — 6 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/settings` | admin token | Every tunable platform setting, grouped, with its value, default and bounds. The Configuration Settings tab. | [022](apis/admin/022settings.list.md) |
-| `PATCH /api/admin/settings` | admin token | Saves one or more settings; validated all-or-nothing, then the cache is cleared. | [023](apis/admin/023settings.update.md) |
-| `GET /api/admin/referral-rules` | admin token | The referral reward ladder plus every trigger available to add. | [024](apis/admin/024referral-rules.list.md) |
-| `POST /api/admin/referral-rules` | admin token | Adds one step to the referral reward ladder. | [025](apis/admin/025referral-rules.create.md) |
-| `PATCH /api/admin/referral-rules/:id` | admin token | Changes a step's reward, threshold, label or active state. | [026](apis/admin/026referral-rules.update.md) |
-| `DELETE /api/admin/referral-rules/:id` | admin token | Removes a step from the referral reward ladder. | [027](apis/admin/027referral-rules.delete.md) |
+| `GET /api/admin/settings` | admin token | Every tunable platform setting, grouped, with its value, default and bounds. The Configuration Settings tab. | [023](apis/admin/023settings.list.md) |
+| `PATCH /api/admin/settings` | admin token | Saves one or more settings; validated all-or-nothing, then the cache is cleared. | [024](apis/admin/024settings.update.md) |
+| `GET /api/admin/referral-rules` | admin token | The referral reward ladder plus every trigger available to add. | [025](apis/admin/025referral-rules.list.md) |
+| `POST /api/admin/referral-rules` | admin token | Adds one step to the referral reward ladder. | [026](apis/admin/026referral-rules.create.md) |
+| `PATCH /api/admin/referral-rules/:id` | admin token | Changes a step's reward, threshold, label or active state. | [027](apis/admin/027referral-rules.update.md) |
+| `DELETE /api/admin/referral-rules/:id` | admin token | Removes a step from the referral reward ladder. | [028](apis/admin/028referral-rules.delete.md) |
 
 ## FAQs — 5 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/faqs/categories` | admin token | FAQ categories, inactive included, for the filter and the FAQ form. | [028](apis/admin/028faqs.categories.md) |
-| `GET /api/admin/faqs` | admin token | Every FAQ with its category, inactive included, filterable by category. | [029](apis/admin/029faqs.list.md) |
-| `POST /api/admin/faqs` | admin token | Adds a question and answer to a category. | [030](apis/admin/030faqs.create.md) |
-| `PATCH /api/admin/faqs/:id` | admin token | Edits a FAQ, moves it, reorders it, or hides it. | [031](apis/admin/031faqs.update.md) |
-| `DELETE /api/admin/faqs/:id` | admin token | Deletes a FAQ permanently. | [032](apis/admin/032faqs.delete.md) |
+| `GET /api/admin/faqs/categories` | admin token | FAQ categories, inactive included, for the filter and the FAQ form. | [029](apis/admin/029faqs.categories.md) |
+| `GET /api/admin/faqs` | admin token | Every FAQ with its category, inactive included, filterable by category. | [030](apis/admin/030faqs.list.md) |
+| `POST /api/admin/faqs` | admin token | Adds a question and answer to a category. | [031](apis/admin/031faqs.create.md) |
+| `PATCH /api/admin/faqs/:id` | admin token | Edits a FAQ, moves it, reorders it, or hides it. | [032](apis/admin/032faqs.update.md) |
+| `DELETE /api/admin/faqs/:id` | admin token | Deletes a FAQ permanently. | [033](apis/admin/033faqs.delete.md) |
 
 ## Problem Reports & Feedback — 2 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/tickets` | admin token | Every problem report, support ticket and piece of feedback with its user, filterable, plus a star summary. Backs both the Problem Reports and Feedback tabs. | [033](apis/admin/033tickets.list.md) |
-| `GET /api/admin/tickets/:cz_support_ticket_id` | admin token | One report with its user and the full message thread. | [034](apis/admin/034tickets.detail.md) |
+| `GET /api/admin/tickets` | admin token | Every problem report, support ticket and piece of feedback with its user, filterable, plus a star summary. Backs both the Problem Reports and Feedback tabs. | [034](apis/admin/034tickets.list.md) |
+| `GET /api/admin/tickets/:cz_support_ticket_id` | admin token | One report with its user and the full message thread. | [035](apis/admin/035tickets.detail.md) |
 
 ## Leaderboard — 1 endpoint
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/leaderboard` | admin token | Coin earners ranked, paginated and filterable by range, country and minimum. The Leaderboard tab. | [035](apis/admin/035leaderboard.list.md) |
+| `GET /api/admin/leaderboard` | admin token | Coin earners ranked, paginated and filterable by range, country and minimum. The Leaderboard tab. | [036](apis/admin/036leaderboard.list.md) |
 
 ## Identity (KYC) — 3 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/kyc` | admin token | Every verification attempt with its user, filterable, plus a count per outcome. The KYC tab. | [036](apis/admin/036kyc.list.md) |
-| `GET /api/admin/kyc/:cz_kyc_verification_id` | admin token | One attempt with the user and their full attempt history. | [037](apis/admin/037kyc.detail.md) |
-| `POST /api/admin/kyc/:cz_kyc_verification_id/decision` | **super admin** | Approves or rejects an attempt awaiting review, moving the account with it. | [038](apis/admin/038kyc.decide.md) |
+| `GET /api/admin/kyc` | admin token | Every verification attempt with its user, filterable, plus a count per outcome. The KYC tab. | [037](apis/admin/037kyc.list.md) |
+| `GET /api/admin/kyc/:cz_kyc_verification_id` | admin token | One attempt with the user and their full attempt history. | [038](apis/admin/038kyc.detail.md) |
+| `POST /api/admin/kyc/:cz_kyc_verification_id/decision` | **super admin** | Approves or rejects an attempt awaiting review, moving the account with it. | [039](apis/admin/039kyc.decide.md) |
 
 ## Push Notifications — 8 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/push` | admin token | Every push campaign, newest first, filterable, plus lifetime delivery and engagement totals. The Push Notifications tab. | [039](apis/admin/039push.list.md) |
-| `POST /api/admin/push/preview` | admin token | Who an audience reaches and who drops out, without sending. Powers the live reach counter. | [040](apis/admin/040push.preview.md) |
-| `POST /api/admin/push` | admin token | Creates a campaign and sends it now, schedules it, or saves a draft. | [041](apis/admin/041push.create.md) |
-| `POST /api/admin/push/:cz_push_campaign_id/send` | admin token | Runs a draft, or resends against a freshly resolved audience. | [042](apis/admin/042push.send.md) |
-| `POST /api/admin/push/:cz_push_campaign_id/cancel` | admin token | Stops a draft or a scheduled campaign before it runs. | [043](apis/admin/043push.cancel.md) |
-| `POST /api/admin/push/:cz_push_campaign_id/duplicate` | admin token | Copies a campaign into a fresh draft. | [044](apis/admin/044push.duplicate.md) |
-| `POST /api/admin/push/test` | admin token | A real send to a few named accounts, recorded nowhere. | [045](apis/admin/045push.test.md) |
-| `GET /api/admin/push/:cz_push_campaign_id` | admin token | One campaign with its results and what its audience reaches today. | [046](apis/admin/046push.detail.md) |
+| `GET /api/admin/push` | admin token | Every push campaign, newest first, filterable, plus lifetime delivery and engagement totals. The Push Notifications tab. | [040](apis/admin/040push.list.md) |
+| `POST /api/admin/push/preview` | admin token | Who an audience reaches and who drops out, without sending. Powers the live reach counter. | [041](apis/admin/041push.preview.md) |
+| `POST /api/admin/push` | admin token | Creates a campaign and sends it now, schedules it, or saves a draft. | [042](apis/admin/042push.create.md) |
+| `POST /api/admin/push/:cz_push_campaign_id/send` | admin token | Runs a draft, or resends against a freshly resolved audience. | [043](apis/admin/043push.send.md) |
+| `POST /api/admin/push/:cz_push_campaign_id/cancel` | admin token | Stops a draft or a scheduled campaign before it runs. | [044](apis/admin/044push.cancel.md) |
+| `POST /api/admin/push/:cz_push_campaign_id/duplicate` | admin token | Copies a campaign into a fresh draft. | [045](apis/admin/045push.duplicate.md) |
+| `POST /api/admin/push/test` | admin token | A real send to a few named accounts, recorded nowhere. | [046](apis/admin/046push.test.md) |
+| `GET /api/admin/push/:cz_push_campaign_id` | admin token | One campaign with its results and what its audience reaches today. | [047](apis/admin/047push.detail.md) |
 
 ## Push Templates — 4 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/push-templates` | admin token | Saved push messages, most used first. Feeds the composer's template picker. | [047](apis/admin/047push-templates.list.md) |
-| `POST /api/admin/push-templates` | admin token | Saves a reusable push message. | [048](apis/admin/048push-templates.create.md) |
-| `PATCH /api/admin/push-templates/:cz_push_template_id` | admin token | Edits a template, or hides it from the composer. | [049](apis/admin/049push-templates.update.md) |
-| `DELETE /api/admin/push-templates/:cz_push_template_id` | admin token | Deletes a template permanently. | [050](apis/admin/050push-templates.delete.md) |
+| `GET /api/admin/push-templates` | admin token | Saved push messages, most used first. Feeds the composer's template picker. | [048](apis/admin/048push-templates.list.md) |
+| `POST /api/admin/push-templates` | admin token | Saves a reusable push message. | [049](apis/admin/049push-templates.create.md) |
+| `PATCH /api/admin/push-templates/:cz_push_template_id` | admin token | Edits a template, or hides it from the composer. | [050](apis/admin/050push-templates.update.md) |
+| `DELETE /api/admin/push-templates/:cz_push_template_id` | admin token | Deletes a template permanently. | [051](apis/admin/051push-templates.delete.md) |
 
 ## Daily Streak — 3 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/streak` | admin token | The 30-day ladder, its payout totals against the targets, and where users sit on the board. The Daily Streak tab. | [051](apis/admin/051streak.ladder.md) |
-| `PUT /api/admin/streak` | admin token | Replaces the whole 30-day ladder in one transaction. | [052](apis/admin/052streak.save.md) |
-| `POST /api/admin/streak/reset` | admin token | Restores the shipped 5,000-coin / 2,000-gem ladder. | [053](apis/admin/053streak.reset.md) |
+| `GET /api/admin/streak` | admin token | The 30-day ladder, its payout totals against the targets, and where users sit on the board. The Daily Streak tab. | [052](apis/admin/052streak.ladder.md) |
+| `PUT /api/admin/streak` | admin token | Replaces the whole 30-day ladder in one transaction. | [053](apis/admin/053streak.save.md) |
+| `POST /api/admin/streak/reset` | admin token | Restores the shipped 5,000-coin / 2,000-gem ladder. | [054](apis/admin/054streak.reset.md) |
 
 ## Dashboard — 1 endpoint
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/dashboard/streak` | admin token | Daily-streak participation, depth and payout, for the Dashboard tab's streak card. | [054](apis/admin/054dashboard.streak.md) |
+| `GET /api/admin/dashboard/streak` | admin token | Daily-streak participation, depth and payout, for the Dashboard tab's streak card. | [055](apis/admin/055dashboard.streak.md) |
 
 ## Scheduled Jobs — 5 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/cron` | admin token | Every background job, its schedule, and how the last run went. The Scheduled Jobs tab. | [055](apis/admin/055cron.list.md) |
-| `POST /api/admin/cron/:key/run` | admin token | Runs one job immediately, on demand. | [056](apis/admin/056cron.run.md) |
-| `PATCH /api/admin/cron/:key/enabled` | admin token | Pauses or resumes one job. | [057](apis/admin/057cron.enabled.md) |
-| `PUT /api/admin/cron/:key/schedule` | admin token | Overrides when one job fires. | [058](apis/admin/058cron.schedule.md) |
-| `POST /api/admin/cron/:key/reset` | admin token | Restores the shipped schedule. | [059](apis/admin/059cron.reset.md) |
+| `GET /api/admin/cron` | admin token | Every background job, its schedule, and how the last run went. The Scheduled Jobs tab. | [056](apis/admin/056cron.list.md) |
+| `POST /api/admin/cron/:key/run` | admin token | Runs one job immediately, on demand. | [057](apis/admin/057cron.run.md) |
+| `PATCH /api/admin/cron/:key/enabled` | admin token | Pauses or resumes one job. | [058](apis/admin/058cron.enabled.md) |
+| `PUT /api/admin/cron/:key/schedule` | admin token | Overrides when one job fires. | [059](apis/admin/059cron.schedule.md) |
+| `POST /api/admin/cron/:key/reset` | admin token | Restores the shipped schedule. | [060](apis/admin/060cron.reset.md) |
 
 ## Achievements — 2 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/achievements` | admin token | Every medal with how many users hold it and who is close. The Achievements tab. | [060](apis/admin/060achievements.list.md) |
-| `GET /api/admin/achievements/:slug/users` | admin token | The users holding one medal, or still working towards it. Filterable. | [061](apis/admin/061achievements.holders.md) |
+| `GET /api/admin/achievements` | admin token | Every medal with how many users hold it and who is close. The Achievements tab. | [061](apis/admin/061achievements.list.md) |
+| `GET /api/admin/achievements/:slug/users` | admin token | The users holding one medal, or still working towards it. Filterable. | [062](apis/admin/062achievements.holders.md) |
 
 ## Daily Challenges — 13 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/daily/dashboard` | admin token | How much the daily games paid out over a range, and exactly where it went. Filterable by source, currency and bucket size. | [062](apis/admin/062daily.dashboard.md) |
-| `GET /api/admin/daily/challenges` | admin token | The five tiles, the master chest, and how the last week went. | [063](apis/admin/063daily.challenges.md) |
-| `PATCH /api/admin/daily/config` | admin token | Sets the master chest reward and the free scratch allowance. **The only way to change them** — they are not in the settings catalogue. | [064](apis/admin/064daily.config.md) |
-| `PATCH /api/admin/daily/challenges/:id` | admin token | Edits one tile — wording, target, rewards, and where a tap sends the app. | [065](apis/admin/065daily.challenges.update.md) |
-| `GET /api/admin/daily/spin-wheel` | admin token | The wheel's segments with real odds and the average payout per spin. | [066](apis/admin/066daily.wheel.md) |
-| `PUT /api/admin/daily/spin-wheel` | admin token | Replaces the whole wheel. A segment can pay a fixed amount or a random one inside a band. | [067](apis/admin/067daily.wheel.save.md) |
-| `GET /api/admin/daily/scratch-cards` | admin token | The scratch prize pool with real odds, medal gating and payout bands. | [068](apis/admin/068daily.scratch.md) |
-| `PUT /api/admin/daily/scratch-cards` | admin token | Replaces the whole prize pool. At least one active prize must stay ungated. | [069](apis/admin/069daily.scratch.save.md) |
-| `GET /api/admin/daily/quizzes` | admin token | The quiz schedule, paged and filterable, plus which of the next 15 days have no quiz. | [070](apis/admin/070daily.quizzes.md) |
-| `POST /api/admin/daily/quizzes` | admin token | Schedules a quiz for a date. Upsert — re-posting a date replaces it. | [071](apis/admin/071daily.quizzes.save.md) |
-| `POST /api/admin/daily/quizzes/:id/repeat` | admin token | Copies a quiz onto another day. | [072](apis/admin/072daily.quizzes.repeat.md) |
-| `POST /api/admin/daily/quizzes/image` | admin token | Uploads a quiz image and returns its public URL. | [073](apis/admin/073daily.quizzes.image.md) |
-| `DELETE /api/admin/daily/quizzes/:id` | admin token | Removes a scheduled quiz. | [074](apis/admin/074daily.quizzes.delete.md) |
+| `GET /api/admin/daily/dashboard` | admin token | How much the daily games paid out over a range, and exactly where it went. Filterable by source, currency and bucket size. | [063](apis/admin/063daily.dashboard.md) |
+| `GET /api/admin/daily/challenges` | admin token | The five tiles, the master chest, and how the last week went. | [064](apis/admin/064daily.challenges.md) |
+| `PATCH /api/admin/daily/config` | admin token | Sets the master chest reward and the free scratch allowance. **The only way to change them** — they are not in the settings catalogue. | [065](apis/admin/065daily.config.md) |
+| `PATCH /api/admin/daily/challenges/:id` | admin token | Edits one tile — wording, target, rewards, and where a tap sends the app. | [066](apis/admin/066daily.challenges.update.md) |
+| `GET /api/admin/daily/spin-wheel` | admin token | The wheel's segments with real odds and the average payout per spin. | [067](apis/admin/067daily.wheel.md) |
+| `PUT /api/admin/daily/spin-wheel` | admin token | Replaces the whole wheel. A segment can pay a fixed amount or a random one inside a band. | [068](apis/admin/068daily.wheel.save.md) |
+| `GET /api/admin/daily/scratch-cards` | admin token | The scratch prize pool with real odds, medal gating and payout bands. | [069](apis/admin/069daily.scratch.md) |
+| `PUT /api/admin/daily/scratch-cards` | admin token | Replaces the whole prize pool. At least one active prize must stay ungated. | [070](apis/admin/070daily.scratch.save.md) |
+| `GET /api/admin/daily/quizzes` | admin token | The quiz schedule, paged and filterable, plus which of the next 15 days have no quiz. | [071](apis/admin/071daily.quizzes.md) |
+| `POST /api/admin/daily/quizzes` | admin token | Schedules a quiz for a date. Upsert — re-posting a date replaces it. | [072](apis/admin/072daily.quizzes.save.md) |
+| `POST /api/admin/daily/quizzes/:id/repeat` | admin token | Copies a quiz onto another day. | [073](apis/admin/073daily.quizzes.repeat.md) |
+| `POST /api/admin/daily/quizzes/image` | admin token | Uploads a quiz image and returns its public URL. | [074](apis/admin/074daily.quizzes.image.md) |
+| `DELETE /api/admin/daily/quizzes/:id` | admin token | Removes a scheduled quiz. | [075](apis/admin/075daily.quizzes.delete.md) |
 
 ## Rewards — 9 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
-| `GET /api/admin/rewards/dashboard` | admin token | Gems collected against coins paid, by reward and by day. | [075](apis/admin/075rewards.dashboard.md) |
-| `GET /api/admin/rewards/games` | admin token | Every reward card with its configuration and live figures. | [076](apis/admin/076rewards.games.md) |
-| `PATCH /api/admin/rewards/games/:id` | admin token | Edits one card — wording, price, entry bounds, status. | [077](apis/admin/077rewards.games.update.md) |
-| `GET /api/admin/rewards/games/:id/prizes` | admin token | The prize ladder, or the wheel face with its real odds. | [078](apis/admin/078rewards.prizes.md) |
-| `PUT /api/admin/rewards/games/:id/prizes` | admin token | Replaces the whole prize ladder. | [079](apis/admin/079rewards.prizes.save.md) |
-| `GET /api/admin/rewards/games/:id/payout-rules` | admin token | How the pot scales with turnout — "x participants pays y". | [080](apis/admin/080rewards.rules.md) |
-| `PUT /api/admin/rewards/games/:id/payout-rules` | admin token | Replaces the turnout-to-pot ladder. | [081](apis/admin/081rewards.rules.save.md) |
-| `GET /api/admin/rewards/draws` | admin token | Every draw instance with its turnout, pot and winners. | [082](apis/admin/082rewards.draws.md) |
-| `POST /api/admin/rewards/draws/run` | admin token | Settles what is due and opens what is missing. **Pays real money.** | [083](apis/admin/083rewards.draws.run.md) |
+| `GET /api/admin/rewards/dashboard` | admin token | Gems collected against coins paid, by reward and by day. | [076](apis/admin/076rewards.dashboard.md) |
+| `GET /api/admin/rewards/games` | admin token | Every reward card with its configuration and live figures. | [077](apis/admin/077rewards.games.md) |
+| `PATCH /api/admin/rewards/games/:id` | admin token | Edits one card — wording, price, entry bounds, status. | [078](apis/admin/078rewards.games.update.md) |
+| `GET /api/admin/rewards/games/:id/prizes` | admin token | The prize ladder, or the wheel face with its real odds. | [079](apis/admin/079rewards.prizes.md) |
+| `PUT /api/admin/rewards/games/:id/prizes` | admin token | Replaces the whole prize ladder. | [080](apis/admin/080rewards.prizes.save.md) |
+| `GET /api/admin/rewards/games/:id/payout-rules` | admin token | How the pot scales with turnout — "x participants pays y". | [081](apis/admin/081rewards.rules.md) |
+| `PUT /api/admin/rewards/games/:id/payout-rules` | admin token | Replaces the turnout-to-pot ladder. | [082](apis/admin/082rewards.rules.save.md) |
+| `GET /api/admin/rewards/draws` | admin token | Every draw instance with its turnout, pot and winners. | [083](apis/admin/083rewards.draws.md) |
+| `POST /api/admin/rewards/draws/run` | admin token | Settles what is due and opens what is missing. **Pays real money.** | [084](apis/admin/084rewards.draws.run.md) |

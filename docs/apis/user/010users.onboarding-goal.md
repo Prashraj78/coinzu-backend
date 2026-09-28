@@ -149,6 +149,7 @@ curl -X POST http://localhost:4000/api/users/me/onboarding/goal \
 ## Notes
 
 - This is the last step. It sets `onboarding_completed` to `true`.
+- The first time it does, it credits the welcome bonus: `welcome_bonus_gems` gems (default 2000, admin-tunable, 0 switches it off) as one `earn` wallet row with `source_type: welcome_bonus`. The flip is conditional, so a repeat call never pays it twice.
 - Calling it again simply overwrites the goal; the flag stays `true`.
 - The client should route to the home screen once this returns.
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.
