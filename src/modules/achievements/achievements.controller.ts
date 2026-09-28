@@ -3,6 +3,8 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { AchievementsService } from './achievements.service';
+import { ApiData } from '../../common/decorators/api-envelope.decorator';
+import { AchievementBoardDto } from './dto/achievements.response';
 
 @ApiTags('achievements')
 @ApiBearerAuth()
@@ -11,6 +13,7 @@ export class AchievementsController {
   constructor(private readonly achievementsService: AchievementsService) {}
 
   @Get()
+  @ApiData(AchievementBoardDto)
   @ApiOperation({
     summary: 'Every achievement with my progress on each, plus my unlocked count and points',
   })

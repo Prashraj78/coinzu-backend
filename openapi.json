@@ -1004,7 +1004,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AchievementBoardDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1024,7 +1044,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ReferralInviteDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2893,7 +2933,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/LeaderboardRowDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2938,7 +3013,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/MyRankDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3004,7 +3099,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SupportTicketDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3043,7 +3158,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SupportTicketDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3072,7 +3222,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SupportTicketDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3113,7 +3283,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/FaqListDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -7833,6 +8023,396 @@
           "destination_details"
         ]
       },
+      "AchievementEarnedDto": {
+        "type": "object",
+        "properties": {
+          "coins": {
+            "type": "number",
+            "example": 19265
+          },
+          "gems": {
+            "type": "number",
+            "example": 15610
+          }
+        },
+        "required": [
+          "coins",
+          "gems"
+        ]
+      },
+      "AchievementProgressDto": {
+        "type": "object",
+        "properties": {
+          "unlocked": {
+            "type": "number",
+            "example": 3
+          },
+          "total": {
+            "type": "number",
+            "example": 24
+          },
+          "label": {
+            "type": "string",
+            "example": "3/24"
+          },
+          "percent": {
+            "type": "number",
+            "example": 13
+          },
+          "points": {
+            "type": "number",
+            "example": 230
+          },
+          "points_available": {
+            "type": "number",
+            "example": 4315
+          }
+        },
+        "required": [
+          "unlocked",
+          "total",
+          "label",
+          "percent",
+          "points",
+          "points_available"
+        ]
+      },
+      "AchievementDto": {
+        "type": "object",
+        "properties": {
+          "cz_achievement_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "nullable": true,
+            "example": "first-blood"
+          },
+          "title": {
+            "type": "string",
+            "example": "First Blood"
+          },
+          "emoji": {
+            "type": "string",
+            "nullable": true,
+            "example": "🔥"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Complete your first offer."
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "common",
+              "rare",
+              "epic",
+              "rarest"
+            ]
+          },
+          "points": {
+            "type": "number",
+            "example": 25
+          },
+          "criteria_type": {
+            "type": "string",
+            "example": "complete_offer"
+          },
+          "target": {
+            "type": "number",
+            "example": 1
+          },
+          "progress": {
+            "type": "number",
+            "example": 0
+          },
+          "progress_pct": {
+            "type": "number",
+            "example": 0
+          },
+          "progress_label": {
+            "type": "string",
+            "example": "0/1"
+          },
+          "is_unlocked": {
+            "type": "boolean",
+            "example": false
+          },
+          "unlocked_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "cz_achievement_id",
+          "slug",
+          "title",
+          "emoji",
+          "description",
+          "icon_url",
+          "rarity",
+          "points",
+          "criteria_type",
+          "target",
+          "progress",
+          "progress_pct",
+          "progress_label",
+          "is_unlocked",
+          "unlocked_at",
+          "display_order"
+        ]
+      },
+      "AchievementBoardDto": {
+        "type": "object",
+        "properties": {
+          "earned": {
+            "$ref": "#/components/schemas/AchievementEarnedDto"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/AchievementProgressDto"
+          },
+          "current_medal": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
+          },
+          "rarest_medal": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDto"
+              }
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 24
+          }
+        },
+        "required": [
+          "earned",
+          "progress",
+          "current_medal",
+          "rarest_medal",
+          "data",
+          "total"
+        ]
+      },
+      "ReferralStepDto": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "number",
+            "example": 1
+          },
+          "cz_referral_rule_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "trigger": {
+            "type": "string",
+            "example": "signup"
+          },
+          "label": {
+            "type": "string",
+            "example": "Friend signs up"
+          },
+          "description": {
+            "type": "string",
+            "example": "Pays the moment an invited friend creates their account with the code."
+          },
+          "threshold": {
+            "type": "number",
+            "nullable": true,
+            "example": null
+          },
+          "threshold_unit": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 50
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "required": [
+          "step",
+          "cz_referral_rule_id",
+          "trigger",
+          "label",
+          "description",
+          "threshold",
+          "threshold_unit",
+          "reward_coins",
+          "reward_gems"
+        ]
+      },
+      "ReferralCapDto": {
+        "type": "object",
+        "properties": {
+          "coins": {
+            "type": "number",
+            "example": 3000
+          },
+          "gems": {
+            "type": "number",
+            "example": 1800
+          },
+          "is_capped": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "coins",
+          "gems",
+          "is_capped"
+        ]
+      },
+      "ReferralStatsDto": {
+        "type": "object",
+        "properties": {
+          "friends_invited": {
+            "type": "number",
+            "example": 12
+          },
+          "friends_qualified": {
+            "type": "number",
+            "example": 5
+          },
+          "coins_earned": {
+            "type": "number",
+            "example": 2400
+          },
+          "gems_earned": {
+            "type": "number",
+            "example": 300
+          }
+        },
+        "required": [
+          "friends_invited",
+          "friends_qualified",
+          "coins_earned",
+          "gems_earned"
+        ]
+      },
+      "ReferredFriendDto": {
+        "type": "object",
+        "properties": {
+          "cz_referral_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Asha"
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "qualified"
+            ]
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 325
+          },
+          "qualified_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_referral_id",
+          "name",
+          "avatar_url",
+          "status",
+          "reward_coins",
+          "qualified_at",
+          "joined_at"
+        ]
+      },
+      "ReferralInviteDto": {
+        "type": "object",
+        "properties": {
+          "referral_code": {
+            "type": "string",
+            "nullable": true,
+            "example": "AJSLE5XD"
+          },
+          "referral_link": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://app.coinzu.app/ref/AJSLE5XD"
+          },
+          "reward_steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReferralStepDto"
+            }
+          },
+          "max_per_friend": {
+            "$ref": "#/components/schemas/ReferralCapDto"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ReferralStatsDto"
+          },
+          "friends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReferredFriendDto"
+            }
+          }
+        },
+        "required": [
+          "referral_code",
+          "referral_link",
+          "reward_steps",
+          "max_per_friend",
+          "stats",
+          "friends"
+        ]
+      },
       "OfferGoalDto": {
         "type": "object",
         "properties": {
@@ -9490,6 +10070,207 @@
           "fulfilled_at"
         ]
       },
+      "LeaderboardRowDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number",
+            "example": 1
+          },
+          "cz_user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ada Lovelace"
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "total_coins": {
+            "type": "number",
+            "example": 184300
+          }
+        },
+        "required": [
+          "rank",
+          "cz_user_id",
+          "name",
+          "avatar_url",
+          "total_coins"
+        ]
+      },
+      "MyRankDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "number",
+            "nullable": true,
+            "example": 128
+          },
+          "total_coins": {
+            "type": "number",
+            "example": 9450
+          },
+          "window": {
+            "type": "string",
+            "enum": [
+              "today",
+              "week",
+              "all_time"
+            ]
+          }
+        },
+        "required": [
+          "rank",
+          "total_coins",
+          "window"
+        ]
+      },
+      "TicketMessageDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin"
+            ]
+          },
+          "body": {
+            "type": "string",
+            "example": "I completed the offer yesterday but got no coins."
+          },
+          "author_id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "from",
+          "body",
+          "author_id",
+          "created_at"
+        ]
+      },
+      "SupportTicketDto": {
+        "type": "object",
+        "properties": {
+          "cz_support_ticket_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "email_support",
+              "report_problem",
+              "feedback"
+            ]
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "example": "Withdrawals"
+          },
+          "issue_type": {
+            "type": "string",
+            "nullable": true,
+            "example": "Coins not credited"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "affected_area": {
+            "type": "string",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true,
+            "example": "Coins missing after offer"
+          },
+          "description": {
+            "type": "string",
+            "example": "I completed the offer yesterday but got no coins."
+          },
+          "rating": {
+            "type": "number",
+            "nullable": true,
+            "example": null
+          },
+          "attachment_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "in_progress",
+              "resolved"
+            ]
+          },
+          "admin_response": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "resolved_by": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TicketMessageDto"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "cz_support_ticket_id",
+          "user_id",
+          "type",
+          "category",
+          "issue_type",
+          "occurred_at",
+          "affected_area",
+          "subject",
+          "description",
+          "rating",
+          "attachment_urls",
+          "status",
+          "admin_response",
+          "resolved_by",
+          "messages",
+          "created_at",
+          "updated_at"
+        ]
+      },
       "CreateTicketDto": {
         "type": "object",
         "properties": {
@@ -9548,6 +10329,107 @@
         "required": [
           "type",
           "description"
+        ]
+      },
+      "FaqDto": {
+        "type": "object",
+        "properties": {
+          "cz_faq_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "category_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "question": {
+            "type": "string",
+            "example": "How long do withdrawals take?"
+          },
+          "answer": {
+            "type": "string",
+            "example": "Most withdrawals settle within 48 hours."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "cz_faq_id",
+          "category_id",
+          "question",
+          "answer",
+          "display_order",
+          "is_active"
+        ]
+      },
+      "FaqCategoryDto": {
+        "type": "object",
+        "properties": {
+          "cz_faq_category_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slug": {
+            "type": "string",
+            "example": "payment"
+          },
+          "name": {
+            "type": "string",
+            "example": "Payment"
+          },
+          "icon": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "cz_faq_category_id",
+          "slug",
+          "name",
+          "icon",
+          "display_order",
+          "is_active"
+        ]
+      },
+      "FaqListDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaqDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 12
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FaqCategoryDto"
+            }
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "categories"
         ]
       },
       "CreateDropdownTypeDto": {
