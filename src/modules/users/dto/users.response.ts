@@ -77,10 +77,13 @@ export class UserDto {
   updated_at: Date;
 }
 
-export class DeletedAccountDto {
+export class DeactivatedAccountDto {
   @ApiProperty({ format: 'uuid' })
   cz_user_id: string;
 
   @ApiProperty({ example: 'ada@example.com' })
   email: string;
+
+  @ApiProperty({ enum: ['deleted'], example: 'deleted' })
+  status: 'deleted';
 }

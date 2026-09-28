@@ -151,7 +151,7 @@ curl -X PATCH $BASE/users/me \
 
 ### DELETE /api/users/me
 
-Permanently deletes the signed-in user's account and all of its data. — [`apis/inprogress/023users.delete-me.md`](apis/inprogress/023users.delete-me.md)
+Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. — [`apis/inprogress/023users.delete-me.md`](apis/inprogress/023users.delete-me.md)
 
 ```bash
 curl -X DELETE $BASE/users/me \

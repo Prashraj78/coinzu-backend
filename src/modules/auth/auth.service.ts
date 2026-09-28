@@ -12,7 +12,7 @@ import {
   CzUserErrorCodes,
 } from '../../common/errors/error.constants';
 import type { RequestUser } from '../../common/auth/request-user.types';
-import { User } from '../../database/entities/user.entity';
+import { User, UserStatus } from '../../database/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { UserDevicesService } from '../users/user-devices.service';
 import { ReferralsService } from '../referrals/referrals.service';
@@ -111,11 +111,7 @@ export class AuthService {
         cz_error_code: CzAuthErrorCodes.INVALID_CREDENTIALS,
       });
     }
-    if (user.status !== 'active') {
-      throw new UnauthorizedException({
-        cz_error_code: CzAuthErrorCodes.ACCOUNT_INACTIVE,
-      });
-    }
+    this.assertLoginable(user.status);
 
     // The select above already covers every publicUser field — no re-fetch.
     await this.usersService.touchLastLogin(user.cz_user_id);
@@ -145,14 +141,24 @@ export class AuthService {
       }
     }
 
-    if (user.status !== 'active') {
-      throw new UnauthorizedException({
-        cz_error_code: CzAuthErrorCodes.ACCOUNT_INACTIVE,
-      });
-    }
+    this.assertLoginable(user.status);
 
     await this.usersService.touchLastLogin(user.cz_user_id);
     return { user: this.publicUser(user), ...this.issueTokens(user) };
+  }
+
+  /**
+   * Refuses login for any non-active account. A user-deleted account gets its
+   * own "contact support to reopen" error; suspended/banned stay generic.
+   */
+  private assertLoginable(status: UserStatus): void {
+    if (status === 'active') return;
+    throw new UnauthorizedException({
+      cz_error_code:
+        status === 'deleted'
+          ? CzAuthErrorCodes.ACCOUNT_DELETED
+          : CzAuthErrorCodes.ACCOUNT_INACTIVE,
+    });
   }
 
   refresh(dto: RefreshDto) {

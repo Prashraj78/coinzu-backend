@@ -18,9 +18,9 @@ its own **Enum values** section. This page is the full list.
 | `active` | Normal account. Can sign in and earn. |
 | `suspended` | Temporarily blocked by an admin. Sign-in is refused. |
 | `banned` | Permanently blocked by an admin. Sign-in is refused. |
-| `deleted` | The user asked for deletion. Sign-in is refused. |
+| `deleted` | Soft-deleted. The user deactivated their own account (`DELETE /api/users/me`) — the row and its data are kept, sign-in is refused. Not the admin hard delete, which removes the row entirely. |
 
-Set by `PATCH /api/admin/users/:id/status`.
+Set by `PATCH /api/admin/users/:id/status`, or by `DELETE /api/users/me` (which sets `deleted` and stamps `deleted_at`).
 
 ### `kyc_status` — identity check state on the user
 

@@ -91,7 +91,8 @@ None.
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
 | 401 | `CZDAUTH012` | We could not sign you in with Google. Please try again. | The Google ID token failed verification, expired, or was issued for a different client id. | `GoogleSignInFailedIcon` |
-| 401 | `CZDAUTH002` | Your account is inactive. Please contact support. | The matched account status is not `active`. | `AccountInactiveIcon` |
+| 401 | `CZDAUTH002` | Your account is inactive. Please contact support. | The matched account status is `suspended` or `banned`. | `AccountInactiveIcon` |
+| 401 | `CZDAUTH018` | This account was deleted. Please contact support to reopen it. | The matched account was soft-deleted by the user (status is `deleted`). | `AccountInactiveIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, or an unknown field was sent. | `ValidationFailedIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
 | 500 | `CZDCOMM002` | Something went wrong. Please try again. | Unhandled server error. | `ServerErrorIcon` |

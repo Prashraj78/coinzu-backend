@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
-import { User } from '../../database/entities/user.entity';
+import { User, UserStatus } from '../../database/entities/user.entity';
 import { CzUserErrorCodes } from '../../common/errors/error.constants';
 import { generateReferralCode } from '../../common/utils/random.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
@@ -224,12 +224,23 @@ export class UsersService {
     return { cz_user_id: userId, email: found.email };
   }
 
-  /** The in-app "Delete account" action: the same irreversible wipe the admin delete runs. */
-  async deleteSelf(
+  /**
+   * The in-app "Delete account" action: a soft delete. The row and its data
+   * are kept; the account is marked deleted so login is refused (auth only
+   * lets `active` through). The irreversible wipe stays admin-only
+   * (`hardDeleteByEmail`).
+   */
+  async deactivateSelf(
     cz_user_id: string,
-  ): Promise<{ cz_user_id: string; email: string }> {
+  ): Promise<{ cz_user_id: string; email: string; status: UserStatus }> {
     const user = await this.getOrFail(cz_user_id);
-    return this.hardDeleteByEmail(user.email);
+    if (user.status !== 'deleted') {
+      await this.users.update(
+        { cz_user_id },
+        { status: 'deleted', deleted_at: new Date() },
+      );
+    }
+    return { cz_user_id, email: user.email, status: 'deleted' };
   }
 
   async updateProfile(

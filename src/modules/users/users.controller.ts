@@ -21,7 +21,7 @@ import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
 import { UpdateNotificationPreferencesDto } from './dto/notification-preferences.dto';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { DeletedAccountDto, UserDto } from './dto/users.response';
+import { DeactivatedAccountDto, UserDto } from './dto/users.response';
 import { UserDevicesService } from './user-devices.service';
 import { UsersService } from './users.service';
 
@@ -50,10 +50,12 @@ export class UsersController {
 
   @Delete('me')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Permanently delete my account and all of its data' })
-  @ApiData(DeletedAccountDto)
-  deleteMe(@CurrentUser() user: RequestUser) {
-    return this.usersService.deleteSelf(user.cz_user_id);
+  @ApiOperation({
+    summary: 'Deactivate my account (soft delete) — blocks sign-in, keeps data',
+  })
+  @ApiData(DeactivatedAccountDto)
+  deactivateMe(@CurrentUser() user: RequestUser) {
+    return this.usersService.deactivateSelf(user.cz_user_id);
   }
 
   @Post('me/onboarding/info')

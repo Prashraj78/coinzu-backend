@@ -58,7 +58,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 |---|---|---|---|
 | `GET /api/users/me` | user token | Returns the full profile of the signed-in user. | [005](apis/user/005users.me.md) |
 | `PATCH /api/users/me` | user token | Updates the profile of the signed-in user. Only the fields you send are changed. | [006](apis/user/006users.update-me.md) |
-| `DELETE /api/users/me` | user token | Permanently deletes the signed-in user's account and all of its data. | [023](apis/inprogress/023users.delete-me.md) |
+| `DELETE /api/users/me` | user token | Deactivates the signed-in user's account (soft delete) — blocks sign-in, keeps the data. The hard wipe is admin-only. | [023](apis/inprogress/023users.delete-me.md) |
 | `POST /api/users/me/onboarding/info` | user token | Account setup step 1 — saves name, gender, age range (country is server-derived). | [007](apis/user/007users.onboarding-info.md) |
 | `POST /api/users/me/onboarding/permissions` | user token | Account setup step 2 — records whether the user allowed push notifications. | [008](apis/user/008users.onboarding-permissions.md) |
 | `POST /api/users/me/onboarding/interests` | user token | Account setup step 3 — saves the interest tags the user picked. | [009](apis/user/009users.onboarding-interests.md) |

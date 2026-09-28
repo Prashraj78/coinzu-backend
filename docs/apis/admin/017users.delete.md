@@ -1,6 +1,6 @@
 # DELETE /api/admin/users
 
-Hard-deletes a Coinzu user and every row that references them, matched by email. The Rewardtym admin panel's "Delete User" action calls this. **Irreversible** — there is no soft-delete and no undo.
+Hard-deletes a Coinzu user and every row that references them, matched by email. The Rewardtym admin panel's "Delete User" action calls this. **Irreversible** — there is no undo. This is the only endpoint that wipes data: the user-facing `DELETE /api/users/me` is a soft delete (marks the account `deleted`, keeps the rows).
 
 ## Overview
 
