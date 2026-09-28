@@ -429,7 +429,7 @@
         ]
       },
       "delete": {
-        "operationId": "UsersController_deleteMe",
+        "operationId": "UsersController_deactivateMe",
         "parameters": [],
         "responses": {
           "200": {
@@ -448,7 +448,7 @@
                       "example": true
                     },
                     "data": {
-                      "$ref": "#/components/schemas/DeletedAccountDto"
+                      "$ref": "#/components/schemas/DeactivatedAccountDto"
                     }
                   }
                 }
@@ -461,7 +461,57 @@
             "bearer": []
           }
         ],
-        "summary": "Permanently delete my account and all of its data",
+        "summary": "Deactivate my account (soft delete) — blocks sign-in, keeps data",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/avatar": {
+      "patch": {
+        "operationId": "UsersController_setAvatar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetAvatarDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Pick a library avatar, or switch back to the Google photo",
         "tags": [
           "users"
         ]
@@ -1075,6 +1125,61 @@
         "summary": "Everything the Invite a Friend screen needs: link, reward ladder, caps, stats and invited friends",
         "tags": [
           "referrals"
+        ]
+      }
+    },
+    "/api/avatars": {
+      "get": {
+        "operationId": "AvatarsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AvatarDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Avatars the user can pick for their profile picture",
+        "tags": [
+          "avatars"
         ]
       }
     },
@@ -3598,6 +3703,285 @@
         "summary": "Upload a dropdown option icon and get its public URL (admin only)",
         "tags": [
           "admin-dropdown"
+        ]
+      }
+    },
+    "/api/admin/avatars": {
+      "get": {
+        "operationId": "AdminAvatarsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "is_active",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AdminAvatarDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Avatar library, hidden ones included, paginated (admin only)",
+        "tags": [
+          "admin-avatars"
+        ]
+      },
+      "post": {
+        "operationId": "AdminAvatarsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAvatarDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AdminAvatarDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Add an avatar to the library (admin only)",
+        "tags": [
+          "admin-avatars"
+        ]
+      }
+    },
+    "/api/admin/avatars/{id}": {
+      "patch": {
+        "operationId": "AdminAvatarsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAvatarDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AdminAvatarDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Rename, reorder, replace or hide an avatar (admin only)",
+        "tags": [
+          "admin-avatars"
+        ]
+      },
+      "delete": {
+        "operationId": "AdminAvatarsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AvatarDeletedDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove an avatar from the library (admin only)",
+        "tags": [
+          "admin-avatars"
+        ]
+      }
+    },
+    "/api/admin/avatars/image": {
+      "post": {
+        "operationId": "AdminAvatarsController_uploadImage",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/AvatarImageDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upload an avatar image and get its public URL (admin only)",
+        "tags": [
+          "admin-avatars"
         ]
       }
     },
@@ -7274,7 +7658,19 @@
           },
           "avatar_url": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "The picture to show: a library avatar, the Google photo or an upload."
+          },
+          "avatar_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "Set when avatar_url is a library avatar."
+          },
+          "google_avatar_url": {
+            "type": "string",
+            "nullable": true,
+            "description": "Google profile photo, when the account signs in with Google."
           },
           "interests": {
             "example": [
@@ -7378,6 +7774,8 @@
           "age_range",
           "country",
           "avatar_url",
+          "avatar_id",
+          "google_avatar_url",
           "interests",
           "primary_goal",
           "referral_code",
@@ -7443,7 +7841,22 @@
           }
         }
       },
-      "DeletedAccountDto": {
+      "SetAvatarDto": {
+        "type": "object",
+        "properties": {
+          "cz_avatar_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "An active avatar from GET /api/avatars. Send this or use_google."
+          },
+          "use_google": {
+            "type": "boolean",
+            "example": true,
+            "description": "Switch back to the Google profile photo. Send this or cz_avatar_id."
+          }
+        }
+      },
+      "DeactivatedAccountDto": {
         "type": "object",
         "properties": {
           "cz_user_id": {
@@ -7453,11 +7866,19 @@
           "email": {
             "type": "string",
             "example": "ada@example.com"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "deleted"
+            ],
+            "example": "deleted"
           }
         },
         "required": [
           "cz_user_id",
-          "email"
+          "email",
+          "status"
         ]
       },
       "OnboardingInfoDto": {
@@ -8437,6 +8858,33 @@
           "max_per_friend",
           "stats",
           "friends"
+        ]
+      },
+      "AvatarDto": {
+        "type": "object",
+        "properties": {
+          "cz_avatar_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "example": "Aria"
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/aria.png"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "required": [
+          "cz_avatar_id",
+          "label",
+          "image_url",
+          "display_order"
         ]
       },
       "OfferGoalDto": {
@@ -10539,6 +10987,121 @@
             "example": true
           }
         }
+      },
+      "AdminAvatarDto": {
+        "type": "object",
+        "properties": {
+          "cz_avatar_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string",
+            "example": "Aria"
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/aria.png"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cz_avatar_id",
+          "label",
+          "image_url",
+          "display_order",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "CreateAvatarDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Aria",
+            "description": "Name shown under the avatar in the picker."
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/aria.png",
+            "description": "Upload the file with POST /api/admin/avatars/image first and send its url."
+          },
+          "display_order": {
+            "type": "number",
+            "example": 1
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "label",
+          "image_url"
+        ]
+      },
+      "UpdateAvatarDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Aria"
+          },
+          "image_url": {
+            "type": "string",
+            "example": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/aria.png"
+          },
+          "display_order": {
+            "type": "number",
+            "example": 2
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": false,
+            "description": "Hidden from the picker. Users already wearing it keep it."
+          }
+        }
+      },
+      "AvatarDeletedDto": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "deleted"
+        ]
+      },
+      "AvatarImageDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "example": "https://pub-3d84c195d8854a1aaf0f51c634bfa899.r2.dev/avatar-library/5f1c.png"
+          }
+        },
+        "required": [
+          "url"
+        ]
       },
       "CreateFaqDto": {
         "type": "object",

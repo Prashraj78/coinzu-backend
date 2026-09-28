@@ -5,6 +5,7 @@ import { UserDevice } from '../../database/entities/user-device.entity';
 import { WalletModule } from '../wallet/wallet.module';
 import { ReferralsModule } from '../referrals/referrals.module';
 import { AchievementsModule } from '../achievements/achievements.module';
+import { AvatarsModule } from '../avatars/avatars.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { UserDevicesService } from './user-devices.service';
@@ -15,6 +16,7 @@ import { UserDevicesService } from './user-devices.service';
     WalletModule,
     ReferralsModule,
     AchievementsModule,
+    AvatarsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UserDevicesService],

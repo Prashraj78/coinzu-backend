@@ -142,6 +142,7 @@ export class AuthService {
     }
 
     this.assertLoginable(user.status);
+    await this.usersService.syncGooglePhoto(user, profile.avatar_url ?? null);
 
     await this.usersService.touchLastLogin(user.cz_user_id);
     return { user: this.publicUser(user), ...this.issueTokens(user) };

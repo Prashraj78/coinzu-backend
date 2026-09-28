@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -29,6 +30,8 @@ import { AchievementsService } from '../achievements/achievements.service';
 import { UpdateNotificationPreferencesDto } from './dto/notification-preferences.dto';
 import { OnboardingGoalDto } from './dto/onboarding-goal.dto';
 import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
+import { SetAvatarDto } from './dto/set-avatar.dto';
+import { AvatarsService } from '../avatars/avatars.service';
 
 const BCRYPT_ROUNDS = 12;
 
@@ -53,6 +56,7 @@ export class UsersService {
     private readonly achievementsService: AchievementsService,
     private readonly geoLookup: GeoLookupExternal,
     private readonly settingsService: SettingsService,
+    private readonly avatarsService: AvatarsService,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -265,6 +269,36 @@ export class UsersService {
     }
     user.profile_completion_pct = this.completionPercent(user);
     return this.saveWithoutSecret(user);
+  }
+
+  /** Profile picture from the avatar library, or back to the Google photo. */
+  async setAvatar(cz_user_id: string, dto: SetAvatarDto): Promise<User> {
+    if (!dto.cz_avatar_id === !dto.use_google) {
+      throw new BadRequestException({ cz_error_code: CzUserErrorCodes.AVATAR_CHOICE_REQUIRED });
+    }
+    const user = await this.getOrFail(cz_user_id);
+    if (dto.cz_avatar_id) {
+      const avatar = await this.avatarsService.getActiveOrFail(dto.cz_avatar_id);
+      user.avatar_id = avatar.cz_avatar_id;
+      user.avatar_url = avatar.image_url;
+    } else {
+      if (!user.google_avatar_url) {
+        throw new NotFoundException({ cz_error_code: CzUserErrorCodes.GOOGLE_PHOTO_UNAVAILABLE });
+      }
+      user.avatar_id = null;
+      user.avatar_url = user.google_avatar_url;
+    }
+    user.profile_completion_pct = this.completionPercent(user);
+    return this.saveWithoutSecret(user);
+  }
+
+  /** Keeps the latest Google photo on file; it becomes the picture only when the user has none yet. */
+  async syncGooglePhoto(user: User, picture: string | null): Promise<void> {
+    if (!picture || picture === user.google_avatar_url) return;
+    const patch: Partial<User> = { google_avatar_url: picture };
+    if (!user.avatar_url) patch.avatar_url = picture;
+    await this.users.update({ cz_user_id: user.cz_user_id }, patch);
+    Object.assign(user, patch);
   }
 
   async saveOnboardingInfo(

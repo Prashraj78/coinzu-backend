@@ -21,6 +21,7 @@ import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
 import { UpdateNotificationPreferencesDto } from './dto/notification-preferences.dto';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { SetAvatarDto } from './dto/set-avatar.dto';
 import { DeactivatedAccountDto, UserDto } from './dto/users.response';
 import { UserDevicesService } from './user-devices.service';
 import { UsersService } from './users.service';
@@ -46,6 +47,13 @@ export class UsersController {
   @ApiData(UserDto)
   updateMe(@CurrentUser() user: RequestUser, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(user.cz_user_id, dto);
+  }
+
+  @Patch('me/avatar')
+  @ApiOperation({ summary: 'Pick a library avatar, or switch back to the Google photo' })
+  @ApiData(UserDto)
+  setAvatar(@CurrentUser() user: RequestUser, @Body() dto: SetAvatarDto) {
+    return this.usersService.setAvatar(user.cz_user_id, dto);
   }
 
   @Delete('me')

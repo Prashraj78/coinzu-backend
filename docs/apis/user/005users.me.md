@@ -42,7 +42,9 @@ None.
 | `gender` | string \| null | Self-reported gender. |
 | `age_range` | string \| null | One of `18-24`, `25-34`, `35-44`, `45-54+`. |
 | `country` | string \| null | ISO 3166-1 alpha-2 country code. |
-| `avatar_url` | string \| null | Public avatar URL. |
+| `avatar_url` | string \| null | The picture to show: a library avatar, the Google photo or an upload. |
+| `avatar_id` | uuid \| null | Set when `avatar_url` is a library avatar (`GET /api/avatars`). |
+| `google_avatar_url` | string \| null | The Google profile photo on file, refreshed on every Google sign-in. Offer it as a choice when present. |
 | `interests` | string[] | Interest tags picked during onboarding. |
 | `primary_goal` | string \| null | The goal picked in the last onboarding step. |
 | `referral_code` | string | The code this user shares with friends. |
@@ -73,6 +75,8 @@ None.
     "age_range": "25-34",
     "country": "GB",
     "avatar_url": "https://cdn.coinzu.app/avatars/0f7c2b9e.png",
+    "avatar_id": null,
+    "google_avatar_url": null,
     "interests": ["gaming", "shopping", "travel"],
     "primary_goal": "save_for_a_trip",
     "referral_code": "K7M2PQ4X",
