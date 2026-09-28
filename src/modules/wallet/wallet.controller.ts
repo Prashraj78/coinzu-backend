@@ -2,10 +2,12 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
+import { ApiData } from '../../common/decorators/api-envelope.decorator';
 import { ListQueryDto } from '../../common/dto/list-query.dto';
 import { ConvertCurrencyDto } from './dto/convert-currency.dto';
 import { CreateWithdrawalDto } from './dto/create-withdrawal.dto';
 import { RatesQueryDto } from './dto/rates-query.dto';
+import { WalletBalanceDto } from './dto/wallet.response';
 import { WalletService } from './wallet.service';
 import { WithdrawalService } from './withdrawal.service';
 
@@ -22,6 +24,7 @@ export class WalletController {
   @ApiOperation({
     summary: 'Coin and gem balances with their cash/coin value and live rates',
   })
+  @ApiData(WalletBalanceDto)
   getBalance(@CurrentUser() user: RequestUser) {
     return this.walletService.getBalanceSummary(user.cz_user_id);
   }

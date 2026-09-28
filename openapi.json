@@ -575,7 +575,27 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WalletBalanceDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -869,7 +889,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/OfferDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -889,7 +944,42 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -930,7 +1020,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MyOfferDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -959,7 +1084,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/OfferDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -5728,7 +5873,42 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/OfferwallDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -6195,6 +6375,68 @@
           }
         }
       },
+      "WalletBalanceRatesDto": {
+        "type": "object",
+        "properties": {
+          "coins_per_usd": {
+            "type": "number",
+            "example": 1000
+          },
+          "coins_per_gem": {
+            "type": "number",
+            "example": 0.025
+          },
+          "min_withdrawal_coins": {
+            "type": "number",
+            "example": 5000
+          }
+        },
+        "required": [
+          "coins_per_usd",
+          "coins_per_gem",
+          "min_withdrawal_coins"
+        ]
+      },
+      "WalletBalanceDto": {
+        "type": "object",
+        "properties": {
+          "coin_balance": {
+            "type": "number",
+            "example": 12500
+          },
+          "gem_balance": {
+            "type": "number",
+            "example": 12000
+          },
+          "coin_value_usd": {
+            "type": "string",
+            "example": "12.50"
+          },
+          "gem_value_coins": {
+            "type": "number",
+            "example": 300
+          },
+          "can_withdraw": {
+            "type": "boolean"
+          },
+          "rates": {
+            "$ref": "#/components/schemas/WalletBalanceRatesDto"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "coin_balance",
+          "gem_balance",
+          "coin_value_usd",
+          "gem_value_coins",
+          "can_withdraw",
+          "rates",
+          "updated_at"
+        ]
+      },
       "ConvertCurrencyDto": {
         "type": "object",
         "properties": {
@@ -6246,6 +6488,172 @@
           "amount_coins",
           "method",
           "destination_details"
+        ]
+      },
+      "OfferGoalDto": {
+        "type": "object",
+        "properties": {
+          "goal_id": {
+            "type": "string",
+            "example": "g1"
+          },
+          "title": {
+            "type": "string",
+            "example": "Install the app"
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 500
+          }
+        },
+        "required": [
+          "goal_id",
+          "title",
+          "reward_coins"
+        ]
+      },
+      "OfferDto": {
+        "type": "object",
+        "properties": {
+          "cz_offer_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "provider_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "external_offer_id": {
+            "type": "string",
+            "example": "RT-99120"
+          },
+          "title": {
+            "type": "string",
+            "example": "Reach level 10 in Coin Quest"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "reward_coins": {
+            "type": "number",
+            "example": 2500
+          },
+          "reward_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "example": "games"
+          },
+          "countries": {
+            "example": [
+              "US"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "platforms": {
+            "example": [
+              "android"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "goals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferGoalDto"
+            }
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "synced_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "cz_offer_id",
+          "provider_id",
+          "external_offer_id",
+          "title",
+          "description",
+          "image_url",
+          "reward_coins",
+          "reward_gems",
+          "category",
+          "countries",
+          "platforms",
+          "goals",
+          "is_active",
+          "expires_at",
+          "synced_at"
+        ]
+      },
+      "MyOfferDto": {
+        "type": "object",
+        "properties": {
+          "cz_offer_click_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clicked_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "offer": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OfferDto"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "in_progress",
+              "pending",
+              "approved",
+              "reversed"
+            ]
+          },
+          "payout_coins": {
+            "type": "number",
+            "example": 0
+          },
+          "credited_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "cz_offer_click_id",
+          "clicked_at",
+          "offer",
+          "status",
+          "payout_coins",
+          "credited_at"
         ]
       },
       "AnswerQuizDto": {
@@ -7763,6 +8171,49 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "OfferwallDto": {
+        "type": "object",
+        "properties": {
+          "cz_offerwall_partner_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Torox"
+          },
+          "logo_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "badge_label": {
+            "type": "string",
+            "nullable": true,
+            "example": "Trending"
+          },
+          "rank": {
+            "type": "number",
+            "example": 10
+          },
+          "offer_url": {
+            "type": "string",
+            "example": "https://partner.example/wall?uid=6d3a91f2"
+          }
+        },
+        "required": [
+          "cz_offerwall_partner_id",
+          "name",
+          "logo_url",
+          "description",
+          "badge_label",
+          "rank",
+          "offer_url"
         ]
       }
     }
