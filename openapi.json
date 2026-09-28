@@ -3174,7 +3174,27 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/KycResultDto"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -10603,6 +10623,68 @@
           "rank",
           "total_coins",
           "window"
+        ]
+      },
+      "KycResultDto": {
+        "type": "object",
+        "properties": {
+          "cz_kyc_verification_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kyc_status": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "manual_review",
+              "rejected"
+            ],
+            "description": "Same as status, named to match GET /api/users/me."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "manual_review",
+              "rejected"
+            ]
+          },
+          "reason_code": {
+            "type": "string",
+            "nullable": true,
+            "example": "CZDKYC004",
+            "description": "Set only on an automatic rejection."
+          },
+          "message": {
+            "type": "string",
+            "example": "Your identity is verified. Withdrawals are unlocked."
+          },
+          "selfie_url": {
+            "type": "string"
+          },
+          "can_retry": {
+            "type": "boolean",
+            "description": "Whether another selfie may be submitted."
+          },
+          "is_final": {
+            "type": "boolean",
+            "description": "True only once verified."
+          },
+          "submitted_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cz_kyc_verification_id",
+          "kyc_status",
+          "status",
+          "reason_code",
+          "message",
+          "selfie_url",
+          "can_retry",
+          "is_final",
+          "submitted_at"
         ]
       },
       "TicketMessageDto": {
