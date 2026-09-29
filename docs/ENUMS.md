@@ -494,7 +494,7 @@ Currently seeded:
 | `interest` | Options for the onboarding "choose your interests" screen. Each has an icon. |
 | `age_range` | Options for the onboarding "your age" picker. `value` matches `OnboardingInfoDto.age_range` (`18-24`, `25-34`, `35-44`, `45-54+`). No icons. |
 | `primary_goal` | Options for the onboarding "set your goal" screen. `value` matches `OnboardingGoalDto.primary_goal` (`earn_up_to_10_daily`, `highest_rewards`, `no_limit_earn_big`). Each has an icon. |
-| `error_icon` | Error-sheet icons. `value` is a `CzErrorIcon` member (e.g. `InsufficientCoinsIcon`), `icon_url` is the image an admin uploaded for it. See [ERROR_CODES.md](ERROR_CODES.md#error-icons). |
+| `error_icon` | Error-sheet icons. `value` is a `CzErrorIcon` member (e.g. `InsufficientCoinsIcon`), `icon_url` is its image. Every member ships with a designed icon from the set on R2 (`dropdown-icons/error_icon/v1/<value>.webp`: a tile coloured by error family plus a status badge for failed, needs action, waiting, done, locked or duplicate); an admin can still replace any of them. See [ERROR_CODES.md](ERROR_CODES.md#error-icons). |
 
 ## Offerwall Partners
 
