@@ -8,8 +8,8 @@ export class ResetPasswordDto {
   @Matches(LINK_TOKEN_PATTERN)
   token: string;
 
-  @ApiProperty({ example: 'N3wS3curePassw0rd', minLength: 8 })
+  @ApiProperty({ example: 'N3wS3curePassw0rd', minLength: 1 })
   @IsString()
-  @MinLength(8)
+  @MinLength(1)
   password: string;
 }

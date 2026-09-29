@@ -15,9 +15,9 @@ export class RegisterDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'S3curePassw0rd', minLength: 8 })
+  @ApiProperty({ example: 'S3curePassw0rd', minLength: 1 })
   @IsString()
-  @MinLength(8)
+  @MinLength(1)
   password: string;
 
   @ApiPropertyOptional({ example: 'Ada Lovelace' })

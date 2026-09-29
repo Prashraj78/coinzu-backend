@@ -133,11 +133,11 @@ export class AuthPagesService {
         <p class="sub">Choose a strong password for your Coinzu account.</p>
         <form id="resetForm" novalidate>
           <label for="password">New password</label>
-          <input type="password" id="password" minlength="8" required autocomplete="new-password" />
+          <input type="password" id="password" minlength="1" required autocomplete="new-password" />
           <div class="field-error" id="passwordError"></div>
 
           <label for="confirmPassword">Confirm password</label>
-          <input type="password" id="confirmPassword" minlength="8" required autocomplete="new-password" />
+          <input type="password" id="confirmPassword" minlength="1" required autocomplete="new-password" />
           <div class="field-error" id="confirmError"></div>
 
           <div class="banner" id="formBanner"></div>
@@ -167,8 +167,8 @@ export class AuthPagesService {
         document.getElementById('confirmError').textContent = '';
         setBanner('');
 
-        if (pwd.value.length < 8) {
-          document.getElementById('passwordError').textContent = 'Use at least 8 characters.';
+        if (pwd.value.length < 1) {
+          document.getElementById('passwordError').textContent = 'Create a password.';
           return;
         }
         if (pwd.value !== confirm.value) {

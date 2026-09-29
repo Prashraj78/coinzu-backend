@@ -8,6 +8,6 @@ export class LoginDto {
 
   @ApiProperty({ example: 'S3curePassw0rd' })
   @IsString()
-  @MinLength(8)
+  @MinLength(1)
   password: string;
 }
