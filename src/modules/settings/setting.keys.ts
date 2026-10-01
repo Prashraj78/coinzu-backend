@@ -5,6 +5,7 @@ export const SettingKeys = {
   MIN_WITHDRAWAL_COINS: 'min_withdrawal_coins',
   WITHDRAWAL_REQUIRES_KYC: 'withdrawal_requires_kyc',
   KYC_CONFIDENCE_THRESHOLD: 'kyc_confidence_threshold',
+  KYC_FACE_MATCH_THRESHOLD: 'kyc_face_match_threshold',
   REFERRAL_MAX_COINS_PER_FRIEND: 'referral_max_coins_per_friend',
   REFERRAL_MAX_GEMS_PER_FRIEND: 'referral_max_gems_per_friend',
   DAILY_CHEST_COINS: 'daily_chest_coins',
@@ -80,6 +81,16 @@ export const SettingCatalogue: Record<string, SettingMeta> = {
     label: 'KYC confidence threshold',
     description:
       'Face-match score a selfie must reach to auto-verify. Below this the attempt goes to manual review.',
+    value_type: 'integer',
+    unit: '%',
+    min: 0,
+    max: 100,
+  },
+  [SettingKeys.KYC_FACE_MATCH_THRESHOLD]: {
+    group: 'withdrawals',
+    label: 'Duplicate-face block threshold',
+    description:
+      'How closely a new selfie must match an already-verified face on another account to be treated as the same person. At or above this, the new attempt is rejected and its account blocked.',
     value_type: 'integer',
     unit: '%',
     min: 0,
@@ -168,6 +179,7 @@ export const SettingDefaults: Record<string, string> = {
   [SettingKeys.MIN_WITHDRAWAL_COINS]: '5000',
   [SettingKeys.WITHDRAWAL_REQUIRES_KYC]: 'true',
   [SettingKeys.KYC_CONFIDENCE_THRESHOLD]: '90',
+  [SettingKeys.KYC_FACE_MATCH_THRESHOLD]: '90',
   [SettingKeys.REFERRAL_MAX_COINS_PER_FRIEND]: '0',
   [SettingKeys.REFERRAL_MAX_GEMS_PER_FRIEND]: '0',
   [SettingKeys.DAILY_CHEST_COINS]: '1000',

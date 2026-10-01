@@ -426,6 +426,11 @@ export class UsersService {
     await this.users.update({ cz_user_id }, { kyc_status });
   }
 
+  /** Blocks an account. Login is refused for any non-active status. */
+  async ban(cz_user_id: string): Promise<void> {
+    await this.users.update({ cz_user_id }, { status: 'banned' });
+  }
+
   async touchLastLogin(cz_user_id: string): Promise<void> {
     await this.users.update({ cz_user_id }, { last_login_at: new Date() });
   }

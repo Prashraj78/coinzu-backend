@@ -19,6 +19,7 @@ import { ReferralRulesService } from '../referrals/referral-rules.service';
 import {
   RekognitionFaceExternal,
   FaceCheckResult,
+  FaceMatch,
 } from '../../external/rekognition-face.external';
 
 /** What the app is allowed to see. Score and raw response stay internal. */
@@ -46,6 +47,8 @@ const REJECTION_MESSAGE: Record<string, string> = {
     'We could not find a face in that photo. Please retake it in good light with your face clearly visible.',
   [CzKycErrorCodes.MULTIPLE_FACES_DETECTED]:
     'We found more than one face in that photo. Please retake it with only you in the frame.',
+  [CzKycErrorCodes.DUPLICATE_FACE]:
+    'This face is already verified on another account. Your account has been blocked for violating our one-account policy.',
 };
 
 @Injectable()
@@ -109,10 +112,20 @@ export class KycService {
 
     // Anything thrown here leaves no row and no status change, so the user is
     // exactly where they were and can simply try again.
-    const [result, threshold] = await Promise.all([
+    const [result, threshold, matchThreshold] = await Promise.all([
       this.face.detectFaces(image.buffer),
       this.confidenceThreshold(),
+      this.faceMatchThreshold(),
     ]);
+
+    // One real face is the precondition for the duplicate check — zero or many
+    // faces can't be matched to anyone, so leave those to the normal rejection.
+    if (result.face_count === 1) {
+      const match = await this.face.searchFace(image.buffer, matchThreshold);
+      if (match && match.user_id !== user_id) {
+        await this.blockForDuplicateFace(user_id, selfie_url, image.buffer, match);
+      }
+    }
 
     const rejection_code = this.rejectionCodeFor(result);
     const status = this.decideStatus(result, threshold, rejection_code);
@@ -135,6 +148,11 @@ export class KycService {
       this.usersService.setKycStatus(user_id, status),
       this.notifyUser(user_id, status, saved.rejection_reason),
     ]);
+
+    // Enrol the face so any later selfie matching it is caught as a duplicate.
+    if (status === 'verified') {
+      await this.face.indexFace(image.buffer, user_id);
+    }
 
     return {
       cz_kyc_verification_id: saved.cz_kyc_verification_id,
@@ -181,6 +199,49 @@ export class KycService {
 
   private async confidenceThreshold(): Promise<number> {
     return this.settingsService.getNumber(SettingKeys.KYC_CONFIDENCE_THRESHOLD);
+  }
+
+  private async faceMatchThreshold(): Promise<number> {
+    return this.settingsService.getNumber(SettingKeys.KYC_FACE_MATCH_THRESHOLD);
+  }
+
+  /**
+   * The selfie belongs to someone already verified on another account. We keep
+   * a rejected row for the audit trail, block this account, then stop the
+   * request — the original verified account is left untouched.
+   */
+  private async blockForDuplicateFace(
+    user_id: string,
+    selfie_url: string,
+    image: Buffer,
+    match: FaceMatch,
+  ): Promise<never> {
+    const reason = REJECTION_MESSAGE[CzKycErrorCodes.DUPLICATE_FACE];
+    const row = this.verifications.create({
+      user_id,
+      selfie_url,
+      rekognition_score: match.similarity,
+      rekognition_response: {
+        duplicate_of_user_id: match.user_id,
+        similarity: match.similarity,
+      },
+      status: 'rejected',
+      rejection_code: CzKycErrorCodes.DUPLICATE_FACE,
+      rejection_reason: reason,
+      reviewed_by: null,
+      reviewed_at: new Date(),
+    });
+
+    await Promise.all([
+      this.verifications.save(row),
+      this.usersService.setKycStatus(user_id, 'rejected'),
+      this.usersService.ban(user_id),
+    ]);
+    await this.notifyUser(user_id, 'rejected', reason);
+
+    throw new BadRequestException({
+      cz_error_code: CzKycErrorCodes.DUPLICATE_FACE,
+    });
   }
 
   private reasonText(row?: KycVerification | null): string | null {

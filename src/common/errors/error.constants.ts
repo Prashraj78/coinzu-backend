@@ -133,6 +133,7 @@ export const CzKycErrorCodes = {
   IMAGE_INVALID: 'CZDKYC006',
   FACE_SERVICE_UNAVAILABLE: 'CZDKYC007',
   DECISION_ALREADY_MADE: 'CZDKYC008',
+  DUPLICATE_FACE: 'CZDKYC009',
 } as const;
 
 /** Support module error codes */
@@ -752,6 +753,13 @@ export const CzErrorMap: Record<
     message: 'Verification is unavailable right now. Please try again shortly.',
     description: 'The AWS Rekognition call failed or timed out.',
     icon: CzErrorIcon.VERIFICATION_UNAVAILABLE,
+  },
+  [CzKycErrorCodes.DUPLICATE_FACE]: {
+    message:
+      'This face is already verified on another account. Your account has been blocked for violating our one-account policy.',
+    description:
+      'The selfie matched an already-verified face on a different user; the submitting account was banned.',
+    icon: CzErrorIcon.ACCOUNT_INACTIVE,
   },
   [CzSupportErrorCodes.TICKET_NOT_FOUND]: {
     message: 'We could not find that request.',
