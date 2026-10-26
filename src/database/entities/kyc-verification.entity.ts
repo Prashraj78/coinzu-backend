@@ -29,6 +29,10 @@ export class KycVerification {
   @Column({ type: 'varchar', length: 20, default: 'pending' })
   status: KycStatus;
 
+  /** Whether this verified face was enrolled in the Rekognition collection. */
+  @Column({ type: 'boolean', default: false })
+  face_indexed: boolean;
+
   /** Machine-readable reason, so the app can pick its own wording. */
   @Column({ type: 'varchar', length: 20, nullable: true })
   rejection_code: string | null;

@@ -150,8 +150,18 @@ export class KycService {
     ]);
 
     // Enrol the face so any later selfie matching it is caught as a duplicate.
+    // Record whether it actually landed: a failure here, left untracked, drops
+    // this user out of every future duplicate check. The backfill re-indexes
+    // any verified row still marked face_indexed = false.
     if (status === 'verified') {
-      await this.face.indexFace(image.buffer, user_id);
+      const indexed = await this.face.indexFace(image.buffer, user_id);
+      if (indexed) {
+        await this.verifications.update(
+          { cz_kyc_verification_id: saved.cz_kyc_verification_id },
+          { face_indexed: true },
+        );
+        saved.face_indexed = true;
+      }
     }
 
     return {
