@@ -61,6 +61,16 @@ export class AuthService {
       });
     }
 
+    // One account per physical device: block before creating anything if this
+    // device already belongs to someone else. `existing` (an unverified signup
+    // being taken over) is allowed to keep its own device.
+    if (dto.device) {
+      await this.userDevicesService.assertDeviceNotTaken(
+        dto.device.hardware_id,
+        existing?.cz_user_id,
+      );
+    }
+
     let user: User;
     if (existing) {
       await this.usersService.setPassword(existing.cz_user_id, dto.password);

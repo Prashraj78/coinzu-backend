@@ -107,15 +107,26 @@ export class RekognitionFaceExternal implements OnModuleInit {
   }
 
   /**
-   * The highest-scoring verified face already in the collection, if any reaches
-   * `threshold`. The ExternalImageId we stored is the owning user's id.
+   * The highest-scoring face in the collection that belongs to someone OTHER
+   * than `excludeUserId`, if any reaches `threshold`. The ExternalImageId we
+   * stored is the owning user's id.
+   *
+   * A top-1 search is not enough: once a user's own face is enrolled, their
+   * retry selfie matches themselves at ~100% and that self-match hides a real
+   * duplicate sitting just below it. So we ask for several candidates and skip
+   * the submitter's own faces, returning the first one that is someone else.
    */
-  async searchFace(image: Buffer, threshold: number): Promise<FaceMatch | null> {
+  async searchFace(
+    image: Buffer,
+    threshold: number,
+    excludeUserId?: string,
+  ): Promise<FaceMatch | null> {
     const command = new SearchFacesByImageCommand({
       CollectionId: FACE_COLLECTION_ID,
       Image: { Bytes: image },
       FaceMatchThreshold: threshold,
-      MaxFaces: 1,
+      // Enough headroom to see past the submitter's own enrolled face(s).
+      MaxFaces: 10,
     });
 
     let response;
@@ -131,10 +142,14 @@ export class RekognitionFaceExternal implements OnModuleInit {
       });
     }
 
-    const match = response.FaceMatches?.[0];
-    const user_id = match?.Face?.ExternalImageId;
-    if (!match || !user_id) return null;
-    return { user_id, similarity: match.Similarity ?? 0 };
+    // FaceMatches come back sorted by similarity, highest first.
+    for (const match of response.FaceMatches ?? []) {
+      const user_id = match.Face?.ExternalImageId;
+      if (!user_id) continue;
+      if (excludeUserId && user_id === excludeUserId) continue;
+      return { user_id, similarity: match.Similarity ?? 0 };
+    }
+    return null;
   }
 
   /**

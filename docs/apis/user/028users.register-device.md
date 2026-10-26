@@ -1,6 +1,6 @@
 # POST /api/users/me/device
 
-Registers or refreshes the calling app install as a device — the source of fraud signals (IP, ASN, ISP, VPN flag, country, fingerprint, reinstall-surviving `hardware_id`, SIM country/carrier, emulator/root flags) and, once the app has FCM/APNs, the target for push notifications. On every call the server computes a per-device `risk_score` + `risk_flags` and a user-level `fraud_score` + `fraud_flags` — **scored and stored only; nothing is blocked on them yet, and none of it is ever returned in the response.**
+Registers or refreshes the calling app install as a device — the source of fraud signals (IP, ASN, ISP, VPN flag, country, fingerprint, reinstall-surviving `hardware_id`, SIM country/carrier, emulator/root flags) and, once the app has FCM/APNs, the target for push notifications. On every call the server computes a per-device `risk_score` + `risk_flags` and a user-level `fraud_score` + `fraud_flags` — **scored and stored only on this endpoint; nothing is blocked here, and none of it is ever returned in the response.** (The one hard block, one account per physical `hardware_id`, is applied at `POST /api/auth/register`, not here — see its doc.)
 
 ## Overview
 
@@ -142,6 +142,7 @@ curl -X POST http://localhost:4000/api/users/me/device \
 
 - Idempotent: calling it again for the same `device_id` updates the existing row (`last_seen_at`, IP, push token, etc.) instead of creating a duplicate.
 - `POST /api/auth/register` accepts the same shape under an optional `device` field, so the very first call can happen at sign-up. Call this endpoint again on later logins or whenever the push token rotates to keep the row fresh.
+- **One account per physical device is enforced only at registration**, not here. `POST /api/auth/register` rejects a `hardware_id` already tied to another account with `CZDUSER011`. This endpoint stays scoring-only: it refreshes the caller's own device and never blocks, so a legitimate user keeps updating their row across reinstalls and logins.
 - `ip_address`, `country_code`, `asn`, `isp`, `is_vpn`, `user_agent` and `fingerprint` are computed by the server from the request and IP geolocation lookups — they are never accepted from the request body and are never returned in the response, to avoid handing fraud-detection internals back to the device being scored.
 - IP geolocation (ASN, ISP, VPN-hosting flag, country) is looked up through free third-party providers with a 6-hour cache; if every provider fails, those fields are stored as `null` rather than blocking the request.
 - `fingerprint` is `sha256(user_agent|asn|platform_type|device_id)`, a coarse fraud-matching signal, not a precise per-device fingerprint.

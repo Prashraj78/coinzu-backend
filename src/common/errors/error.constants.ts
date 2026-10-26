@@ -39,6 +39,7 @@ export const CzUserErrorCodes = {
   AVATAR_NOT_FOUND: 'CZDUSER008',
   GOOGLE_PHOTO_UNAVAILABLE: 'CZDUSER009',
   AVATAR_CHOICE_REQUIRED: 'CZDUSER010',
+  DEVICE_ALREADY_REGISTERED: 'CZDUSER011',
 } as const;
 
 /** Wallet module error codes */
@@ -432,6 +433,11 @@ export const CzErrorMap: Record<
     message: 'Please choose an avatar or your Google photo.',
     description: 'PATCH /api/users/me/avatar needs exactly one of cz_avatar_id or use_google: true.',
     icon: CzErrorIcon.VALIDATION_FAILED,
+  },
+  [CzUserErrorCodes.DEVICE_ALREADY_REGISTERED]: {
+    message: 'This device is already registered with another account.',
+    description: 'Registration blocked: the device hardware_id is already linked to a different cz_user_id. One account per physical device.',
+    icon: CzErrorIcon.PERMISSION_DENIED,
   },
   [CzWalletErrorCodes.WALLET_NOT_FOUND]: {
     message: 'We could not load your wallet. Please try again.',

@@ -63,6 +63,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDUSER008` | 404 | That avatar isn’t available any more. Please pick another one. | `cz_avatar_id` is unknown or the avatar is hidden. | `NotFoundIcon` |
 | `CZDUSER009` | 404 | We couldn’t find a Google photo on your account. Pick an avatar instead. | `use_google` on an account with no `google_avatar_url`. | `NotFoundIcon` |
 | `CZDUSER010` | 400 | Please choose an avatar or your Google photo. | `PATCH /api/users/me/avatar` got both fields or neither. | `ValidationFailedIcon` |
+| `CZDUSER011` | 409 | This device is already registered with another account. | Registration blocked: the device `hardware_id` is already linked to a different `cz_user_id`. One account per physical device. | `PermissionDeniedIcon` |
 
 ## Wallet — `CZDWLT`
 

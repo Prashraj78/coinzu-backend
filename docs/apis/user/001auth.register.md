@@ -102,6 +102,7 @@ None.
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
 | 409 | `CZDUSER001` | This email is already registered. Please sign in instead. | An account already exists with this email. | `DuplicateEmailIcon` |
+| 409 | `CZDUSER011` | This device is already registered with another account. | The `device.hardware_id` sent is already linked to a different account. One account per physical device; checked before the account is created. | `PermissionDeniedIcon` |
 | 400 | `CZDAUTH014` | That referral code is not valid. | The supplied `referral_code` does not belong to an active user. | `ReferralInvalidIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, or an unknown field was sent. | `ValidationFailedIcon` |
 | 429 | `CZDCOMM005` | Too many requests. Please slow down and try again. | Rate limit exceeded. | `RateLimitedIcon` |
@@ -148,4 +149,5 @@ curl -X POST http://localhost:4000/api/auth/register \
 - The account starts with `email_verified: false`. Send the code again with `POST /api/auth/email/send-otp` and confirm it with `POST /api/auth/email/verify-otp`.
 - The referral is only recorded here; the referrer is paid later, once this user qualifies (see `docs/apis/050referrals.summary.md`).
 - `device` is optional and its result is never echoed back in the response — call `POST /api/users/me/device` afterwards (or again later, e.g. when the push token rotates) to register or refresh it.
+- **One account per physical device.** When `device.hardware_id` is present and already belongs to a different account, registration is rejected with `CZDUSER011` **before** any account is created. A null `hardware_id` (web / older build) carries no device identity and is never blocked. This check runs only at registration — signing in to an existing account is never affected.
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.

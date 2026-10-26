@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
 import type { Request } from 'express';
@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { UserDevice } from '../../database/entities/user-device.entity';
 import { User } from '../../database/entities/user.entity';
 import { extractRequestIp, resolveDevicePlatform } from '../../common/utils/device-platform.util';
+import { CzUserErrorCodes } from '../../common/errors/error.constants';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 
@@ -41,6 +42,25 @@ export class UserDevicesService {
       platform_type: device.platform_type,
       registered: true,
     };
+  }
+
+  /**
+   * One account per physical device. Throws when this hardware_id is already tied
+   * to a different account. hardware_id is the reinstall-surviving id (SSAID/IDFV);
+   * a null one (web / old build) can't identify the device, so it never blocks.
+   * Called at registration, before the account is created.
+   */
+  async assertDeviceNotTaken(hardware_id: string | null | undefined, cz_user_id?: string): Promise<void> {
+    if (!hardware_id) return;
+    const owner = await this.userDevices.findOne({
+      where: { hardware_id },
+      select: { cz_user_id: true },
+    });
+    if (owner && owner.cz_user_id !== cz_user_id) {
+      throw new ConflictException({
+        cz_error_code: CzUserErrorCodes.DEVICE_ALREADY_REGISTERED,
+      });
+    }
   }
 
   /** Admin detail page: every install this user has signed in from, newest first. */

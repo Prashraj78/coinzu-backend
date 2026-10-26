@@ -120,8 +120,14 @@ export class KycService {
 
     // One real face is the precondition for the duplicate check — zero or many
     // faces can't be matched to anyone, so leave those to the normal rejection.
+    // Exclude the submitter's own enrolled face(s) so a retry doesn't match
+    // itself and mask a genuine duplicate on another account underneath it.
     if (result.face_count === 1) {
-      const match = await this.face.searchFace(image.buffer, matchThreshold);
+      const match = await this.face.searchFace(
+        image.buffer,
+        matchThreshold,
+        user_id,
+      );
       if (match && match.user_id !== user_id) {
         await this.blockForDuplicateFace(user_id, selfie_url, image.buffer, match);
       }
