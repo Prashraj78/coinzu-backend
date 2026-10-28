@@ -37,8 +37,8 @@ export class AuthController {
   @Post('google')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Sign in with a Google ID token' })
-  google(@Body() dto: GoogleLoginDto) {
-    return this.authService.googleLogin(dto);
+  google(@Body() dto: GoogleLoginDto, @Req() req: Request) {
+    return this.authService.googleLogin(dto, req);
   }
 
   @Public()

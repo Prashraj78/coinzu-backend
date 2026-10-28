@@ -74,6 +74,13 @@ export class UserDevicesService {
 
   /** IP, ASN, ISP, VPN flag, country, user-agent and fingerprint are always server-derived, never trusted from the client. */
   async upsert(cz_user_id: string, dto: RegisterDeviceDto, req: Request): Promise<UserDevice> {
+    // One account per physical device, enforced wherever the device arrives.
+    // The app registers the device after signup, so this — not the register
+    // handler — is the reliable gate: a hardware_id already owned by a
+    // different account is refused here. The owner's own refresh/re-login
+    // passes because assertDeviceNotTaken only throws on a foreign owner.
+    await this.assertDeviceNotTaken(dto.hardware_id, cz_user_id);
+
     const ip = extractRequestIp(req);
     const platform_type = resolveDevicePlatform(dto.platform_type, req);
     const user_agent = (req.headers['user-agent'] as string | undefined) ?? null;

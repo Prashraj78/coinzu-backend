@@ -7517,7 +7517,7 @@
           "password": {
             "type": "string",
             "example": "S3curePassw0rd",
-            "minLength": 8
+            "minLength": 1
           },
           "name": {
             "type": "string",
@@ -7569,6 +7569,14 @@
           "referral_code": {
             "type": "string",
             "example": "K7M2PQ4X"
+          },
+          "device": {
+            "description": "Device/fraud signals. Send on first sign-in so a device already tied to another account is refused before the account is created; may also be sent later via POST /api/users/me/device.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            ]
           }
         },
         "required": [
@@ -7623,7 +7631,7 @@
           "password": {
             "type": "string",
             "example": "N3wS3curePassw0rd",
-            "minLength": 8
+            "minLength": 1
           }
         },
         "required": [

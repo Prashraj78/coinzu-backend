@@ -129,11 +129,18 @@ export class AuthService {
   }
 
   /** Signs in with a Google ID token, creating the account on first use. */
-  async googleLogin(dto: GoogleLoginDto) {
+  async googleLogin(dto: GoogleLoginDto, req: Request) {
     const profile = await this.googleAuth.verifyIdToken(dto.id_token);
 
     let user = await this.usersService.findByGoogleId(profile.google_id);
     if (!user) user = await this.usersService.findByEmail(profile.email);
+
+    // One account per physical device: block before creating anything when
+    // this is a brand-new account on a device another account already owns.
+    // An existing user re-signing-in keeps their own device (checked in upsert).
+    if (!user && dto.device) {
+      await this.userDevicesService.assertDeviceNotTaken(dto.device.hardware_id);
+    }
 
     if (!user) {
       user = await this.usersService.create({
@@ -153,6 +160,10 @@ export class AuthService {
 
     this.assertLoginable(user.status);
     await this.usersService.syncGooglePhoto(user, profile.avatar_url ?? null);
+
+    if (dto.device) {
+      await this.userDevicesService.upsert(user.cz_user_id, dto.device, req);
+    }
 
     await this.usersService.touchLastLogin(user.cz_user_id);
     return { user: this.publicUser(user), ...this.issueTokens(user) };
@@ -196,6 +207,8 @@ export class AuthService {
 
   private async refreshForUser(cz_user_id: string) {
     const user = await this.usersService.getOrFail(cz_user_id);
+    // A banned or deleted account must not be able to mint a fresh token.
+    this.assertLoginable(user.status);
     return { user: this.publicUser(user), ...this.issueTokens(user) };
   }
 
