@@ -243,8 +243,19 @@ export class UsersService {
         { cz_user_id },
         { status: 'deleted', deleted_at: new Date() },
       );
+      // Free the device so its hardware_id no longer blocks a fresh registration.
+      await this.releaseDevices(cz_user_id);
     }
     return { cz_user_id, email: user.email, status: 'deleted' };
+  }
+
+  /** Removes a user's device rows so their hardware_id stops blocking the
+   * one-account-per-device check once the account is gone or banned. */
+  private async releaseDevices(cz_user_id: string): Promise<void> {
+    await this.users.manager.query(
+      'DELETE FROM "user_devices" WHERE cz_user_id = $1',
+      [cz_user_id],
+    );
   }
 
   async updateProfile(
@@ -429,6 +440,8 @@ export class UsersService {
   /** Blocks an account. Login and token refresh are refused for any non-active status. */
   async ban(cz_user_id: string): Promise<void> {
     await this.users.update({ cz_user_id }, { status: 'banned' });
+    // Free the device so a banned account's hardware_id doesn't block re-registration.
+    await this.releaseDevices(cz_user_id);
   }
 
   async touchLastLogin(cz_user_id: string): Promise<void> {
