@@ -8,6 +8,7 @@ import { GiftCardExternal } from './gift-card.external';
 import { OfferwallExternal } from './offerwall.external';
 import { GeoLookupExternal } from './geo-lookup.external';
 import { FirebasePushExternal } from './firebase-push.external';
+import { RewardtymExternal } from './rewardtym.external';
 
 const EXTERNALS = [
   R2StorageExternal,
@@ -19,6 +20,7 @@ const EXTERNALS = [
   OfferwallExternal,
   GeoLookupExternal,
   FirebasePushExternal,
+  RewardtymExternal,
 ];
 
 /** Every outbound integration, injectable anywhere without extra imports. */

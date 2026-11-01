@@ -19,6 +19,7 @@ import { SettingKeys } from '../settings/setting.keys';
 import { WalletService } from './wallet.service';
 import { CreateWithdrawalDto } from './dto/create-withdrawal.dto';
 import { AchievementsService } from '../achievements/achievements.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class WithdrawalService {
@@ -33,6 +34,7 @@ export class WithdrawalService {
     private readonly referralRulesService: ReferralRulesService,
     @Inject(forwardRef(() => AchievementsService))
     private readonly achievementsService: AchievementsService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   /** Coins leave the wallet immediately; an admin later approves or rejects. */
@@ -108,6 +110,12 @@ export class WithdrawalService {
       user_id,
       'withdrawals_completed',
       totalWithdrawals,
+    );
+
+    await this.notificationsService.push(
+      user_id,
+      'Withdrawal submitted',
+      `Your withdrawal of ${dto.amount_coins} coins ($${amountUsd}) is being processed. We'll let you know once it's paid.`,
     );
 
     return saved;

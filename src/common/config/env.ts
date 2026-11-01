@@ -69,7 +69,11 @@ const EXPECTED_VARS = [
   'MAIL_FROM_ADDRESS',
   'GIFT_CARD_API_URL',
   'GIFT_CARD_API_KEY',
+  'REWARDTYM_API_BASE_URL',
+  'REWARDTYM_API_KEY',
+  'REWARDTYM_WEBHOOK_SECRET',
   'FRONTEND_URL',
+  'PLAY_STORE_URL',
   'CORS_ORIGINS',
 ];
 
@@ -178,6 +182,13 @@ export const Env = {
     apiKey: str('GIFT_CARD_API_KEY'),
     providerName: str('GIFT_CARD_PROVIDER_NAME', 'default'),
   },
+  // RewardTym v3 /v3/coinzu APIs. Coinzu calls these as a partner.
+  rewardtym: {
+    baseUrl: str('REWARDTYM_API_BASE_URL', 'https://api.rewardtym.online'),
+    apiKey: str('REWARDTYM_API_KEY'),
+    partnerId: str('REWARDTYM_PARTNER_ID', 'lt_partner_650bbf449de5f902'),
+    webhookSecret: str('REWARDTYM_WEBHOOK_SECRET'),
+  },
   otp: {
     length: num('OTP_LENGTH', 6),
     ttlMinutes: num('OTP_TTL_MINUTES', 10),
@@ -190,6 +201,12 @@ export const Env = {
   urls: {
     frontend: str('FRONTEND_URL', 'http://localhost:3000'),
     api: str('API_BASE_URL', 'http://localhost:4000'),
+    // The shared referral link points straight at the Play Store listing; the
+    // code rides along in the Play `referrer` param for install attribution.
+    playStore: str(
+      'PLAY_STORE_URL',
+      'https://play.google.com/store/apps/details?id=com.coinzu.app',
+    ),
   },
   corsOrigins: str('CORS_ORIGINS'),
   throttle: {

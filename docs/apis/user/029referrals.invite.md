@@ -35,7 +35,7 @@ None.
 | Field | Type | Description |
 |---|---|---|
 | `referral_code` | string \| null | The code this user shares with friends. |
-| `referral_link` | string \| null | The full shareable link — `<FRONTEND_URL>/ref/<referral_code>`. |
+| `referral_link` | string \| null | The shareable link — the Play Store listing with the code in the Play `referrer` param: `<PLAY_STORE_URL>&referrer=ref%3D<referral_code>`. |
 | `reward_steps` | object[] | **The reward ladder, in the order a friend clears it.** Render this as the "how it works" list — every step, what it needs and what it pays. Admin-editable, so never hardcode it. |
 | `reward_steps[].step` | number | 1-based position in the ladder, for numbering the list. |
 | `reward_steps[].cz_referral_rule_id` | string (uuid) | Stable id of the step. |
@@ -69,7 +69,7 @@ None.
   "success": true,
   "data": {
     "referral_code": "AJSLE5XD",
-    "referral_link": "https://app.coinzu.app/ref/AJSLE5XD",
+    "referral_link": "https://play.google.com/store/apps/details?id=com.coinzu.app&referrer=ref%3DAJSLE5XD",
     "reward_steps": [
       {
         "step": 1,

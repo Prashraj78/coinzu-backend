@@ -81,7 +81,14 @@ export class ReferralInviteDto {
   @ApiProperty({ type: String, nullable: true, example: 'AJSLE5XD' })
   referral_code: string | null;
 
-  @ApiProperty({ type: String, nullable: true, example: 'https://app.coinzu.app/ref/AJSLE5XD' })
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    description:
+      'Play Store listing with the referral code in the Play `referrer` param.',
+    example:
+      'https://play.google.com/store/apps/details?id=com.coinzu.app&referrer=ref%3DAJSLE5XD',
+  })
   referral_link: string | null;
 
   @ApiProperty({ type: [ReferralStepDto] })

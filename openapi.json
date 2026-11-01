@@ -7392,6 +7392,240 @@
           "offerwall"
         ]
       }
+    },
+    "/api/rewardtym/webhook": {
+      "post": {
+        "operationId": "CoinzuOffersController_webhook",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "RewardTym's signed completion webhook (credits coins/gems). Public.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
+    },
+    "/api/rewardtym/home": {
+      "get": {
+        "operationId": "CoinzuOffersController_home",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CoinzuHomeResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "RewardTym home sections for the current user.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
+    },
+    "/api/rewardtym/in-progress": {
+      "get": {
+        "operationId": "CoinzuOffersController_inProgress",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "total"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/CoinzuInProgressOfferResponseDto"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Offers the user has started, paginated.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
+    },
+    "/api/rewardtym/redirect/{offer_id}": {
+      "get": {
+        "operationId": "CoinzuOffersController_redirect",
+        "parameters": [
+          {
+            "name": "offer_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CoinzuRedirectResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Final click/redirect URL with device context.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
+    },
+    "/api/rewardtym/offers/{id}": {
+      "get": {
+        "operationId": "CoinzuOffersController_offer",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CoinzuOfferResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Full detail for one RewardTym offer.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
     }
   },
   "info": {
@@ -8858,7 +9092,8 @@
           "referral_link": {
             "type": "string",
             "nullable": true,
-            "example": "https://app.coinzu.app/ref/AJSLE5XD"
+            "description": "Play Store listing with the referral code in the Play `referrer` param.",
+            "example": "https://play.google.com/store/apps/details?id=com.coinzu.app&referrer=ref%3DAJSLE5XD"
           },
           "reward_steps": {
             "type": "array",
@@ -12536,6 +12771,385 @@
           "badge_label",
           "rank",
           "offer_url"
+        ]
+      },
+      "CoinzuMilestoneResponseDto": {
+        "type": "object",
+        "properties": {
+          "milestone_id": {
+            "type": "string",
+            "example": "ms_01"
+          },
+          "title": {
+            "type": "string",
+            "example": "Reach level 5"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "sort_order": {
+            "type": "number",
+            "example": 1
+          },
+          "coins": {
+            "type": "number",
+            "example": 2500
+          },
+          "gems": {
+            "type": "number",
+            "example": 0
+          },
+          "deadline_days": {
+            "type": "number",
+            "nullable": true,
+            "example": 7
+          },
+          "is_bonus": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "required": [
+          "milestone_id",
+          "title",
+          "description",
+          "sort_order",
+          "coins",
+          "gems",
+          "deadline_days",
+          "is_bonus"
+        ]
+      },
+      "CoinzuOfferResponseDto": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "example": "ofr_123"
+          },
+          "name": {
+            "type": "string",
+            "example": "Coin Quest"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "short_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "example": "games"
+          },
+          "difficulty": {
+            "type": "string",
+            "nullable": true,
+            "example": "easy"
+          },
+          "countries": {
+            "example": [
+              "US",
+              "IN"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_worldwide": {
+            "type": "boolean",
+            "example": false
+          },
+          "has_milestones": {
+            "type": "boolean",
+            "example": true
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoinzuMilestoneResponseDto"
+            }
+          },
+          "total_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "total_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "redirect_url": {
+            "type": "string",
+            "example": "https://api.rewardtym.online/v3/r?lt_campaign_id=..."
+          },
+          "cta_label": {
+            "type": "string",
+            "nullable": true,
+            "example": "Start"
+          },
+          "est_time_label": {
+            "type": "string",
+            "nullable": true,
+            "example": "~10 min"
+          },
+          "rating": {
+            "type": "number",
+            "nullable": true,
+            "example": 4.5
+          },
+          "completed_count": {
+            "type": "number",
+            "nullable": true,
+            "example": 1200
+          },
+          "section_key": {
+            "type": "string",
+            "nullable": true,
+            "example": "trending"
+          }
+        },
+        "required": [
+          "offer_id",
+          "name",
+          "description",
+          "short_description",
+          "image_url",
+          "icon_url",
+          "category",
+          "difficulty",
+          "countries",
+          "is_worldwide",
+          "has_milestones",
+          "milestones",
+          "total_coins",
+          "total_gems",
+          "redirect_url",
+          "cta_label",
+          "est_time_label",
+          "rating",
+          "completed_count",
+          "section_key"
+        ]
+      },
+      "CoinzuHomeSectionResponseDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "trending"
+          },
+          "title": {
+            "type": "string",
+            "example": "Trending Offers"
+          },
+          "offers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoinzuOfferResponseDto"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "offers"
+        ]
+      },
+      "CoinzuHomeResponseDto": {
+        "type": "object",
+        "properties": {
+          "sections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoinzuHomeSectionResponseDto"
+            }
+          }
+        },
+        "required": [
+          "sections"
+        ]
+      },
+      "CoinzuOfferProgressDto": {
+        "type": "object",
+        "properties": {
+          "completed": {
+            "type": "number",
+            "example": 2
+          },
+          "total": {
+            "type": "number",
+            "example": 5
+          },
+          "done_milestone_ids": {
+            "example": [
+              "ms_01",
+              "ms_02"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "completed",
+          "total",
+          "done_milestone_ids"
+        ]
+      },
+      "CoinzuInProgressOfferResponseDto": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "example": "ofr_123"
+          },
+          "name": {
+            "type": "string",
+            "example": "Coin Quest"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "short_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "image_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "icon_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "example": "games"
+          },
+          "difficulty": {
+            "type": "string",
+            "nullable": true,
+            "example": "easy"
+          },
+          "countries": {
+            "example": [
+              "US",
+              "IN"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "is_worldwide": {
+            "type": "boolean",
+            "example": false
+          },
+          "has_milestones": {
+            "type": "boolean",
+            "example": true
+          },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoinzuMilestoneResponseDto"
+            }
+          },
+          "total_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "total_gems": {
+            "type": "number",
+            "example": 0
+          },
+          "redirect_url": {
+            "type": "string",
+            "example": "https://api.rewardtym.online/v3/r?lt_campaign_id=..."
+          },
+          "cta_label": {
+            "type": "string",
+            "nullable": true,
+            "example": "Start"
+          },
+          "est_time_label": {
+            "type": "string",
+            "nullable": true,
+            "example": "~10 min"
+          },
+          "rating": {
+            "type": "number",
+            "nullable": true,
+            "example": 4.5
+          },
+          "completed_count": {
+            "type": "number",
+            "nullable": true,
+            "example": 1200
+          },
+          "section_key": {
+            "type": "string",
+            "nullable": true,
+            "example": "trending"
+          },
+          "progress": {
+            "$ref": "#/components/schemas/CoinzuOfferProgressDto"
+          }
+        },
+        "required": [
+          "offer_id",
+          "name",
+          "description",
+          "short_description",
+          "image_url",
+          "icon_url",
+          "category",
+          "difficulty",
+          "countries",
+          "is_worldwide",
+          "has_milestones",
+          "milestones",
+          "total_coins",
+          "total_gems",
+          "redirect_url",
+          "cta_label",
+          "est_time_label",
+          "rating",
+          "completed_count",
+          "section_key",
+          "progress"
+        ]
+      },
+      "CoinzuRedirectResponseDto": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "example": "ofr_123"
+          },
+          "redirect_url": {
+            "type": "string",
+            "example": "https://api.rewardtym.online/v3/r?lt_campaign_id=...&partner_user_id=..."
+          }
+        },
+        "required": [
+          "offer_id",
+          "redirect_url"
         ]
       }
     }

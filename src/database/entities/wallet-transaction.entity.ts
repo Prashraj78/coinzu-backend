@@ -30,6 +30,7 @@ export type WalletSourceType =
   | 'convert'
   | 'admin_adjustment'
   | 'offerwall'
+  | 'rewardtym'
   | 'welcome_bonus';
 
 @Entity({ name: 'wallet_transactions' })

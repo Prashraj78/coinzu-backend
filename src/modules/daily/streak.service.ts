@@ -44,18 +44,27 @@ export class StreakService {
     // A missed day resets the board, so the tile offered today is day 1 again.
     const claimable_day = this.nextDayNumber(streak);
 
+    // The board the user actually sees. When the streak is broken (last claim was
+    // neither today nor yesterday) the cycle has restarted, so no days show as
+    // claimed even though the nightly sweep hasn't zeroed current_day yet — this
+    // is what kept the calendar on "2 claimed" while the button offered Day 1.
+    const broken =
+      streak.last_claimed_date !== today &&
+      streak.last_claimed_date !== yesterdayDate();
+    const effective_current_day = broken ? 0 : streak.current_day;
+
     const data = configs.map((config) => ({
       day_number: config.day_number,
       reward_coins: config.reward_coins,
       reward_gems: config.reward_gems,
       label: config.label,
       is_milestone: config.is_milestone,
-      is_claimed: config.day_number <= streak.current_day,
+      is_claimed: config.day_number <= effective_current_day,
       is_today: can_claim_today && config.day_number === claimable_day,
     }));
 
     return {
-      current_day: streak.current_day,
+      current_day: effective_current_day,
       longest_day: streak.longest_day,
       last_claimed_date: streak.last_claimed_date,
       can_claim_today,

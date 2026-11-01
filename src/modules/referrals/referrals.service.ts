@@ -19,6 +19,19 @@ import { AchievementsService } from '../achievements/achievements.service';
 /** The Invite screen shows a recent list, not the full history. */
 const FRIENDS_LIMIT = 20;
 
+/**
+ * The shared invite link: the Play Store listing with the referral code carried
+ * in the Play `referrer` param (URL-encoded as `ref=<code>`). The Play Install
+ * Referrer / attribution SDK recovers it after install; a user can also read the
+ * code off the message and type it into the sign-up field. Null when the user
+ * has no code yet.
+ */
+function buildReferralLink(code: string | null | undefined): string | null {
+  if (!code) return null;
+  const referrer = encodeURIComponent(`ref=${code}`);
+  return `${Env.urls.playStore}&referrer=${referrer}`;
+}
+
 @Injectable()
 export class ReferralsService {
   private readonly logger = new Logger(ReferralsService.name);
@@ -187,9 +200,7 @@ export class ReferralsService {
 
     return {
       referral_code: user?.referral_code ?? null,
-      referral_link: user?.referral_code
-        ? `${Env.urls.frontend}/ref/${user.referral_code}`
-        : null,
+      referral_link: buildReferralLink(user?.referral_code),
       /** Every step, in the order the friend will clear them. */
       reward_steps: ladder.map((step, i) => ({ step: i + 1, ...step })),
       /** The most one friend can ever earn, after the admin's caps are applied. */

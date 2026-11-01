@@ -32,6 +32,7 @@ import { CronModule } from './modules/cron/cron.module';
 import { DropdownModule } from './modules/dropdown/dropdown.module';
 import { AvatarsModule } from './modules/avatars/avatars.module';
 import { OfferwallModule } from './modules/offerwall/offerwall.module';
+import { CoinzuOffersModule } from './modules/coinzu-offers/coinzu-offers.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { OfferwallModule } from './modules/offerwall/offerwall.module';
     DropdownModule,
     AvatarsModule,
     OfferwallModule,
+    CoinzuOffersModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
