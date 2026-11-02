@@ -120,6 +120,29 @@ export class CoinzuHomeResponseDto {
   sections: CoinzuHomeSectionResponseDto[];
 }
 
+export class CoinzuSectionPageResponseDto {
+  @ApiProperty({ example: 'recommended' })
+  key: string;
+
+  @ApiProperty({ example: 'Recommended Offers' })
+  title: string;
+
+  @ApiProperty({ type: [CoinzuOfferResponseDto] })
+  data: CoinzuOfferResponseDto[];
+
+  @ApiProperty({ example: 120 })
+  total: number;
+
+  @ApiProperty({ example: 1 })
+  page: number;
+
+  @ApiProperty({ example: 10 })
+  limit: number;
+
+  @ApiProperty({ example: true, description: 'More pages exist after this one.' })
+  has_more: boolean;
+}
+
 export class CoinzuRedirectResponseDto {
   @ApiProperty({ example: 'ofr_123' })
   offer_id: string;

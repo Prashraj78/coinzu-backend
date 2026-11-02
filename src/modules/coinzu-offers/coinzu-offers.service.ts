@@ -7,13 +7,14 @@ import {
   CoinzuHomeSectionsDto,
   CoinzuInProgressPageDto,
   CoinzuOfferDto,
+  CoinzuSectionPageDto,
   RewardtymExternal,
   RewardtymOfferContext,
   RewardtymRedirectContext,
 } from '../../external/rewardtym.external';
 
 const DEFAULT_PAGE = 1;
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 10;
 
 @Injectable()
 export class CoinzuOffersService {
@@ -26,6 +27,23 @@ export class CoinzuOffersService {
   async getHome(userId: string): Promise<CoinzuHomeSectionsDto> {
     const ctx = await this.offerContext(userId);
     return this.rewardtym.getHomeSections(userId, ctx);
+  }
+
+  /** One home section, paginated — the app loads each section independently. */
+  async getSection(
+    userId: string,
+    section: string,
+    page?: number,
+    limit?: number,
+  ): Promise<CoinzuSectionPageDto> {
+    const ctx = await this.offerContext(userId);
+    return this.rewardtym.getSection(
+      userId,
+      ctx,
+      section,
+      page ?? DEFAULT_PAGE,
+      limit ?? DEFAULT_LIMIT,
+    );
   }
 
   async getOffer(userId: string, offerId: string): Promise<CoinzuOfferDto> {

@@ -66,6 +66,17 @@ export interface CoinzuInProgressPageDto {
   limit: number;
 }
 
+/** One home section, paginated. `has_more` drives the app's infinite scroll. */
+export interface CoinzuSectionPageDto {
+  key: string;
+  title: string;
+  data: CoinzuOfferDto[];
+  total: number;
+  page: number;
+  limit: number;
+  has_more: boolean;
+}
+
 /** The geo/device signals RewardTym stores verbatim; Coinzu captures them from user_devices. */
 export interface RewardtymOfferContext {
   country: string | null;
@@ -129,6 +140,20 @@ export class RewardtymExternal {
       this.ctxParams(ctx),
       userId,
       CzOfferErrorCodes.OFFER_NOT_FOUND,
+    );
+  }
+
+  async getSection(
+    userId: string,
+    ctx: RewardtymOfferContext,
+    section: string,
+    page: number,
+    limit: number,
+  ): Promise<CoinzuSectionPageDto> {
+    return this.get<CoinzuSectionPageDto>(
+      '/v3/coinzu/section',
+      { ...this.ctxParams(ctx), section, page, limit },
+      userId,
     );
   }
 

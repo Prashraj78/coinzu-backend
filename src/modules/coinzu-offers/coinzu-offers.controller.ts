@@ -14,11 +14,13 @@ import { Public } from '../../common/decorators/public.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { ApiData, ApiList } from '../../common/decorators/api-envelope.decorator';
 import { ListInProgressDto } from './dto/list-in-progress.dto';
+import { ListSectionDto } from './dto/list-section.dto';
 import {
   CoinzuHomeResponseDto,
   CoinzuInProgressOfferResponseDto,
   CoinzuOfferResponseDto,
   CoinzuRedirectResponseDto,
+  CoinzuSectionPageResponseDto,
 } from './dto/coinzu-offers.response';
 import { CoinzuOffersService } from './coinzu-offers.service';
 import { RewardtymPostbackService } from './rewardtym-postback.service';
@@ -47,6 +49,20 @@ export class CoinzuOffersController {
   @ApiData(CoinzuHomeResponseDto)
   home(@CurrentUser() user: RequestUser) {
     return this.service.getHome(user.cz_user_id);
+  }
+
+  @Get('section')
+  @ApiOperation({
+    summary: 'One home section, paginated (10 at a time) for infinite scroll.',
+  })
+  @ApiData(CoinzuSectionPageResponseDto)
+  section(@CurrentUser() user: RequestUser, @Query() query: ListSectionDto) {
+    return this.service.getSection(
+      user.cz_user_id,
+      query.section,
+      query.page,
+      query.limit,
+    );
   }
 
   @Get('in-progress')

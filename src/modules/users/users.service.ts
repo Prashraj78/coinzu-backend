@@ -92,6 +92,52 @@ export class UsersService {
     return this.users.findOne({ where: { cz_user_id } });
   }
 
+  /**
+   * The profile for GET /users/me — selects only the columns the UserDto exposes
+   * instead of the whole row, so the payload stays small and the query is a lean
+   * PK lookup. profile_completion_pct is computed, so it is set after load.
+   */
+  async getProfile(cz_user_id: string): Promise<User> {
+    const user = await this.users.findOne({
+      where: { cz_user_id },
+      select: {
+        cz_user_id: true,
+        email: true,
+        phone: true,
+        google_id: true,
+        name: true,
+        gender: true,
+        age_range: true,
+        country: true,
+        avatar_url: true,
+        avatar_id: true,
+        google_avatar_url: true,
+        interests: true,
+        primary_goal: true,
+        referral_code: true,
+        referred_by: true,
+        tier: true,
+        kyc_status: true,
+        role: true,
+        status: true,
+        onboarding_completed: true,
+        notifications_enabled: true,
+        email_verified_at: true,
+        phone_verified_at: true,
+        last_login_at: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException({
+        cz_error_code: CzUserErrorCodes.USER_NOT_FOUND,
+      });
+    }
+    user.profile_completion_pct = this.completionPercent(user);
+    return user;
+  }
+
   findByEmail(email: string): Promise<User | null> {
     return this.users.findOne({
       where: { email: email.toLowerCase().trim() },

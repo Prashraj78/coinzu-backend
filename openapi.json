@@ -7453,6 +7453,81 @@
         ]
       }
     },
+    "/api/rewardtym/section": {
+      "get": {
+        "operationId": "CoinzuOffersController_section",
+        "parameters": [
+          {
+            "name": "section",
+            "required": true,
+            "in": "query",
+            "description": "Which home section to page through.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "top_picks",
+                "featured",
+                "recommended"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 50.",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CoinzuSectionPageResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One home section, paginated (10 at a time) for infinite scroll.",
+        "tags": [
+          "rewardtym"
+        ]
+      }
+    },
     "/api/rewardtym/in-progress": {
       "get": {
         "operationId": "CoinzuOffersController_inProgress",
@@ -12979,6 +13054,51 @@
         },
         "required": [
           "sections"
+        ]
+      },
+      "CoinzuSectionPageResponseDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "recommended"
+          },
+          "title": {
+            "type": "string",
+            "example": "Recommended Offers"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CoinzuOfferResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "example": 120
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "example": 10
+          },
+          "has_more": {
+            "type": "boolean",
+            "example": true,
+            "description": "More pages exist after this one."
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "data",
+          "total",
+          "page",
+          "limit",
+          "has_more"
         ]
       },
       "CoinzuOfferProgressDto": {

@@ -39,7 +39,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get the signed-in user profile' })
   @ApiData(UserDto)
   me(@CurrentUser() user: RequestUser) {
-    return this.usersService.getOrFail(user.cz_user_id);
+    return this.usersService.getProfile(user.cz_user_id);
   }
 
   @Patch('me')
