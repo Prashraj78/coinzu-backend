@@ -152,6 +152,14 @@ export class SettingsService {
       return;
     }
 
+    if (meta.value_type === 'enum') {
+      const options = meta.options ?? [];
+      if (!options.includes(value)) {
+        fail(`must be one of: ${options.join(', ')}.`);
+      }
+      return;
+    }
+
     const num = Number(value);
     if (value === '' || !Number.isFinite(num)) {
       fail('must be a number.');

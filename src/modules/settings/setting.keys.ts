@@ -13,15 +13,23 @@ export const SettingKeys = {
   WELCOME_BONUS_GEMS: 'welcome_bonus_gems',
   PUSH_QUIET_HOURS_START: 'push_quiet_hours_start',
   PUSH_QUIET_HOURS_END: 'push_quiet_hours_end',
+  GIFT_CARD_ENABLED: 'gift_card_enabled',
+  GIFT_CARD_ACTIVE_VENDOR: 'gift_card_active_vendor',
+  GIFT_CARD_MARKUP_PERCENT: 'gift_card_markup_percent',
 } as const;
 
-export type SettingValueType = 'integer' | 'decimal' | 'boolean';
+export type SettingValueType =
+  | 'integer'
+  | 'decimal'
+  | 'boolean'
+  | 'enum';
 
 export type SettingGroup =
   | 'currency'
   | 'withdrawals'
   | 'referrals'
-  | 'notifications';
+  | 'notifications'
+  | 'giftcard';
 
 export interface SettingMeta {
   group: SettingGroup;
@@ -32,6 +40,8 @@ export interface SettingMeta {
   unit?: string;
   min?: number;
   max?: number;
+  /** For `enum`: the allowed values the admin may pick from. */
+  options?: string[];
 }
 
 const QUIET_HOURS_NOTE =
@@ -144,6 +154,31 @@ export const SettingCatalogue: Record<string, SettingMeta> = {
     min: 0,
     max: 23,
   },
+  [SettingKeys.GIFT_CARD_ENABLED]: {
+    group: 'giftcard',
+    label: 'Gift cards enabled',
+    description:
+      'Master switch for the gift-card store. Off hides it from users and stops the catalogue sync.',
+    value_type: 'boolean',
+  },
+  [SettingKeys.GIFT_CARD_ACTIVE_VENDOR]: {
+    group: 'giftcard',
+    label: 'Active vendor',
+    description:
+      'Which provider fulfils gift-card orders. Switching takes effect on the next order and next catalogue sync.',
+    value_type: 'enum',
+    options: ['reloadly'],
+  },
+  [SettingKeys.GIFT_CARD_MARKUP_PERCENT]: {
+    group: 'giftcard',
+    label: 'Price markup',
+    description:
+      'Extra percentage added to each card’s coin price on top of the base USD value. 0 means sell at cost.',
+    value_type: 'decimal',
+    unit: '%',
+    min: 0,
+    max: 100,
+  },
 };
 
 export const SettingGroupMeta: Record<
@@ -170,6 +205,11 @@ export const SettingGroupMeta: Record<
     description:
       'When it is acceptable to interrupt someone. Applies to every push campaign that opts into quiet hours.',
   },
+  giftcard: {
+    label: 'Gift cards',
+    description:
+      'The gift-card store: which vendor fulfils orders, whether it is live, and the price markup.',
+  },
 };
 
 export const SettingDefaults: Record<string, string> = {
@@ -187,4 +227,7 @@ export const SettingDefaults: Record<string, string> = {
   [SettingKeys.WELCOME_BONUS_GEMS]: '2000',
   [SettingKeys.PUSH_QUIET_HOURS_START]: '22',
   [SettingKeys.PUSH_QUIET_HOURS_END]: '8',
+  [SettingKeys.GIFT_CARD_ENABLED]: 'true',
+  [SettingKeys.GIFT_CARD_ACTIVE_VENDOR]: 'reloadly',
+  [SettingKeys.GIFT_CARD_MARKUP_PERCENT]: '0',
 };

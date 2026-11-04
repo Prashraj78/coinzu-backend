@@ -27,6 +27,16 @@ export class GiftCardProduct {
   @Column({ type: 'varchar', length: 500, nullable: true })
   image_url: string | null;
 
+  // Vendor's brand id, used to fetch/show redeem instructions.
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  brand_ref: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  redeem_concise: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  redeem_verbose: string | null;
+
   @Column({ type: 'boolean', default: false })
   is_featured: boolean;
 

@@ -4242,6 +4242,26 @@
         ]
       }
     },
+    "/api/admin/kyc/purge-orphan-faces": {
+      "post": {
+        "operationId": "AdminKycController_purgeOrphanFaces",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove enrolled faces of deleted accounts from the collection (super admin only)",
+        "tags": [
+          "admin-kyc"
+        ]
+      }
+    },
     "/api/admin/kyc/{cz_kyc_verification_id}": {
       "get": {
         "operationId": "AdminKycController_detail",
@@ -6697,6 +6717,126 @@
         ]
       }
     },
+    "/api/admin/redeem/vendors": {
+      "get": {
+        "operationId": "AdminRedeemController_vendors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gift-card vendors available to select (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
+    "/api/admin/redeem/sync": {
+      "post": {
+        "operationId": "AdminRedeemController_sync",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Pull the latest catalogue from the active vendor now (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
+    "/api/admin/redeem/products": {
+      "get": {
+        "operationId": "AdminRedeemController_products",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Every gift-card product, active or not, paginated (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
+    "/api/admin/redeem/products/{id}": {
+      "patch": {
+        "operationId": "AdminRedeemController_toggle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminToggleProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Show or hide a product from the store (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
     "/api/admin/tickets": {
       "get": {
         "operationId": "AdminTicketsController_list",
@@ -8358,6 +8498,10 @@
           "can_withdraw": {
             "type": "boolean"
           },
+          "requires_kyc": {
+            "type": "boolean",
+            "description": "Whether a verified identity is required to withdraw."
+          },
           "rates": {
             "$ref": "#/components/schemas/WalletBalanceRatesDto"
           },
@@ -8372,6 +8516,7 @@
           "coin_value_usd",
           "gem_value_coins",
           "can_withdraw",
+          "requires_kyc",
           "rates",
           "updated_at"
         ]
@@ -10762,6 +10907,16 @@
             "type": "string",
             "nullable": true
           },
+          "redeem_concise": {
+            "type": "string",
+            "nullable": true,
+            "description": "Short redeem hint."
+          },
+          "redeem_verbose": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full redeem steps."
+          },
           "is_featured": {
             "type": "boolean"
           },
@@ -10783,6 +10938,8 @@
           "price_coins",
           "category",
           "image_url",
+          "redeem_concise",
+          "redeem_verbose",
           "is_featured",
           "is_active",
           "synced_at"
@@ -10870,6 +11027,11 @@
             "type": "string",
             "example": "XXXX-XXXX-XXXX"
           },
+          "redeem_instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "How to redeem this card."
+          },
           "fulfilled_at": {
             "type": "string",
             "format": "date-time",
@@ -10879,6 +11041,7 @@
         "required": [
           "cz_gift_card_order_id",
           "code",
+          "redeem_instructions",
           "fulfilled_at"
         ]
       },
@@ -12767,6 +12930,18 @@
         },
         "required": [
           "settings"
+        ]
+      },
+      "AdminToggleProductDto": {
+        "type": "object",
+        "properties": {
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the product is shown in the store."
+          }
+        },
+        "required": [
+          "is_active"
         ]
       },
       "AdminDeleteUserDto": {

@@ -63,12 +63,13 @@ export class WalletService {
    * of the coins, what the gems convert to, and the live rates.
    */
   async getBalanceSummary(user_id: string) {
-    const [wallet, coinsPerUsd, coinsPerGem, minWithdrawalCoins] =
+    const [wallet, coinsPerUsd, coinsPerGem, minWithdrawalCoins, requiresKyc] =
       await Promise.all([
         this.getBalance(user_id),
         this.settingsService.getNumber(SettingKeys.COINS_PER_USD),
         this.settingsService.getNumber(SettingKeys.COINS_PER_GEM),
         this.settingsService.getNumber(SettingKeys.MIN_WITHDRAWAL_COINS),
+        this.settingsService.getBoolean(SettingKeys.WITHDRAWAL_REQUIRES_KYC),
       ]);
 
     return {
@@ -80,6 +81,8 @@ export class WalletService {
           : '0.00',
       gem_value_coins: Math.floor(wallet.gem_balance * coinsPerGem),
       can_withdraw: wallet.coin_balance >= minWithdrawalCoins,
+      // Whether a verified identity is needed before a withdrawal/redeem.
+      requires_kyc: requiresKyc,
       rates: {
         coins_per_usd: coinsPerUsd,
         coins_per_gem: coinsPerGem,

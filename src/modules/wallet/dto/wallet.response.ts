@@ -27,6 +27,9 @@ export class WalletBalanceDto {
   @ApiProperty()
   can_withdraw: boolean;
 
+  @ApiProperty({ description: 'Whether a verified identity is required to withdraw.' })
+  requires_kyc: boolean;
+
   @ApiProperty({ type: WalletBalanceRatesDto })
   rates: WalletBalanceRatesDto;
 
