@@ -9,6 +9,7 @@ import { AdminListKycDto } from '../../kyc/dto/admin-list-kyc.dto';
 import { DecideKycDto } from '../../kyc/dto/decide-kyc.dto';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { AchievementsService } from '../../achievements/achievements.service';
+import { RekognitionFaceExternal } from '../../../external/rekognition-face.external';
 
 interface Row {
   cz_kyc_verification_id: string;
@@ -38,7 +39,20 @@ export class AdminKycService {
     private readonly users: Repository<User>,
     private readonly notifications: NotificationsService,
     private readonly achievementsService: AchievementsService,
+    private readonly face: RekognitionFaceExternal,
   ) {}
+
+  /**
+   * Removes enrolled faces left behind by deleted accounts — any face whose
+   * user id no longer exists in the users table. Unblocks the "duplicate face"
+   * collisions a recreated account hits against its own orphan.
+   */
+  async purgeOrphanFaces(): Promise<{ purged: number }> {
+    const rows = await this.users.find({ select: { cz_user_id: true } });
+    const valid = new Set(rows.map((r) => r.cz_user_id));
+    const purged = await this.face.purgeOrphanFaces(valid);
+    return { purged };
+  }
 
   async list(query: AdminListKycDto) {
     const { skip, take } = toSkipTake(query.page, query.limit);

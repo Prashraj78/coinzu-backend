@@ -16,6 +16,7 @@ import {
   resolveCountryFromRequestHeaders,
 } from '../../common/utils/device-platform.util';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
+import { RekognitionFaceExternal } from '../../external/rekognition-face.external';
 import type { Request } from 'express';
 import { WalletService } from '../wallet/wallet.service';
 import { SettingsService } from '../settings/settings.service';
@@ -57,6 +58,7 @@ export class UsersService {
     private readonly geoLookup: GeoLookupExternal,
     private readonly settingsService: SettingsService,
     private readonly avatarsService: AvatarsService,
+    private readonly face: RekognitionFaceExternal,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -270,6 +272,10 @@ export class UsersService {
       ]);
       await tx.query('DELETE FROM users WHERE cz_user_id = $1', [userId]);
     });
+
+    // Faces live in the Rekognition collection, not the DB — remove them too so
+    // a recreated account never collides with this user's own orphaned face.
+    await this.face.deleteUserFaces(userId);
 
     return { cz_user_id: userId, email: found.email };
   }

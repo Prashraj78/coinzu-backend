@@ -23,6 +23,15 @@ export class AdminKycController {
     return this.adminKycService.list(query);
   }
 
+  @Post('purge-orphan-faces')
+  @SuperAdmin()
+  @ApiOperation({
+    summary: 'Remove enrolled faces of deleted accounts from the collection (super admin only)',
+  })
+  purgeOrphanFaces() {
+    return this.adminKycService.purgeOrphanFaces();
+  }
+
   @Get(':cz_kyc_verification_id')
   @ApiOperation({
     summary: "One attempt with the user and their full attempt history (admin only)",

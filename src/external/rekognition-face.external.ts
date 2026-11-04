@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import {
   CreateCollectionCommand,
+  DeleteFacesCommand,
   DetectFacesCommand,
   IndexFacesCommand,
   ListFacesCommand,
@@ -206,6 +207,72 @@ export class RekognitionFaceExternal implements OnModuleInit {
       next = response.NextToken;
     } while (next);
     return ids;
+  }
+
+  /**
+   * Removes every enrolled face for a user from the collection. Called when an
+   * account is deleted so a recreated account never collides with its own
+   * orphaned face. Best-effort: logs and returns the count removed.
+   */
+  async deleteUserFaces(user_id: string): Promise<number> {
+    try {
+      await this.ensureCollection();
+      const faceIds = await this.faceIdsFor((id) => id === user_id);
+      if (!faceIds.length) return 0;
+      await this.deleteFaceIds(faceIds);
+      return faceIds.length;
+    } catch (error) {
+      this.logger.error(
+        `Rekognition deleteUserFaces(${user_id}) failed: ${this.reason(error)}`,
+      );
+      return 0;
+    }
+  }
+
+  /**
+   * Removes every enrolled face whose user id is NOT in `validUserIds` — the
+   * faces left behind by deleted accounts. Returns how many were purged.
+   */
+  async purgeOrphanFaces(validUserIds: Set<string>): Promise<number> {
+    await this.ensureCollection();
+    const faceIds = await this.faceIdsFor((id) => !validUserIds.has(id));
+    if (!faceIds.length) return 0;
+    await this.deleteFaceIds(faceIds);
+    return faceIds.length;
+  }
+
+  /** The FaceIds of enrolled faces whose ExternalImageId passes `keep`. */
+  private async faceIdsFor(keep: (userId: string) => boolean): Promise<string[]> {
+    const faceIds: string[] = [];
+    let next: string | undefined;
+    do {
+      const response = await this.client.send(
+        new ListFacesCommand({
+          CollectionId: FACE_COLLECTION_ID,
+          MaxResults: 1000,
+          NextToken: next,
+        }),
+      );
+      for (const face of response.Faces ?? []) {
+        if (face.FaceId && face.ExternalImageId && keep(face.ExternalImageId)) {
+          faceIds.push(face.FaceId);
+        }
+      }
+      next = response.NextToken;
+    } while (next);
+    return faceIds;
+  }
+
+  /** DeleteFaces caps at 4096 ids per call, so chunk it. */
+  private async deleteFaceIds(faceIds: string[]): Promise<void> {
+    for (let i = 0; i < faceIds.length; i += 4000) {
+      await this.client.send(
+        new DeleteFacesCommand({
+          CollectionId: FACE_COLLECTION_ID,
+          FaceIds: faceIds.slice(i, i + 4000),
+        }),
+      );
+    }
   }
 
   private async ensureCollection(): Promise<void> {

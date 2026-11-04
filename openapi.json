@@ -4242,6 +4242,26 @@
         ]
       }
     },
+    "/api/admin/kyc/purge-orphan-faces": {
+      "post": {
+        "operationId": "AdminKycController_purgeOrphanFaces",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remove enrolled faces of deleted accounts from the collection (super admin only)",
+        "tags": [
+          "admin-kyc"
+        ]
+      }
+    },
     "/api/admin/kyc/{cz_kyc_verification_id}": {
       "get": {
         "operationId": "AdminKycController_detail",
@@ -8478,6 +8498,10 @@
           "can_withdraw": {
             "type": "boolean"
           },
+          "requires_kyc": {
+            "type": "boolean",
+            "description": "Whether a verified identity is required to withdraw."
+          },
           "rates": {
             "$ref": "#/components/schemas/WalletBalanceRatesDto"
           },
@@ -8492,6 +8516,7 @@
           "coin_value_usd",
           "gem_value_coins",
           "can_withdraw",
+          "requires_kyc",
           "rates",
           "updated_at"
         ]

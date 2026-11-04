@@ -16,6 +16,8 @@ const AUTH_TIMEOUT_MS = 15000;
 const MARKET_COUNTRY = 'US';
 // Refresh the token a little before it actually expires.
 const TOKEN_SKEW_MS = 60_000;
+// Preset amounts offered for RANGE products (those without a fixed list).
+const RANGE_PRESETS = [5, 10, 25, 50, 100];
 
 /**
  * Reloadly gift-card vendor. Owns its OAuth token exchange, request building and
@@ -120,7 +122,11 @@ export class ReloadlyProvider implements GiftCardProvider {
     }
   }
 
-  /** Each fixed USD denomination of a Reloadly product becomes its own item. */
+  /**
+   * Each USD amount of a Reloadly product becomes its own item. FIXED products
+   * use their listed denominations; RANGE products (no fixed list, e.g. Amazon)
+   * get a preset ladder of amounts that fall inside the allowed min–max.
+   */
   private expandDenominations(
     row: Record<string, unknown>,
   ): GiftCardCatalogItem[] {
@@ -137,21 +143,32 @@ export class ReloadlyProvider implements GiftCardProvider {
     const categoryObj = (row.category ?? {}) as Record<string, unknown>;
     const category = categoryObj.name ? String(categoryObj.name) : null;
 
+    const amounts = this.denominationsFor(row);
+    return amounts.map((amount) => ({
+      external_product_id: `${productId}:${amount}`,
+      brand,
+      denomination: `$${amount}`,
+      category,
+      image_url: image,
+      price_usd: amount,
+      brand_ref: brandRef,
+    }));
+  }
+
+  /** The buyable USD amounts for a product — fixed list, or a preset range ladder. */
+  private denominationsFor(row: Record<string, unknown>): number[] {
     const fixed = Array.isArray(row.fixedRecipientDenominations)
       ? (row.fixedRecipientDenominations as unknown[])
+          .map((d) => Number(d))
+          .filter((amount) => amount > 0)
       : [];
-    return fixed
-      .map((d) => Number(d))
-      .filter((amount) => amount > 0)
-      .map((amount) => ({
-        external_product_id: `${productId}:${amount}`,
-        brand,
-        denomination: `$${amount}`,
-        category,
-        image_url: image,
-        price_usd: amount,
-        brand_ref: brandRef,
-      }));
+    if (fixed.length) return fixed;
+
+    // RANGE product: offer the preset ladder, clamped to the allowed min–max.
+    const min = Number(row.minRecipientDenomination ?? 0);
+    const max = Number(row.maxRecipientDenomination ?? 0);
+    if (!(min > 0) || !(max >= min)) return [];
+    return RANGE_PRESETS.filter((a) => a >= min && a <= max);
   }
 
   private toPurchaseResult(payload: unknown): GiftCardPurchaseResult {
