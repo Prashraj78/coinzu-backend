@@ -25,6 +25,12 @@ export class GiftCardProductDto {
   @ApiProperty({ type: String, nullable: true })
   image_url: string | null;
 
+  @ApiProperty({ type: String, nullable: true, description: 'Short redeem hint.' })
+  redeem_concise: string | null;
+
+  @ApiProperty({ type: String, nullable: true, description: 'Full redeem steps.' })
+  redeem_verbose: string | null;
+
   @ApiProperty()
   is_featured: boolean;
 
@@ -79,6 +85,9 @@ export class GiftCardCodeDto {
 
   @ApiProperty({ example: 'XXXX-XXXX-XXXX' })
   code: string;
+
+  @ApiProperty({ type: String, nullable: true, description: 'How to redeem this card.' })
+  redeem_instructions: string | null;
 
   @ApiProperty({ type: String, format: 'date-time', nullable: true })
   fulfilled_at: Date | null;

@@ -67,8 +67,8 @@ const EXPECTED_VARS = [
   'AWS_ACCESS_KEY_ID',
   'AWS_SECRET_ACCESS_KEY',
   'MAIL_FROM_ADDRESS',
-  'GIFT_CARD_API_URL',
-  'GIFT_CARD_API_KEY',
+  'RELOADLY_CLIENT_ID',
+  'RELOADLY_CLIENT_SECRET',
   'REWARDTYM_API_BASE_URL',
   'REWARDTYM_API_KEY',
   'REWARDTYM_WEBHOOK_SECRET',
@@ -178,9 +178,22 @@ export const Env = {
     replyToAddress: str('SENDGRID_REPLY_TO', 'rahul@rewardtym.online'),
   },
   giftCard: {
-    apiUrl: str('GIFT_CARD_API_URL'),
-    apiKey: str('GIFT_CARD_API_KEY'),
+    // The active vendor is chosen at runtime from app_settings; these envs hold
+    // each vendor's credentials. A new vendor = a new block here + a provider class.
     providerName: str('GIFT_CARD_PROVIDER_NAME', 'default'),
+    reloadly: {
+      clientId: str('RELOADLY_CLIENT_ID'),
+      clientSecret: str('RELOADLY_CLIENT_SECRET'),
+      // Sandbox by default; flip these two for production.
+      authUrl: str('RELOADLY_AUTH_URL', 'https://auth.reloadly.com/oauth/token'),
+      baseUrl: str('RELOADLY_GIFTCARDS_URL', 'https://giftcards-sandbox.reloadly.com'),
+      audience: str('RELOADLY_AUDIENCE', 'https://giftcards-sandbox.reloadly.com'),
+    },
+  },
+  // Ops alerts (gift-card orders etc). Reuses RewardTym's bot token + chat id.
+  telegram: {
+    botToken: str('TELEGRAM_BOT_TOKEN', ''),
+    chatId: str('TELEGRAM_CHAT_ID', ''),
   },
   // RewardTym v3 /v3/coinzu APIs. Coinzu calls these as a partner.
   rewardtym: {

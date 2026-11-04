@@ -55,6 +55,7 @@ import { AdminOfferwallController } from './controllers/admin-offerwall.controll
 import { AdminReferralRulesController } from './controllers/admin-referral-rules.controller';
 import { AdminReferralsController } from './controllers/admin-referrals.controller';
 import { AdminSettingsController } from './controllers/admin-settings.controller';
+import { AdminRedeemController } from './controllers/admin-redeem.controller';
 import { AdminTicketsController } from './controllers/admin-tickets.controller';
 import { AdminTransactionsController } from './controllers/admin-transactions.controller';
 import { AdminUsersController } from './controllers/admin-users.controller';
@@ -157,6 +158,7 @@ import { AdminUsersService } from './services/admin-users.service';
     AdminReferralRulesController,
     AdminReferralsController,
     AdminSettingsController,
+    AdminRedeemController,
     AdminTicketsController,
     AdminTransactionsController,
     AdminUsersController,
