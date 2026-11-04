@@ -22,6 +22,7 @@ import { GiftCardExternal } from '../../external/gift-card.external';
 import { SendgridMailExternal } from '../../external/sendgrid-mail.external';
 import { TelegramExternal } from '../../external/telegram.external';
 import { ListProductsDto } from './dto/list-products.dto';
+import { AdminListProductsDto } from './dto/admin-list-products.dto';
 
 /** One row of the order history screen, with product details joined in. */
 export interface MyOrderRow extends Omit<GiftCardOrder, 'product'> {
@@ -80,15 +81,41 @@ export class RedeemService {
     return { data, total };
   }
 
-  /** Admin: every product, active or not, paginated. */
-  async listAdminProducts(page?: number, limit?: number) {
-    const { skip, take } = toSkipTake(page, limit);
-    const [data, total] = await this.products.findAndCount({
-      order: { brand: 'ASC', price_coins: 'ASC' },
-      skip,
-      take,
-    });
+  /** Admin: every product, active or not, filterable + paginated. */
+  async listAdminProducts(query: AdminListProductsDto) {
+    const { skip, take } = toSkipTake(query.page, query.limit);
+    const builder = this.products.createQueryBuilder('p');
+
+    if (query.brand) {
+      builder.andWhere('p.brand ILIKE :brand', { brand: `%${query.brand}%` });
+    }
+    if (query.category) {
+      builder.andWhere('p.category = :category', { category: query.category });
+    }
+    if (query.status) {
+      builder.andWhere('p.is_active = :active', {
+        active: query.status === 'active',
+      });
+    }
+
+    const [data, total] = await builder
+      .orderBy('p.brand', 'ASC')
+      .addOrderBy('p.price_coins', 'ASC')
+      .skip(skip)
+      .take(take)
+      .getManyAndCount();
     return { data, total };
+  }
+
+  /** Distinct category names across the catalogue, for admin filters. */
+  async listAdminCategories(): Promise<string[]> {
+    const rows = await this.products
+      .createQueryBuilder('p')
+      .select('DISTINCT p.category', 'category')
+      .where('p.category IS NOT NULL')
+      .orderBy('p.category', 'ASC')
+      .getRawMany<{ category: string }>();
+    return rows.map((r) => r.category);
   }
 
   /** Admin: show or hide a single product from the store. */

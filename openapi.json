@@ -6780,6 +6780,37 @@
               "example": 20,
               "type": "number"
             }
+          },
+          {
+            "name": "brand",
+            "required": false,
+            "in": "query",
+            "description": "Filter by brand (partial match).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "description": "Filter by category name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Only active or only hidden.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "inactive"
+              ]
+            }
           }
         ],
         "responses": {
@@ -6792,7 +6823,27 @@
             "bearer": []
           }
         ],
-        "summary": "Every gift-card product, active or not, paginated (admin only)",
+        "summary": "Gift-card products, filterable by brand/category/status, paginated (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
+    "/api/admin/redeem/categories": {
+      "get": {
+        "operationId": "AdminRedeemController_categories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Distinct product categories, for the admin filter (admin only)",
         "tags": [
           "admin-redeem"
         ]

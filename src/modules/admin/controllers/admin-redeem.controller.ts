@@ -4,7 +4,7 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 import { GiftCardExternal } from '../../../external/gift-card.external';
 import { RedeemService } from '../../redeem/redeem.service';
 import { AdminToggleProductDto } from '../../redeem/dto/admin-toggle-product.dto';
-import { ListQueryDto } from '../../../common/dto/list-query.dto';
+import { AdminListProductsDto } from '../../redeem/dto/admin-list-products.dto';
 
 @ApiTags('admin-redeem')
 @ApiBearerAuth()
@@ -32,9 +32,15 @@ export class AdminRedeemController {
   }
 
   @Get('products')
-  @ApiOperation({ summary: 'Every gift-card product, active or not, paginated (admin only)' })
-  products(@Query() query: ListQueryDto) {
-    return this.redeemService.listAdminProducts(query.page, query.limit);
+  @ApiOperation({ summary: 'Gift-card products, filterable by brand/category/status, paginated (admin only)' })
+  products(@Query() query: AdminListProductsDto) {
+    return this.redeemService.listAdminProducts(query);
+  }
+
+  @Get('categories')
+  @ApiOperation({ summary: 'Distinct product categories, for the admin filter (admin only)' })
+  categories() {
+    return this.redeemService.listAdminCategories();
   }
 
   @Patch('products/:id')
