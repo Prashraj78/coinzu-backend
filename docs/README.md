@@ -158,6 +158,7 @@ Buy entries, spin, and see who won. Replaces the retired `lucky-draw` module.
 | `GET /api/redeem/orders` | user token | Lists the gift card orders of the signed-in user, newest first. | [015](apis/inprogress/015redeem.orders.list.md) |
 | `GET /api/redeem/orders/:id` | user token | Returns one of the signed-in user’s gift card orders. | [016](apis/inprogress/016redeem.orders.get.md) |
 | `GET /api/redeem/orders/:id/code` | user token | Reveals the gift card code of a fulfilled order. | [017](apis/inprogress/017redeem.orders.code.md) |
+| `POST /api/redeem/webhooks/phaze` | public (secret header) | Phaze order-status webhook; re-reads the order from Phaze and settles it. | [024](apis/inprogress/024redeem.webhooks.phaze.md) |
 
 ## KYC — 1 endpoint
 
@@ -421,3 +422,4 @@ renumbers the folder, so identify an endpoint by its method and path.
 | `PATCH /api/admin/avatars/:id` | admin token | Renames, reorders, replaces or hides one avatar. | [087](apis/admin/087avatars.update.md) |
 | `DELETE /api/admin/avatars/:id` | admin token | Removes an avatar; wearers keep their picture. | [088](apis/admin/088avatars.delete.md) |
 | `POST /api/admin/avatars/image` | admin token | Uploads an avatar image to R2 and returns its URL. | [089](apis/admin/089avatars.upload-image.md) |
+| `POST /api/admin/redeem/phaze/webhook` | admin token | Registers this backend as Phaze's order-status webhook. | [090](apis/admin/090redeem.phaze-webhook.md) |

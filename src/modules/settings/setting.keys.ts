@@ -16,20 +16,15 @@ export const SettingKeys = {
   GIFT_CARD_ENABLED: 'gift_card_enabled',
   GIFT_CARD_ACTIVE_VENDOR: 'gift_card_active_vendor',
   GIFT_CARD_MARKUP_PERCENT: 'gift_card_markup_percent',
+  GIFT_CARD_SECONDARY_VENDOR: 'gift_card_secondary_vendor',
+  GIFT_CARD_FAILOVER_ENABLED: 'gift_card_failover_enabled',
+  GIFT_CARD_AUTO_PUBLISH: 'gift_card_auto_publish',
 } as const;
 
-export type SettingValueType =
-  | 'integer'
-  | 'decimal'
-  | 'boolean'
-  | 'enum';
+export type SettingValueType = 'integer' | 'decimal' | 'boolean' | 'enum';
 
 export type SettingGroup =
-  | 'currency'
-  | 'withdrawals'
-  | 'referrals'
-  | 'notifications'
-  | 'giftcard';
+  'currency' | 'withdrawals' | 'referrals' | 'notifications' | 'giftcard';
 
 export interface SettingMeta {
   group: SettingGroup;
@@ -45,7 +40,7 @@ export interface SettingMeta {
 }
 
 const QUIET_HOURS_NOTE =
-  "Marketing pushes are held back for anyone whose local time falls inside this window. Transaction and system messages ignore it. Set both to the same hour to switch quiet hours off.";
+  'Marketing pushes are held back for anyone whose local time falls inside this window. Transaction and system messages ignore it. Set both to the same hour to switch quiet hours off.';
 
 /** The Configuration Settings tab is generated from this — label, help text, type and bounds. */
 export const SettingCatalogue: Record<string, SettingMeta> = {
@@ -163,11 +158,33 @@ export const SettingCatalogue: Record<string, SettingMeta> = {
   },
   [SettingKeys.GIFT_CARD_ACTIVE_VENDOR]: {
     group: 'giftcard',
-    label: 'Active vendor',
+    label: 'Primary vendor',
     description:
-      'Which provider fulfils gift-card orders. Switching takes effect on the next order and next catalogue sync.',
+      'The vendor whose cards are shown first and who fulfils orders by default. Switching takes effect on the next order and next catalogue sync.',
     value_type: 'enum',
-    options: ['reloadly'],
+    options: ['phaze', 'reloadly'],
+  },
+  [SettingKeys.GIFT_CARD_SECONDARY_VENDOR]: {
+    group: 'giftcard',
+    label: 'Secondary vendor',
+    description:
+      'Backup vendor. Its cards fill in brands and amounts the primary does not carry, and it takes over orders the primary rejects when failover is on. "none" turns it off.',
+    value_type: 'enum',
+    options: ['none', 'phaze', 'reloadly'],
+  },
+  [SettingKeys.GIFT_CARD_FAILOVER_ENABLED]: {
+    group: 'giftcard',
+    label: 'Automatic failover',
+    description:
+      'When the vendor rejects an order (out of balance, outage, card unavailable), buy the same brand and amount from the other vendor instead of refunding. Pending orders are never retried elsewhere.',
+    value_type: 'boolean',
+  },
+  [SettingKeys.GIFT_CARD_AUTO_PUBLISH]: {
+    group: 'giftcard',
+    label: 'Publish new cards automatically',
+    description:
+      'When a sync finds a card that is not in the catalogue yet, put it in the store straight away. Off keeps the store curated: new cards arrive hidden until you switch them on.',
+    value_type: 'boolean',
   },
   [SettingKeys.GIFT_CARD_MARKUP_PERCENT]: {
     group: 'giftcard',
@@ -228,6 +245,9 @@ export const SettingDefaults: Record<string, string> = {
   [SettingKeys.PUSH_QUIET_HOURS_START]: '22',
   [SettingKeys.PUSH_QUIET_HOURS_END]: '8',
   [SettingKeys.GIFT_CARD_ENABLED]: 'true',
-  [SettingKeys.GIFT_CARD_ACTIVE_VENDOR]: 'reloadly',
+  [SettingKeys.GIFT_CARD_ACTIVE_VENDOR]: 'phaze',
+  [SettingKeys.GIFT_CARD_SECONDARY_VENDOR]: 'reloadly',
+  [SettingKeys.GIFT_CARD_FAILOVER_ENABLED]: 'true',
+  [SettingKeys.GIFT_CARD_AUTO_PUBLISH]: 'false',
   [SettingKeys.GIFT_CARD_MARKUP_PERCENT]: '0',
 };

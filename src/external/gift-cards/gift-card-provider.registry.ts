@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { SettingsService } from '../../modules/settings/settings.service';
 import { SettingKeys } from '../../modules/settings/setting.keys';
 import {
@@ -6,14 +6,19 @@ import {
   GiftCardProvider,
 } from './gift-card-provider.interface';
 
+export interface GiftCardVendorPlan {
+  primary: string;
+  /** Null when the admin chose "none" or picked the primary again. */
+  secondary: string | null;
+  failover: boolean;
+}
+
 /**
- * Picks the active gift-card vendor at runtime. The active vendor is an
- * app_setting (editable from the admin Configuration tab), so switching vendors
- * is a config change, not a deploy. Falls back to the first registered provider.
+ * Resolves vendors at runtime from app_settings (editable in the admin
+ * Gift Cards tab), so switching or reordering vendors is a config change.
  */
 @Injectable()
 export class GiftCardProviderRegistry {
-  private readonly logger = new Logger(GiftCardProviderRegistry.name);
   private readonly byName = new Map<string, GiftCardProvider>();
 
   constructor(
@@ -23,21 +28,27 @@ export class GiftCardProviderRegistry {
     for (const p of providers) this.byName.set(p.name, p);
   }
 
-  /** The vendor named by the `gift_card_active_vendor` setting. */
-  async active(): Promise<GiftCardProvider> {
-    const name = await this.settings.getString(
-      SettingKeys.GIFT_CARD_ACTIVE_VENDOR,
-    );
+  get(name: string): GiftCardProvider {
     const provider = this.byName.get(name);
-    if (provider) return provider;
-    const first = this.byName.values().next().value as
-      | GiftCardProvider
-      | undefined;
-    if (!first) throw new Error('No gift-card provider is registered.');
-    this.logger.warn(
-      `Gift-card vendor "${name}" is not registered; using "${first.name}".`,
-    );
-    return first;
+    if (!provider)
+      throw new Error(`Gift-card vendor "${name}" is not registered.`);
+    return provider;
+  }
+
+  async plan(): Promise<GiftCardVendorPlan> {
+    const [primaryRaw, secondaryRaw, failover] = await Promise.all([
+      this.settings.getString(SettingKeys.GIFT_CARD_ACTIVE_VENDOR),
+      this.settings.getString(SettingKeys.GIFT_CARD_SECONDARY_VENDOR),
+      this.settings.getBoolean(SettingKeys.GIFT_CARD_FAILOVER_ENABLED),
+    ]);
+    const primary = this.byName.has(primaryRaw)
+      ? primaryRaw
+      : (this.byName.keys().next().value as string);
+    const secondary =
+      this.byName.has(secondaryRaw) && secondaryRaw !== primary
+        ? secondaryRaw
+        : null;
+    return { primary, secondary, failover };
   }
 
   /** The vendor names available to choose from (for the admin dropdown). */

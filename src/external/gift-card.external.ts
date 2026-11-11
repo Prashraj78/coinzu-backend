@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { GiftCardProviderRegistry } from './gift-cards/gift-card-provider.registry';
+import {
+  GiftCardProviderRegistry,
+  GiftCardVendorPlan,
+} from './gift-cards/gift-card-provider.registry';
 import {
   GiftCardCatalogItem,
   GiftCardPurchaseResult,
   GiftCardRedeemInstruction,
 } from './gift-cards/gift-card-provider.interface';
+import { PhazeProvider } from './gift-cards/phaze.provider';
 
 export type {
   GiftCardCatalogItem,
@@ -12,47 +16,64 @@ export type {
   GiftCardRedeemInstruction,
   GiftCardOrderStatus,
 } from './gift-cards/gift-card-provider.interface';
+export type { GiftCardVendorPlan } from './gift-cards/gift-card-provider.registry';
 
 /**
- * Facade over whichever gift-card vendor is active. Callers depend on this; the
- * concrete vendor is resolved per-call from config via the registry, so the
- * redeem flow never names a vendor.
+ * Facade over the gift-card vendors. Every call names its vendor: a product and
+ * an order belong to the vendor that issued them, whatever is primary today.
  */
 @Injectable()
 export class GiftCardExternal {
-  constructor(private readonly registry: GiftCardProviderRegistry) {}
+  constructor(
+    private readonly registry: GiftCardProviderRegistry,
+    private readonly phaze: PhazeProvider,
+  ) {}
 
-  async fetchCatalog(): Promise<GiftCardCatalogItem[]> {
-    return (await this.registry.active()).fetchCatalog();
+  fetchCatalog(vendor: string): Promise<GiftCardCatalogItem[]> {
+    return this.registry.get(vendor).fetchCatalog();
   }
 
-  async purchase(
+  purchase(
+    vendor: string,
     external_product_id: string,
     reference: string,
   ): Promise<GiftCardPurchaseResult> {
-    return (await this.registry.active()).purchase(
-      external_product_id,
-      reference,
-    );
+    return this.registry.get(vendor).purchase(external_product_id, reference);
   }
 
-  async fetchOrder(
+  fetchOrder(
+    vendor: string,
     provider_order_id: string,
   ): Promise<GiftCardPurchaseResult> {
-    return (await this.registry.active()).fetchOrder(provider_order_id);
+    return this.registry.get(vendor).fetchOrder(provider_order_id);
   }
 
-  async redeemInstructions(
+  redeemInstructions(
+    vendor: string,
     brand_ref: string,
   ): Promise<GiftCardRedeemInstruction | null> {
-    return (await this.registry.active()).redeemInstructions(brand_ref);
+    return this.registry.get(vendor).redeemInstructions(brand_ref);
   }
 
-  async activeVendorName(): Promise<string> {
-    return (await this.registry.active()).name;
+  plan(): Promise<GiftCardVendorPlan> {
+    return this.registry.plan();
   }
 
   availableVendors(): string[] {
     return this.registry.available();
+  }
+
+  phazeAccountStatus() {
+    return this.phaze.accountStatus();
+  }
+
+  registerPhazeWebhook(url: string) {
+    return this.phaze.registerWebhook(url);
+  }
+
+  isAuthenticPhazeWebhook(
+    headers: Record<string, string | string[] | undefined>,
+  ) {
+    return this.phaze.isAuthenticWebhook(headers);
   }
 }

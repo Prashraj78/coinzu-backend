@@ -637,6 +637,17 @@ curl $BASE/redeem/orders/a91f4e07-2c68-4b35-9d80-51e6f3b7a2c4/code \
   -H 'Authorization: Bearer $TOKEN'
 ```
 
+### POST /api/redeem/webhooks/phaze
+
+Phaze order-status webhook; re-reads the order from Phaze and settles it. — [`apis/inprogress/024redeem.webhooks.phaze.md`](apis/inprogress/024redeem.webhooks.phaze.md)
+
+```bash
+curl -X POST $BASE/redeem/webhooks/phaze \
+  -H 'Content-Type: application/json' \
+  -H 'x-phaze-webhook-key: $PHAZE_WEBHOOK_SECRET' \
+  -d '{"orderId":"<cz_gift_card_order_id>"}'
+```
+
 ## KYC
 
 Selfie verification.
@@ -1872,4 +1883,12 @@ Uploads an avatar image to R2 and returns its URL. — [`apis/admin/089avatars.u
 
 ```bash
 curl -X POST $BASE/admin/avatars/image -H 'Authorization: Bearer $ADMIN_TOKEN' -F 'file=@aria.png'
+```
+
+### POST /api/admin/redeem/phaze/webhook
+
+Registers this backend as Phaze's order-status webhook. — [`apis/admin/090redeem.phaze-webhook.md`](apis/admin/090redeem.phaze-webhook.md)
+
+```bash
+curl -X POST $BASE/admin/redeem/phaze/webhook -H 'Authorization: Bearer $ADMIN_TOKEN'
 ```

@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { GiftCardProduct } from '../../database/entities/gift-card-product.entity';
 import { GiftCardOrder } from '../../database/entities/gift-card-order.entity';
 import { User } from '../../database/entities/user.entity';
@@ -18,11 +18,32 @@ import { WalletService } from '../wallet/wallet.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { AchievementsService } from '../achievements/achievements.service';
 import { ReferralRulesService } from '../referrals/referral-rules.service';
-import { GiftCardExternal } from '../../external/gift-card.external';
+import {
+  GiftCardExternal,
+  GiftCardPurchaseResult,
+  GiftCardVendorPlan,
+} from '../../external/gift-card.external';
 import { SendgridMailExternal } from '../../external/sendgrid-mail.external';
 import { TelegramExternal } from '../../external/telegram.external';
 import { ListProductsDto } from './dto/list-products.dto';
 import { AdminListProductsDto } from './dto/admin-list-products.dto';
+
+/** Same card across vendors: brand without vendor noise + face value in cents. */
+export function giftCardMatchKey(
+  brand: string,
+  price_usd: number,
+): string | null {
+  const name = brand
+    .toLowerCase()
+    .replace(/\.com\b/g, ' ')
+    .replace(
+      /\b(e-?gift|gift ?cards?|giftcards?|e-?cards?|cards?|vouchers?|codes?|digital|online|usd|usa|us|united states)\b/g,
+      ' ',
+    )
+    .replace(/[^a-z0-9]+/g, '');
+  if (!name || !(price_usd > 0)) return null;
+  return `${name}|${Math.round(price_usd * 100)}`;
+}
 
 /** One row of the order history screen, with product details joined in. */
 export interface MyOrderRow extends Omit<GiftCardOrder, 'product'> {
@@ -55,9 +76,8 @@ export class RedeemService {
 
   async listProducts(query: ListProductsDto) {
     const { skip, take } = toSkipTake(query.page, query.limit);
-    const builder = this.products
-      .createQueryBuilder('p')
-      .where('p.is_active = true');
+    const builder = this.products.createQueryBuilder('p');
+    this.storefront(builder, await this.giftCardApiService.plan());
 
     if (query.category) {
       builder.andWhere('p.category = :category', { category: query.category });
@@ -86,6 +106,11 @@ export class RedeemService {
     const { skip, take } = toSkipTake(query.page, query.limit);
     const builder = this.products.createQueryBuilder('p');
 
+    if (query.provider) {
+      builder.andWhere('p.provider_name = :provider', {
+        provider: query.provider,
+      });
+    }
     if (query.brand) {
       builder.andWhere('p.brand ILIKE :brand', { brand: `%${query.brand}%` });
     }
@@ -107,6 +132,31 @@ export class RedeemService {
     return { data, total };
   }
 
+  /** Per-vendor catalogue size and freshness, for the admin vendor cards. */
+  async catalogueStats(): Promise<
+    Record<
+      string,
+      { total: number; active: number; last_synced_at: Date | null }
+    >
+  > {
+    const rows = await this.products
+      .createQueryBuilder('p')
+      .select('p.provider_name', 'provider')
+      .addSelect('COUNT(*)::int', 'total')
+      .addSelect('COUNT(*) FILTER (WHERE p.is_active)::int', 'active')
+      .addSelect('MAX(p.synced_at)', 'last_synced_at')
+      .groupBy('p.provider_name')
+      .getRawMany<{
+        provider: string;
+        total: number;
+        active: number;
+        last_synced_at: Date | null;
+      }>();
+    return Object.fromEntries(
+      rows.map(({ provider, ...rest }) => [provider, rest]),
+    );
+  }
+
   /** Distinct category names across the catalogue, for admin filters. */
   async listAdminCategories(): Promise<string[]> {
     const rows = await this.products
@@ -126,13 +176,34 @@ export class RedeemService {
   }
 
   async listCategories(): Promise<string[]> {
-    const rows = await this.products
-      .createQueryBuilder('p')
+    const builder = this.products.createQueryBuilder('p');
+    this.storefront(builder, await this.giftCardApiService.plan());
+    const rows = await builder
       .select('DISTINCT p.category', 'category')
-      .where('p.is_active = true')
       .andWhere('p.category IS NOT NULL')
       .getRawMany();
     return rows.map((row) => row.category as string);
+  }
+
+  /**
+   * What users can buy: the primary vendor's active cards, plus secondary cards
+   * for a brand + amount the primary does not offer — never the same card twice.
+   */
+  private storefront(
+    builder: SelectQueryBuilder<GiftCardProduct>,
+    plan: GiftCardVendorPlan,
+  ): void {
+    builder.where('p.is_active = true');
+    if (!plan.secondary) {
+      builder.andWhere('p.provider_name = :primary', { primary: plan.primary });
+      return;
+    }
+    builder.andWhere(
+      `(p.provider_name = :primary OR (p.provider_name = :secondary AND (p.match_key IS NULL OR NOT EXISTS (
+         SELECT 1 FROM gift_card_products q
+          WHERE q.provider_name = :primary AND q.is_active = true AND q.match_key = p.match_key))))`,
+      { primary: plan.primary, secondary: plan.secondary },
+    );
   }
 
   async getProductOrFail(product_id: string): Promise<GiftCardProduct> {
@@ -157,8 +228,14 @@ export class RedeemService {
         cz_error_code: CzRedeemErrorCodes.PRODUCT_INACTIVE,
       });
     }
-    const product = await this.getProductOrFail(product_id);
-    if (!product.is_active) {
+    const [product, plan] = await Promise.all([
+      this.getProductOrFail(product_id),
+      this.giftCardApiService.plan(),
+    ]);
+    const vendorLive = [plan.primary, plan.secondary].includes(
+      product.provider_name,
+    );
+    if (!product.is_active || !vendorLive) {
       throw new BadRequestException({
         cz_error_code: CzRedeemErrorCodes.PRODUCT_INACTIVE,
       });
@@ -170,6 +247,7 @@ export class RedeemService {
       const row = tx.create(GiftCardOrder, {
         user_id,
         product_id,
+        provider_name: product.provider_name,
         price_coins: product.price_coins,
         status: 'pending' as const,
       });
@@ -215,36 +293,122 @@ export class RedeemService {
     };
   }
 
-  /** Calls the vendor and records whatever comes back. Never throws. */
+  /**
+   * Buys from the product's vendor; if that vendor rejects the order outright
+   * and failover is on, buys the same brand + amount from the other vendor.
+   * A pending order is never retried elsewhere — it may still be issued.
+   * Never throws.
+   */
   async fulfill(order: GiftCardOrder, product: GiftCardProduct): Promise<void> {
+    let result = await this.attempt(
+      order,
+      product.provider_name,
+      product.external_product_id,
+    );
+
+    if (result.status === 'failed') {
+      const plan = await this.giftCardApiService.plan();
+      const alt = plan.failover ? await this.alternative(product, plan) : null;
+      if (alt) {
+        const first = `${product.provider_name}: ${result.failure_reason ?? 'rejected'}`;
+        await this.alert(
+          `🔁 <b>Gift card failover</b>\norder <code>${order.cz_gift_card_order_id}</code> — ${this.telegram.escape(first)} → retrying on ${alt.provider_name}`,
+        );
+        const second = await this.attempt(
+          order,
+          alt.provider_name,
+          alt.external_product_id,
+        );
+        result =
+          second.status === 'failed'
+            ? {
+                ...second,
+                failure_reason: `${first}; ${alt.provider_name}: ${second.failure_reason ?? 'rejected'}`,
+              }
+            : second;
+      }
+    }
+
+    this.applyResult(order, result.status, result.code, result.failure_reason);
+    await this.orders.save(order);
+    if (order.status === 'failed') await this.refund(order);
+    if (order.status === 'fulfilled') await this.notifyReady(order, product);
+  }
+
+  private async attempt(
+    order: GiftCardOrder,
+    vendor: string,
+    external_product_id: string,
+  ): Promise<GiftCardPurchaseResult> {
+    order.provider_name = vendor;
+    order.provider_order_id = null;
     try {
       const result = await this.giftCardApiService.purchase(
-        product.external_product_id,
+        vendor,
+        external_product_id,
         order.cz_gift_card_order_id,
       );
       order.provider_order_id = result.provider_order_id || null;
 
-      // Some vendors (Reloadly) accept the order as SUCCESSFUL but issue the
-      // code on a separate endpoint, so fetch it now when it isn't inline.
-      let { status, code } = result;
-      if (status === 'fulfilled' && !code && order.provider_order_id) {
+      // Reloadly accepts as SUCCESSFUL but issues the code on another endpoint.
+      if (
+        result.status === 'fulfilled' &&
+        !result.code &&
+        order.provider_order_id
+      ) {
         const card = await this.giftCardApiService.fetchOrder(
+          vendor,
           order.provider_order_id,
         );
-        code = card.code;
-        // Still no code yet → leave it pending for the poller to pick up.
-        if (!code) status = 'pending';
+        return {
+          ...result,
+          code: card.code,
+          status: card.code ? 'fulfilled' : 'pending',
+        };
       }
-      this.applyResult(order, status, code, result.failure_reason);
+      return result;
     } catch (error) {
-      this.logger.error(`Gift card purchase failed: ${String(error)}`);
-      order.status = 'failed';
-      order.failure_reason = 'Provider request failed.';
+      this.logger.error(
+        `Gift card purchase on ${vendor} failed: ${String(error)}`,
+      );
+      return {
+        provider_order_id: '',
+        status: 'failed',
+        code: null,
+        failure_reason: 'Provider request failed.',
+      };
     }
+  }
 
-    await this.orders.save(order);
-    if (order.status === 'failed') await this.refund(order);
-    if (order.status === 'fulfilled') await this.notifyReady(order, product);
+  /**
+   * The same brand + amount at the other configured vendor. Store visibility is
+   * ignored on purpose: a curated store hides the backup's duplicates, but the
+   * backup must still be able to fulfil the card the user already bought.
+   */
+  private async alternative(
+    product: GiftCardProduct,
+    plan: GiftCardVendorPlan,
+  ): Promise<GiftCardProduct | null> {
+    const other = [plan.primary, plan.secondary].find(
+      (v): v is string => !!v && v !== product.provider_name,
+    );
+    if (!other || !product.match_key) return null;
+    return this.products.findOne({
+      where: { provider_name: other, match_key: product.match_key },
+      order: { price_coins: 'ASC' },
+    });
+  }
+
+  /** Phaze webhook: re-reads the order from the vendor rather than trusting the payload. */
+  async handleVendorWebhook(
+    vendor: string,
+    provider_order_id: string,
+  ): Promise<void> {
+    const order = await this.orders.findOne({
+      where: { provider_name: vendor, provider_order_id, status: 'pending' },
+      relations: { product: true },
+    });
+    if (order) await this.pollOne(order);
   }
 
   /** Cron: pending orders are polled until the vendor settles them. */
@@ -266,12 +430,20 @@ export class RedeemService {
 
   private async pollOne(order: GiftCardOrder): Promise<void> {
     try {
+      const vendor = order.provider_name ?? order.product?.provider_name;
+      if (!vendor) return;
       const result = await this.giftCardApiService.fetchOrder(
+        vendor,
         order.provider_order_id as string,
       );
       if (result.status === 'pending') return;
 
-      this.applyResult(order, result.status, result.code, result.failure_reason);
+      this.applyResult(
+        order,
+        result.status,
+        result.code,
+        result.failure_reason,
+      );
       await this.orders.save(order);
 
       if (order.status === 'failed') await this.refund(order);
@@ -449,68 +621,129 @@ export class RedeemService {
       cz_gift_card_order_id: order.cz_gift_card_order_id,
       code: decryptText(order.redeemed_code_encrypted),
       redeem_instructions:
-        order.product?.redeem_verbose ??
-        order.product?.redeem_concise ??
-        null,
+        order.product?.redeem_verbose ?? order.product?.redeem_concise ?? null,
       fulfilled_at: order.fulfilled_at,
     };
   }
 
-  /** Cron: refreshes the catalog from the active vendor and prices it in coins. */
-  async syncCatalog(): Promise<{ synced: number }> {
+  /** Cron: refreshes the primary and secondary catalogues and prices them in coins. */
+  async syncCatalog(): Promise<{
+    synced: number;
+    vendors: Record<string, number>;
+    errors: string[];
+  }> {
     const enabled = await this.settingsService.getBoolean(
       SettingKeys.GIFT_CARD_ENABLED,
     );
-    if (!enabled) return { synced: 0 };
+    if (!enabled) return { synced: 0, vendors: {}, errors: [] };
 
-    const [items, coins_per_usd, markupPercent, provider_name] =
-      await Promise.all([
-        this.giftCardApiService.fetchCatalog(),
-        this.settingsService.getNumber(SettingKeys.COINS_PER_USD),
-        this.settingsService.getNumber(SettingKeys.GIFT_CARD_MARKUP_PERCENT),
-        this.giftCardApiService.activeVendorName(),
-      ]);
-
+    const [coins_per_usd, markupPercent, plan] = await Promise.all([
+      this.settingsService.getNumber(SettingKeys.COINS_PER_USD),
+      this.settingsService.getNumber(SettingKeys.GIFT_CARD_MARKUP_PERCENT),
+      this.giftCardApiService.plan(),
+    ]);
     const markup = 1 + Math.max(0, markupPercent) / 100;
-    const synced_at = new Date();
+    const vendors: Record<string, number> = {};
+    const errors: string[] = [];
 
-    // Redeem instructions are per brand, not per denomination — fetch each brand
-    // once and reuse it across all of that brand's rows.
-    const instructionsByBrand = await this.fetchInstructions(items);
-
-    const payloads = items
-      .filter((item) => item.external_product_id)
-      .map((item) => {
-        const ri = item.brand_ref
-          ? instructionsByBrand.get(item.brand_ref)
-          : null;
-        return {
-          provider_name,
-          external_product_id: item.external_product_id,
-          brand: item.brand,
-          denomination: item.denomination,
-          category: item.category,
-          image_url: item.image_url,
-          brand_ref: item.brand_ref,
-          redeem_concise: ri?.concise ?? null,
-          redeem_verbose: ri?.verbose ?? null,
-          price_coins: Math.round(item.price_usd * markup * coins_per_usd),
-          is_active: true,
-          synced_at,
-        };
-      });
-
-    // One INSERT ... ON CONFLICT per chunk instead of two queries per product.
-    for (let start = 0; start < payloads.length; start += 500) {
-      await this.products.upsert(payloads.slice(start, start + 500), [
-        'provider_name',
-        'external_product_id',
-      ]);
+    for (const vendor of [plan.primary, plan.secondary].filter(
+      (v): v is string => !!v,
+    )) {
+      try {
+        vendors[vendor] = await this.syncVendor(vendor, coins_per_usd, markup);
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        this.logger.error(
+          `Gift card catalogue sync for ${vendor} failed: ${detail}`,
+        );
+        errors.push(`${vendor}: ${detail}`);
+      }
     }
-    return { synced: payloads.length };
+    // Nothing synced at all is a real failure; one vendor down is not.
+    if (!Object.keys(vendors).length && errors.length) {
+      throw new Error(errors.join('; '));
+    }
+    const synced = Object.values(vendors).reduce((a, b) => a + b, 0);
+    return { synced, vendors, errors };
+  }
+
+  private async syncVendor(
+    provider_name: string,
+    coins_per_usd: number,
+    markup: number,
+  ): Promise<number> {
+    const items = await this.giftCardApiService.fetchCatalog(provider_name);
+    const synced_at = new Date();
+    // Instructions are per brand: inline when the catalogue has them, else one call per brand.
+    const instructionsByBrand = await this.fetchInstructions(
+      provider_name,
+      items.filter((i) => i.redeem === undefined),
+    );
+
+    // One row per id: a repeat inside one upsert batch makes Postgres reject the batch.
+    const unique = [
+      ...new Map(
+        items
+          .filter((item) => item.external_product_id)
+          .map((item) => [item.external_product_id, item]),
+      ).values(),
+    ];
+    const payloads = unique.map((item) => {
+      const ri =
+        item.redeem !== undefined
+          ? item.redeem
+          : item.brand_ref
+            ? instructionsByBrand.get(item.brand_ref)
+            : null;
+      return {
+        provider_name,
+        external_product_id: item.external_product_id,
+        brand: item.brand,
+        denomination: item.denomination,
+        // Face value, not price: a vendor fee must not split the same card.
+        match_key: giftCardMatchKey(
+          item.brand,
+          Number(item.denomination.replace(/[^0-9.]/g, '')) || item.price_usd,
+        ),
+        category: item.category,
+        image_url: item.image_url,
+        brand_ref: item.brand_ref,
+        redeem_concise: ri?.concise ?? null,
+        redeem_verbose: ri?.verbose ?? null,
+        price_coins: Math.round(item.price_usd * markup * coins_per_usd),
+        synced_at,
+      };
+    });
+
+    // Existing rows keep their admin-set visibility; brand-new rows go live only
+    // when auto-publish is on, so a curated store is not flooded by a sync.
+    const [existing, autoPublish] = await Promise.all([
+      this.products.find({
+        where: { provider_name },
+        select: { external_product_id: true },
+      }),
+      this.settingsService.getBoolean(SettingKeys.GIFT_CARD_AUTO_PUBLISH),
+    ]);
+    const known = new Set(existing.map((p) => p.external_product_id));
+    const batches = [
+      payloads.filter((p) => known.has(p.external_product_id)),
+      payloads
+        .filter((p) => !known.has(p.external_product_id))
+        .map((p) => ({ ...p, is_active: autoPublish })),
+    ];
+    for (const batch of batches) {
+      for (let start = 0; start < batch.length; start += 500) {
+        await this.products.upsert(batch.slice(start, start + 500), [
+          'provider_name',
+          'external_product_id',
+        ]);
+      }
+    }
+    return payloads.length;
   }
 
   private async fetchInstructions(
+    vendor: string,
     items: { brand_ref: string | null }[],
   ): Promise<Map<string, { concise: string | null; verbose: string | null }>> {
     const byBrand = new Map<
@@ -521,7 +754,7 @@ export class RedeemService {
       ...new Set(items.map((i) => i.brand_ref).filter((r): r is string => !!r)),
     ];
     for (const ref of brandRefs) {
-      const ri = await this.giftCardApiService.redeemInstructions(ref);
+      const ri = await this.giftCardApiService.redeemInstructions(vendor, ref);
       if (ri) byBrand.set(ref, ri);
     }
     return byBrand;

@@ -189,6 +189,17 @@ export const Env = {
       baseUrl: str('RELOADLY_GIFTCARDS_URL', 'https://giftcards-sandbox.reloadly.com'),
       audience: str('RELOADLY_AUDIENCE', 'https://giftcards-sandbox.reloadly.com'),
     },
+    phaze: {
+      apiKey: str('PHAZE_API_KEY'),
+      requestSecret: str('PHAZE_REQUEST_SECRET'),
+      // Sandbox by default; production is https://api.phaze.io.
+      baseUrl: str('PHAZE_BASE_URL', 'https://api.sandbox.phaze.io'),
+      // Phaze's own name for the market, e.g. "USA" (see GET /brands/countries).
+      country: str('PHAZE_COUNTRY', 'USA'),
+      // Value Phaze sends in `webhookHeader` when calling our webhook.
+      webhookSecret: str('PHAZE_WEBHOOK_SECRET'),
+      webhookHeader: str('PHAZE_WEBHOOK_HEADER', 'x-phaze-webhook-key'),
+    },
   },
   // Ops alerts (gift-card orders etc). Reuses RewardTym's bot token + chat id.
   telegram: {

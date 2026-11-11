@@ -16,6 +16,8 @@ export interface GiftCardCatalogItem {
   price_usd: number;
   /** Vendor's brand id, used to fetch redeem instructions. */
   brand_ref: string | null;
+  /** Set when the catalogue already carries redeem steps (Phaze), so no extra call is made. */
+  redeem?: GiftCardRedeemInstruction | null;
 }
 
 export interface GiftCardPurchaseResult {

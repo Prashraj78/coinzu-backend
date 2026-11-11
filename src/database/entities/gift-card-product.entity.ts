@@ -18,6 +18,11 @@ export class GiftCardProduct {
   @Column({ type: 'varchar', length: 20 })
   denomination: string;
 
+  // "<normalised brand>|<cents>" — the same card across vendors, for failover.
+  @Index('IDX_gift_card_products_match_key')
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  match_key: string | null;
+
   @Column({ type: 'int' })
   price_coins: number;
 

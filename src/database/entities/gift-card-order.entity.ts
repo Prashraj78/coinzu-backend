@@ -26,6 +26,10 @@ export class GiftCardOrder {
   @Column({ type: 'int' })
   price_coins: number;
 
+  // Vendor holding the order; differs from the product's vendor after failover.
+  @Column({ type: 'varchar', length: 60, nullable: true })
+  provider_name: string | null;
+
   @Column({ type: 'varchar', length: 120, nullable: true })
   provider_order_id: string | null;
 

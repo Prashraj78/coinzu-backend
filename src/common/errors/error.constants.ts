@@ -105,6 +105,7 @@ export const CzRedeemErrorCodes = {
   ORDER_NOT_FOUND: 'CZDRDM003',
   FULFILLMENT_FAILED: 'CZDRDM004',
   CODE_NOT_READY: 'CZDRDM005',
+  WEBHOOK_UNAUTHORIZED: 'CZDRDM006',
 } as const;
 
 /** Referral module error codes */
@@ -678,6 +679,11 @@ export const CzErrorMap: Record<
     message: 'Your gift card code is not ready yet. Please check back soon.',
     description: 'Order status is still pending; no code has been issued.',
     icon: CzErrorIcon.CODE_NOT_READY,
+  },
+  [CzRedeemErrorCodes.WEBHOOK_UNAUTHORIZED]: {
+    message: 'We could not verify this request.',
+    description: 'The gift-card vendor webhook did not carry the shared secret we registered.',
+    icon: CzErrorIcon.REQUEST_UNVERIFIED,
   },
   [CzReferralErrorCodes.SELF_REFERRAL]: {
     message: 'You cannot use your own referral code.',

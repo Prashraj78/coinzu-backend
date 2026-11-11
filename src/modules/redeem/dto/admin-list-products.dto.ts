@@ -16,7 +16,18 @@ export class AdminListProductsDto extends ListQueryDto {
   @MaxLength(60)
   category?: string;
 
-  @ApiPropertyOptional({ enum: ['active', 'inactive'], description: 'Only active or only hidden.' })
+  @ApiPropertyOptional({
+    description: 'Filter by vendor, e.g. phaze or reloadly.',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  provider?: string;
+
+  @ApiPropertyOptional({
+    enum: ['active', 'inactive'],
+    description: 'Only active or only hidden.',
+  })
   @IsOptional()
   @IsIn(['active', 'inactive'])
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))

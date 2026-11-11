@@ -132,6 +132,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDRDM003` | 404 | We could not find that order. | No gift card order exists for the given id and user. | `OrderNotFoundIcon` |
 | `CZDRDM004` | 500 | We could not complete this redemption. Your coins were returned. | *Reserved.* The gift card provider rejected or failed the order. | `FulfillmentFailedIcon` |
 | `CZDRDM005` | 400 | Your gift card code is not ready yet. Please check back soon. | Order status is still pending; no code has been issued. | `CodeNotReadyIcon` |
+| `CZDRDM006` | 401 | We could not verify this request. | The gift-card vendor webhook did not carry the shared secret we registered. | `RequestUnverifiedIcon` |
 
 ## Referrals — `CZDREF`
 

@@ -411,7 +411,15 @@ The tier a user's **best** medal must reach before a prize enters their pool. Sa
 |---|---|
 | `pending` | Charged, waiting on the vendor. |
 | `fulfilled` | The code is ready. Reveal it with `GET /api/redeem/orders/:id/code`. |
-| `failed` | The vendor refused. The coins have been refunded automatically. |
+| `failed` | The vendor refused (and the backup vendor too, when failover is on). The coins have been refunded automatically. |
+
+### Gift card vendor (`provider_name`, settings `gift_card_active_vendor` / `gift_card_secondary_vendor`)
+
+| Value | Meaning |
+|---|---|
+| `phaze` | Phaze. Default primary. |
+| `reloadly` | Reloadly. Default secondary. |
+| `none` | Secondary only — no backup vendor, failover off. |
 
 ## Support
 
