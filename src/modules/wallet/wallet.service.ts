@@ -23,6 +23,7 @@ export interface LedgerEntry {
   source_type: WalletSourceType;
   source_id?: string | null;
   note?: string | null;
+  revenue_usd?: number | null;
 }
 
 /**
@@ -165,6 +166,7 @@ export class WalletService {
       source_type: entry.source_type,
       source_id: entry.source_id ?? null,
       note: entry.note ?? null,
+      revenue_usd: entry.revenue_usd != null ? String(entry.revenue_usd) : null,
     });
     await manager.save(WalletTransaction, transaction);
 
@@ -209,7 +211,8 @@ export class WalletService {
     return {
       coin: {
         coins_per_usd: coinsPerUsd,
-        usd_per_coin: coinsPerUsd > 0 ? (1 / coinsPerUsd).toFixed(6) : '0.000000',
+        usd_per_coin:
+          coinsPerUsd > 0 ? (1 / coinsPerUsd).toFixed(6) : '0.000000',
         definition: `${coinsPerUsd.toLocaleString('en-US')} coins = $1.00`,
       },
       gem: {
@@ -240,16 +243,16 @@ export class WalletService {
               : {
                   from_coins: coin_amount,
                   to_gems:
-                    coinsPerGem > 0
-                      ? Math.floor(coin_amount / coinsPerGem)
-                      : 0,
+                    coinsPerGem > 0 ? Math.floor(coin_amount / coinsPerGem) : 0,
                 },
         },
       },
       withdrawal: {
         min_withdrawal_coins: minWithdrawalCoins,
         min_withdrawal_usd:
-          coinsPerUsd > 0 ? (minWithdrawalCoins / coinsPerUsd).toFixed(2) : '0.00',
+          coinsPerUsd > 0
+            ? (minWithdrawalCoins / coinsPerUsd).toFixed(2)
+            : '0.00',
         requires_kyc: requiresKyc,
       },
     };

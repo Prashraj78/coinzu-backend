@@ -1892,3 +1892,11 @@ Registers this backend as Phaze's order-status webhook. — [`apis/admin/090rede
 ```bash
 curl -X POST $BASE/admin/redeem/phaze/webhook -H 'Authorization: Bearer $ADMIN_TOKEN'
 ```
+
+### GET /api/admin/dashboard/economy
+
+Coins, gems, revenue, gift cards, withdrawals and outstanding balances for a date range, with a daily trend. — [`apis/admin/091dashboard.economy.md`](apis/admin/091dashboard.economy.md)
+
+```bash
+curl "$BASE/admin/dashboard/economy?date_from=2026-11-01&date_end=2026-11-11" -H 'Authorization: Bearer $ADMIN_TOKEN'
+```

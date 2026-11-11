@@ -63,6 +63,7 @@ import { AdminKycService } from './services/admin-kyc.service';
 import { AdminPushService } from './services/admin-push.service';
 import { AdminPushTemplateService } from './services/admin-push-template.service';
 import { AdminStreakService } from './services/admin-streak.service';
+import { AdminEconomyService } from './services/admin-economy.service';
 import { AdminCronService } from './services/admin-cron.service';
 import { AdminAchievementsService } from './services/admin-achievements.service';
 import { AdminDailyService } from './services/admin-daily.service';
@@ -168,6 +169,7 @@ import { AdminUsersService } from './services/admin-users.service';
     AdminPushService,
     AdminPushTemplateService,
     AdminStreakService,
+    AdminEconomyService,
     AdminCronService,
     AdminAchievementsService,
     AdminDailyService,

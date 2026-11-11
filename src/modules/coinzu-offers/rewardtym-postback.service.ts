@@ -43,13 +43,19 @@ export class RewardtymPostbackService {
     const user_id = this.readString(payload, 'user_id');
     const offer_name = this.readString(payload, 'campaign_name');
     const milestone_name = this.milestoneLabel(payload);
-    const status = (this.readString(payload, 'status') ?? 'approved').toLowerCase();
+    const status = (
+      this.readString(payload, 'status') ?? 'approved'
+    ).toLowerCase();
     const coins = this.readInt(payload, 'coinzu_coins');
     const gems = this.readInt(payload, 'coinzu_gems');
+    const revenue = Number(payload.publisher_payout_usd);
+    const revenue_usd =
+      Number.isFinite(revenue) && revenue > 0 ? revenue : null;
     const source_id = this.sourceId(conversion_id);
     const note = this.buildNote(offer_name, milestone_name);
 
-    if (!user_id || !UUID_RE.test(user_id)) return { status: 'invalid_payload' };
+    if (!user_id || !UUID_RE.test(user_id))
+      return { status: 'invalid_payload' };
 
     // One ledger row per conversion+currency is the dedup key. A retried
     // delivery finds the earn rows and credits nothing twice.
@@ -80,6 +86,7 @@ export class RewardtymPostbackService {
         source_type: 'rewardtym',
         source_id,
         note,
+        revenue_usd,
       });
     }
     if (gems > 0) {
@@ -91,6 +98,8 @@ export class RewardtymPostbackService {
         source_type: 'rewardtym',
         source_id,
         note,
+        // Revenue is booked once per conversion: on the coin row, else here.
+        revenue_usd: coins > 0 ? null : revenue_usd,
       });
     }
 
@@ -148,7 +157,8 @@ export class RewardtymPostbackService {
       h.slice(0, 8),
       h.slice(8, 12),
       `5${h.slice(13, 16)}`,
-      ((parseInt(h.slice(16, 18), 16) & 0x3f) | 0x80).toString(16) + h.slice(18, 20),
+      ((parseInt(h.slice(16, 18), 16) & 0x3f) | 0x80).toString(16) +
+        h.slice(18, 20),
       h.slice(20, 32),
     ].join('-');
   }

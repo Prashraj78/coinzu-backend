@@ -9,12 +9,7 @@ import {
 export type WalletCurrency = 'coin' | 'gem';
 
 export type WalletTransactionType =
-  | 'earn'
-  | 'spend'
-  | 'withdrawal'
-  | 'convert_in'
-  | 'convert_out'
-  | 'reversal';
+  'earn' | 'spend' | 'withdrawal' | 'convert_in' | 'convert_out' | 'reversal';
 
 export type WalletSourceType =
   | 'offer'
@@ -35,6 +30,7 @@ export type WalletSourceType =
 
 @Entity({ name: 'wallet_transactions' })
 @Index(['user_id', 'created_at'])
+@Index('IDX_wallet_transactions_created_at', ['created_at'])
 export class WalletTransaction {
   @PrimaryGeneratedColumn('uuid')
   cz_wallet_transaction_id: string;
@@ -64,6 +60,10 @@ export class WalletTransaction {
   /** Human-readable context, e.g. "AdGate Media - Survey #42" or "Reversed by AdGate Media". */
   @Column({ type: 'varchar', length: 200, nullable: true })
   note: string | null;
+
+  // What the partner network paid Coinzu for the conversion behind this row (USD).
+  @Column({ type: 'numeric', precision: 12, scale: 4, nullable: true })
+  revenue_usd: string | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;

@@ -423,3 +423,4 @@ renumbers the folder, so identify an endpoint by its method and path.
 | `DELETE /api/admin/avatars/:id` | admin token | Removes an avatar; wearers keep their picture. | [088](apis/admin/088avatars.delete.md) |
 | `POST /api/admin/avatars/image` | admin token | Uploads an avatar image to R2 and returns its URL. | [089](apis/admin/089avatars.upload-image.md) |
 | `POST /api/admin/redeem/phaze/webhook` | admin token | Registers this backend as Phaze's order-status webhook. | [090](apis/admin/090redeem.phaze-webhook.md) |
+| `GET /api/admin/dashboard/economy` | admin token | Coins, gems, revenue, gift cards, withdrawals and outstanding balances for a date range, with a daily trend. | [091](apis/admin/091dashboard.economy.md) |
