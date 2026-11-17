@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios from 'axios';
 import { Env } from '../common/config/env';
+import { TELEGRAM_EMAIL_DOMAIN } from './telegram-auth.external';
 
 const SEND_URL = 'https://api.sendgrid.com/v3/mail/send';
 const REQUEST_TIMEOUT_MS = 15000;
@@ -17,6 +18,7 @@ export class SendgridMailExternal {
   private readonly logger = new Logger(SendgridMailExternal.name);
 
   async send(to: string, subject: string, body: string, html?: string): Promise<void> {
+    if (to.endsWith(`@${TELEGRAM_EMAIL_DOMAIN}`)) return;
     // Send whenever a key is configured, in any environment; without one, log the
     // message so local runs still show what would have gone out.
     if (!Env.sendgrid.apiKey) {

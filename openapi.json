@@ -226,6 +226,31 @@
         ]
       }
     },
+    "/api/auth/telegram": {
+      "post": {
+        "operationId": "AuthController_telegram",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramLoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Sign in with the Telegram Login Widget (web)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/auth/refresh": {
       "post": {
         "operationId": "AuthController_refresh",
@@ -632,6 +657,36 @@
           }
         ],
         "summary": "Account setup step 4 — goal, finishes onboarding",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/onboarding/contacts": {
+      "post": {
+        "operationId": "UsersController_onboardingContacts",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingContactsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Web account setup — at least one chat handle, finishes onboarding",
         "tags": [
           "users"
         ]
@@ -2958,6 +3013,26 @@
         ]
       }
     },
+    "/api/redeem/webhooks/phaze": {
+      "post": {
+        "operationId": "RedeemController_phazeWebhook",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Phaze order-status webhook. Public, secret-header authenticated.",
+        "tags": [
+          "redeem"
+        ]
+      }
+    },
     "/api/redeem/orders/{id}/code": {
       "get": {
         "operationId": "RedeemController_revealCode",
@@ -4905,6 +4980,60 @@
         ]
       }
     },
+    "/api/admin/dashboard/economy": {
+      "get": {
+        "operationId": "AdminDashboardController_economy",
+        "parameters": [
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "First day included (UTC). Defaults to today.",
+            "schema": {
+              "example": "2026-11-11",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Last day included (UTC). Defaults to today.",
+            "schema": {
+              "example": "2026-11-11",
+              "type": "string"
+            }
+          },
+          {
+            "name": "signup_platform",
+            "required": false,
+            "in": "query",
+            "description": "Only users who signed up there. Omit for everyone.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "app",
+                "web"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Coins, gems, revenue, gift cards and withdrawals for a date range (admin only)",
+        "tags": [
+          "admin-dashboard"
+        ]
+      }
+    },
     "/api/admin/cron": {
       "get": {
         "operationId": "AdminCronController_list",
@@ -6731,7 +6860,27 @@
             "bearer": []
           }
         ],
-        "summary": "Gift-card vendors available to select (admin only)",
+        "summary": "Primary/secondary gift-card vendors, failover state and Phaze balance (admin only)",
+        "tags": [
+          "admin-redeem"
+        ]
+      }
+    },
+    "/api/admin/redeem/phaze/webhook": {
+      "post": {
+        "operationId": "AdminRedeemController_registerPhazeWebhook",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Register this backend as the Phaze order-status webhook (admin only)",
         "tags": [
           "admin-redeem"
         ]
@@ -6751,7 +6900,7 @@
             "bearer": []
           }
         ],
-        "summary": "Pull the latest catalogue from the active vendor now (admin only)",
+        "summary": "Pull the latest catalogue from the primary and secondary vendors now (admin only)",
         "tags": [
           "admin-redeem"
         ]
@@ -6795,6 +6944,15 @@
             "required": false,
             "in": "query",
             "description": "Filter by category name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "required": false,
+            "in": "query",
+            "description": "Filter by vendor, e.g. phaze or reloadly.",
             "schema": {
               "type": "string"
             }
@@ -7288,6 +7446,19 @@
                 "gold",
                 "platinum",
                 "diamond"
+              ]
+            }
+          },
+          {
+            "name": "signup_platform",
+            "required": false,
+            "in": "query",
+            "description": "Where the account was created.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "app",
+                "web"
               ]
             }
           },
@@ -8083,6 +8254,29 @@
           "id_token"
         ]
       },
+      "TelegramLoginDto": {
+        "type": "object",
+        "properties": {
+          "id_token": {
+            "type": "string",
+            "description": "The OIDC id_token (JWT) from Telegram.Login.auth."
+          },
+          "nonce": {
+            "type": "string",
+            "description": "The nonce the page passed to Telegram.Login.auth; must match the token."
+          },
+          "referral_code": {
+            "type": "string",
+            "example": "K7M2PQ4X"
+          },
+          "device": {
+            "$ref": "#/components/schemas/RegisterDeviceDto"
+          }
+        },
+        "required": [
+          "id_token"
+        ]
+      },
       "RefreshDto": {
         "type": "object",
         "properties": {
@@ -8139,6 +8333,28 @@
           "password"
         ]
       },
+      "UserContactDto": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "telegram",
+              "whatsapp",
+              "skype",
+              "discord"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "example": "+919875643266"
+          }
+        },
+        "required": [
+          "platform",
+          "value"
+        ]
+      },
       "UserDto": {
         "type": "object",
         "properties": {
@@ -8158,6 +8374,24 @@
           "google_id": {
             "type": "string",
             "nullable": true
+          },
+          "signup_platform": {
+            "type": "string",
+            "enum": [
+              "app",
+              "web"
+            ],
+            "description": "Where the account was created."
+          },
+          "contact": {
+            "nullable": true,
+            "description": "Where to reach the user (set on the web).",
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserContactDto"
+              }
+            ]
           },
           "name": {
             "type": "string",
@@ -8297,6 +8531,8 @@
           "email",
           "phone",
           "google_id",
+          "signup_platform",
+          "contact",
           "name",
           "gender",
           "age_range",
@@ -8478,6 +8714,30 @@
         },
         "required": [
           "primary_goal"
+        ]
+      },
+      "OnboardingContactsDto": {
+        "type": "object",
+        "properties": {
+          "contact_platform": {
+            "type": "string",
+            "example": "whatsapp",
+            "enum": [
+              "telegram",
+              "whatsapp",
+              "skype",
+              "discord"
+            ]
+          },
+          "contact_value": {
+            "type": "string",
+            "example": "+919875643266",
+            "description": "Username, ID or number on that app."
+          }
+        },
+        "required": [
+          "contact_platform",
+          "contact_value"
         ]
       },
       "UpdateNotificationPreferencesDto": {

@@ -4,6 +4,7 @@ import { RedisExternal } from './redis.external';
 import { RekognitionFaceExternal } from './rekognition-face.external';
 import { SendgridMailExternal } from './sendgrid-mail.external';
 import { GoogleAuthExternal } from './google-auth.external';
+import { TelegramAuthExternal } from './telegram-auth.external';
 import { GiftCardExternal } from './gift-card.external';
 import { OfferwallExternal } from './offerwall.external';
 import { GeoLookupExternal } from './geo-lookup.external';
@@ -25,6 +26,7 @@ const EXTERNALS = [
   RekognitionFaceExternal,
   SendgridMailExternal,
   GoogleAuthExternal,
+  TelegramAuthExternal,
   GiftCardExternal,
   OfferwallExternal,
   GeoLookupExternal,

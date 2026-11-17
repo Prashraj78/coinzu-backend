@@ -5,7 +5,7 @@
 | Folder | Count | What lives here |
 |---|---|---|
 | [`apis/user/`](apis/user) | 50 | **Live user-facing APIs.** Built, tested and safe for the app to integrate against. |
-| [`apis/inprogress/`](apis/inprogress) | 23 | **Not tested yet.** The endpoint exists and the doc is written, but it has not been verified end to end. Do not build against these without checking first. |
+| [`apis/inprogress/`](apis/inprogress) | 26 | **Not tested yet.** The endpoint exists and the doc is written, but it has not been verified end to end. Do not build against these without checking first. |
 | [`apis/admin/`](apis/admin) | 84 | **Admin panel APIs.** Called with a Rewardtym admin token, never by the app. |
 
 A doc moves from `inprogress/` to `user/` once its endpoint has actually been exercised end to end. It takes a new number in its new folder, and both folders are renumbered to stay contiguous.
@@ -45,6 +45,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/auth/login` | public | Exchanges an email and password for an access token and a refresh token. | [002](apis/user/002auth.login.md) |
 | `POST /api/auth/refresh` | public | Exchanges a refresh token for a fresh access token and refresh token pair. | [003](apis/user/003auth.refresh.md) |
 | `POST /api/auth/google` | public | Signs in with a Google ID token, creating the account on first use. | [004](apis/user/004auth.google.md) |
+| `POST /api/auth/telegram` | public | Signs in with Telegram Login (web, OIDC id_token), creating the account on first use. | [026](apis/inprogress/026auth.telegram.md) |
 | `POST /api/auth/email/verify` | public | Consumes the token from the emailed confirm-email link, marks the email verified, and returns a signed-in session. | [023](apis/user/023auth.email-verify-link.md) |
 | `GET /api/auth/email/verify` | public | Branded HTML page opened from the confirm-email link; auto-calls the verify endpoint above and stores the access token. | [024](apis/user/024auth.email-verify-page.md) |
 | `POST /api/auth/email/resend` | user | Resends the confirm-email link to the signed-in user. No-op once verified. | [050](apis/user/050auth.email-resend.md) |
@@ -64,6 +65,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/users/me/onboarding/permissions` | user token | Account setup step 2 — records whether the user allowed push notifications. | [008](apis/user/008users.onboarding-permissions.md) |
 | `POST /api/users/me/onboarding/interests` | user token | Account setup step 3 — saves the interest tags the user picked. | [009](apis/user/009users.onboarding-interests.md) |
 | `POST /api/users/me/onboarding/goal` | user token | Account setup step 4 — saves the primary goal and marks onboarding complete. | [010](apis/user/010users.onboarding-goal.md) |
+| `POST /api/users/me/onboarding/contacts` | user token | Web account setup — saves where to reach the user (Telegram, WhatsApp, Skype or Discord + handle) and marks onboarding complete. | [025](apis/inprogress/025users.onboarding-contacts.md) |
 | `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. | [028](apis/user/028users.register-device.md) |
 | `PATCH /api/users/me/notification-preferences` | user token | Turns push categories on or off and sets the quiet-hours opt-in. | [032](apis/user/032users.notification-preferences.md) |
 

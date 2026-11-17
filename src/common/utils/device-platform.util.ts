@@ -79,3 +79,8 @@ export function extractRequestIp(req: Request): string | null {
   if (typeof headerIp === 'string' && headerIp) return headerIp;
   return req.ip ?? req.socket.remoteAddress ?? null;
 }
+
+/** A request from this same machine (local dev). Such an IP has no country of its own. */
+export function isLoopbackIp(ip: string): boolean {
+  return ip === '::1' || ip.startsWith('127.') || ip === '::ffff:127.0.0.1';
+}

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CronJob } from 'cron';
 import { Repository } from 'typeorm';
 import { CronJobSetting } from '../../database/entities/cron-job-setting.entity';
+import { Env } from '../../common/config/env';
 import { CRON_JOBS, findCronJob } from './cron.catalogue';
 import { CronLogService } from './cron-log.service';
 
@@ -44,6 +45,10 @@ export class CronRegistryService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
+    if (Env.cronDisabled) {
+      this.logger.warn('CRON_DISABLED=true: no scheduled jobs on this server.');
+      return;
+    }
     // Runners register during their own init, so schedule on the next tick.
     setImmediate(() => {
       void this.bootAll();
@@ -60,7 +65,7 @@ export class CronRegistryService implements OnModuleInit {
   /** Reads the stored override and (re)installs the timer for one job. */
   async applySchedule(key: string): Promise<void> {
     const def = findCronJob(key);
-    if (!def || !this.runners.has(key)) return;
+    if (Env.cronDisabled || !def || !this.runners.has(key)) return;
 
     this.removeTimer(key);
 

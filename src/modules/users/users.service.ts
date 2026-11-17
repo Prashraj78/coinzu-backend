@@ -13,8 +13,7 @@ import { generateReferralCode } from '../../common/utils/random.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
 import {
   extractRequestIp,
-  resolveCountryFromRequestHeaders,
-} from '../../common/utils/device-platform.util';
+  resolveCountryFromRequestHeaders, isLoopbackIp } from '../../common/utils/device-platform.util';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { RekognitionFaceExternal } from '../../external/rekognition-face.external';
 import type { Request } from 'express';
@@ -30,9 +29,11 @@ import { OnboardingInterestsDto } from './dto/onboarding-interests.dto';
 import { AchievementsService } from '../achievements/achievements.service';
 import { UpdateNotificationPreferencesDto } from './dto/notification-preferences.dto';
 import { OnboardingGoalDto } from './dto/onboarding-goal.dto';
+import { OnboardingContactsDto } from './dto/onboarding-contacts.dto';
 import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
 import { SetAvatarDto } from './dto/set-avatar.dto';
 import { AvatarsService } from '../avatars/avatars.service';
+import { Env } from '../../common/config/env';
 
 const BCRYPT_ROUNDS = 12;
 
@@ -82,6 +83,8 @@ export class UsersService {
       role: 'user',
       status: 'active',
       email_verified_at: dto.email_verified ? new Date() : null,
+      signup_platform: dto.signup_platform ?? 'app',
+      telegram_id: dto.telegram_id ?? null,
     });
     user.profile_completion_pct = this.completionPercent(user);
 
@@ -107,6 +110,8 @@ export class UsersService {
         email: true,
         phone: true,
         google_id: true,
+        signup_platform: true,
+        contact: true,
         name: true,
         gender: true,
         age_range: true,
@@ -171,6 +176,10 @@ export class UsersService {
 
   findByGoogleId(google_id: string): Promise<User | null> {
     return this.users.findOne({ where: { google_id } });
+  }
+
+  findByTelegramId(telegram_id: string): Promise<User | null> {
+    return this.users.findOne({ where: { telegram_id } });
   }
 
   findByReferralCode(referral_code: string): Promise<User | null> {
@@ -387,7 +396,9 @@ export class UsersService {
     if (fromHeader) return fromHeader;
     const ip = extractRequestIp(req);
     if (!ip) return null;
-    const geo = await this.geoLookup.lookup(ip);
+    // Local dev only: a loopback caller has no country, so look up this machine's own public IP instead.
+    const local = !Env.isProduction && isLoopbackIp(ip);
+    const geo = await this.geoLookup.lookup(local ? '' : ip);
     return geo.country_code;
   }
 
@@ -435,19 +446,45 @@ export class UsersService {
     cz_user_id: string,
     dto: OnboardingGoalDto,
   ): Promise<User> {
-    // Conditional flip so a double submit can't pay the welcome bonus twice.
-    const { affected } = await this.users.update(
-      { cz_user_id, onboarding_completed: false },
-      { onboarding_completed: true },
-    );
     const user = await this.getOrFail(cz_user_id);
     user.primary_goal = dto.primary_goal;
+    return this.completeOnboarding(user);
+  }
+
+  /** The web's only setup step: where to reach the user, then setup is done. Also used to change it later. */
+  async saveOnboardingContacts(
+    cz_user_id: string,
+    dto: OnboardingContactsDto,
+    req: Request,
+  ): Promise<User> {
+    const value = dto.contact_value.trim();
+    if (!value) {
+      throw new BadRequestException({
+        cz_error_code: CzUserErrorCodes.CONTACT_REQUIRED,
+      });
+    }
+    const user = await this.getOrFail(cz_user_id);
+    user.contact = { platform: dto.contact_platform, value };
+    // The web skips the app's info step, which is where country is normally set; derive it here the same way.
+    const country = await this.resolveCountry(req);
+    if (country) user.country = country;
+    return this.completeOnboarding(user);
+  }
+
+  private async completeOnboarding(user: User): Promise<User> {
+    // Conditional flip so a double submit can't pay the welcome bonus twice.
+    const { affected } = await this.users.update(
+      { cz_user_id: user.cz_user_id, onboarding_completed: false },
+      { onboarding_completed: true },
+    );
     user.onboarding_completed = true;
     user.profile_completion_pct = this.completionPercent(user);
     const saved = await this.saveWithoutSecret(user);
-    if (affected) await this.creditWelcomeBonus(cz_user_id);
-    await this.referralRulesService.award(cz_user_id, 'onboarding_completed');
-    await this.achievementsService.trackProgress(cz_user_id, 'onboarding_completed');
+    if (affected && user.signup_platform === 'app') {
+      await this.creditWelcomeBonus(user.cz_user_id);
+    }
+    await this.referralRulesService.award(user.cz_user_id, 'onboarding_completed');
+    await this.achievementsService.trackProgress(user.cz_user_id, 'onboarding_completed');
     return saved;
   }
 
@@ -523,6 +560,7 @@ export class UsersService {
         'u.role',
         'u.country',
         'u.referral_code',
+        'u.signup_platform',
         'u.created_at',
         'u.last_login_at',
         // select:false columns — pulled in explicitly for the admin risk badge.
@@ -549,6 +587,11 @@ export class UsersService {
     }
     if (query.tier) {
       builder.andWhere('u.tier = :tier', { tier: query.tier });
+    }
+    if (query.signup_platform) {
+      builder.andWhere('u.signup_platform = :signup_platform', {
+        signup_platform: query.signup_platform,
+      });
     }
     if (query.country) {
       builder.andWhere('u.country = :country', { country: query.country });

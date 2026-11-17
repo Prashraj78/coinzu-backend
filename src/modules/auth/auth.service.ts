@@ -12,7 +12,10 @@ import {
   CzUserErrorCodes,
 } from '../../common/errors/error.constants';
 import type { RequestUser } from '../../common/auth/request-user.types';
-import { User, UserStatus } from '../../database/entities/user.entity';
+import { User, UserSignupPlatform, UserStatus } from '../../database/entities/user.entity';
+import { RegisterDeviceDto } from '../users/dto/register-device.dto';
+import { TelegramLoginDto } from './dto/telegram-login.dto';
+import { TELEGRAM_EMAIL_DOMAIN, TelegramAuthExternal } from '../../external/telegram-auth.external';
 import { UsersService } from '../users/users.service';
 import { UserDevicesService } from '../users/user-devices.service';
 import { ReferralsService } from '../referrals/referrals.service';
@@ -38,6 +41,10 @@ interface RefreshPayload {
   token_type: string;
 }
 
+function signupPlatform(device?: RegisterDeviceDto): UserSignupPlatform {
+  return device?.platform_type === 'web' ? 'web' : 'app';
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -48,6 +55,7 @@ export class AuthService {
     private readonly linkTokens: LinkTokenService,
     private readonly passwordResetService: PasswordResetService,
     private readonly googleAuth: GoogleAuthExternal,
+    private readonly telegramAuth: TelegramAuthExternal,
   ) {}
 
   async register(dto: RegisterDto, req: Request) {
@@ -80,6 +88,7 @@ export class AuthService {
         email: dto.email,
         password: dto.password,
         name: dto.name,
+        signup_platform: signupPlatform(dto.device),
       });
     }
 
@@ -149,6 +158,7 @@ export class AuthService {
         google_id: profile.google_id,
         avatar_url: profile.avatar_url ?? undefined,
         email_verified: profile.email_verified,
+        signup_platform: signupPlatform(dto.device),
       });
       if (dto.referral_code) {
         await this.referralsService.attachReferrer(
@@ -165,6 +175,48 @@ export class AuthService {
       await this.userDevicesService.upsert(user.cz_user_id, dto.device, req);
     }
 
+    await this.usersService.touchLastLogin(user.cz_user_id);
+    return { user: this.publicUser(user), ...this.issueTokens(user) };
+  }
+
+  /**
+   * Telegram Login sign-in (web, OIDC id_token). Telegram shares no email, so a new account gets a
+   * placeholder on the reserved .invalid domain (never mailed) and its Telegram handle as the
+   * contact, which also finishes its setup: no contact sheet for these users.
+   */
+  async telegramLogin(dto: TelegramLoginDto, req: Request) {
+    const { referral_code, device } = dto;
+    const profile = await this.telegramAuth.verify(dto.id_token, dto.nonce);
+
+    let user = await this.usersService.findByTelegramId(profile.telegram_id);
+    if (!user && device) {
+      await this.userDevicesService.assertDeviceNotTaken(device.hardware_id);
+    }
+    if (!user) {
+      user = await this.usersService.create({
+        email: `tg${profile.telegram_id}@${TELEGRAM_EMAIL_DOMAIN}`,
+        name: profile.name ?? undefined,
+        avatar_url: profile.avatar_url ?? undefined,
+        telegram_id: profile.telegram_id,
+        signup_platform: signupPlatform(device),
+      });
+      if (referral_code) {
+        await this.referralsService.attachReferrer(user.cz_user_id, referral_code);
+      }
+      user = await this.usersService.saveOnboardingContacts(
+        user.cz_user_id,
+        {
+          contact_platform: 'telegram',
+          contact_value: profile.username ? `@${profile.username}` : profile.telegram_id,
+        },
+        req,
+      );
+    }
+
+    this.assertLoginable(user.status);
+    if (device) {
+      await this.userDevicesService.upsert(user.cz_user_id, device, req);
+    }
     await this.usersService.touchLastLogin(user.cz_user_id);
     return { user: this.publicUser(user), ...this.issueTokens(user) };
   }

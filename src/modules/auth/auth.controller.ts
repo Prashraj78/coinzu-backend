@@ -9,6 +9,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
+import { TelegramLoginDto } from './dto/telegram-login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailLinkDto } from './dto/verify-email-link.dto';
@@ -39,6 +40,14 @@ export class AuthController {
   @ApiOperation({ summary: 'Sign in with a Google ID token' })
   google(@Body() dto: GoogleLoginDto, @Req() req: Request) {
     return this.authService.googleLogin(dto, req);
+  }
+
+  @Public()
+  @Post('telegram')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sign in with the Telegram Login Widget (web)' })
+  telegram(@Body() dto: TelegramLoginDto, @Req() req: Request) {
+    return this.authService.telegramLogin(dto, req);
   }
 
   @Public()

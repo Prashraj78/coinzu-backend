@@ -70,6 +70,16 @@ curl -X POST $BASE/auth/google \
   -d '{ "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjZmNzI1NDEwMWY..." }'
 ```
 
+### POST /api/auth/telegram
+
+Signs in with Telegram Login (web, OIDC id_token), creating the account on first use. — [`apis/inprogress/026auth.telegram.md`](apis/inprogress/026auth.telegram.md)
+
+```bash
+curl -X POST $BASE/auth/telegram \
+  -H 'Content-Type: application/json' \
+  -d '{ \"id_token\": \"eyJhbGciOiJSUzI1NiIs...\", \"nonce\": \"5f1c0e9a2b7d4c3e\" }'
+```
+
 ### POST /api/auth/email/verify
 
 Consumes the token from the emailed confirm-email link, marks the email verified, and returns a signed-in session. — [`apis/user/023auth.email-verify-link.md`](apis/user/023auth.email-verify-link.md)
@@ -222,6 +232,17 @@ curl -X POST $BASE/users/me/onboarding/goal \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer $TOKEN' \
   -d '{ "primary_goal": "save_for_a_trip" }'
+```
+
+### POST /api/users/me/onboarding/contacts
+
+Web account setup — saves where to reach the user (one app + handle) and marks onboarding complete. — [`apis/inprogress/025users.onboarding-contacts.md`](apis/inprogress/025users.onboarding-contacts.md)
+
+```bash
+curl -X POST $BASE/users/me/onboarding/contacts \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $TOKEN' \
+  -d '{ "contact_platform": "whatsapp", "contact_value": "+919875643266" }'
 ```
 
 ### POST /api/users/me/device

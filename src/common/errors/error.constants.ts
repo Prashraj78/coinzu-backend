@@ -24,6 +24,8 @@ export const CzAuthErrorCodes = {
   VERIFICATION_RESEND_COOLDOWN: 'CZDAUTH016',
   EMAIL_NOT_REGISTERED: 'CZDAUTH017',
   ACCOUNT_DELETED: 'CZDAUTH018',
+  TELEGRAM_AUTH_INVALID: 'CZDAUTH019',
+  TELEGRAM_LOGIN_UNAVAILABLE: 'CZDAUTH020',
 } as const;
 
 /** User module error codes */
@@ -40,6 +42,7 @@ export const CzUserErrorCodes = {
   GOOGLE_PHOTO_UNAVAILABLE: 'CZDUSER009',
   AVATAR_CHOICE_REQUIRED: 'CZDUSER010',
   DEVICE_ALREADY_REGISTERED: 'CZDUSER011',
+  CONTACT_REQUIRED: 'CZDUSER012',
 } as const;
 
 /** Wallet module error codes */
@@ -350,6 +353,16 @@ export const CzErrorMap: Record<
     description: 'Account has no email_verified_at timestamp.',
     icon: CzErrorIcon.EMAIL_UNVERIFIED,
   },
+  [CzAuthErrorCodes.TELEGRAM_AUTH_INVALID]: {
+    message: 'We could not sign you in with Telegram. Please try again.',
+    description: 'Telegram id_token failed verification: bad signature (JWKS), wrong iss/aud, expired, or nonce mismatch.',
+    icon: CzErrorIcon.GOOGLE_SIGNIN_FAILED,
+  },
+  [CzAuthErrorCodes.TELEGRAM_LOGIN_UNAVAILABLE]: {
+    message: 'Telegram sign-in is not available right now. Please continue with Google.',
+    description: 'TELEGRAM_LOGIN_CLIENT_ID is not set on the server.',
+    icon: CzErrorIcon.GOOGLE_SIGNIN_FAILED,
+  },
   [CzAuthErrorCodes.GOOGLE_TOKEN_INVALID]: {
     message: 'We could not sign you in with Google. Please try again.',
     description: 'Google ID token failed verification or has a wrong audience.',
@@ -439,6 +452,11 @@ export const CzErrorMap: Record<
     message: 'This device is already registered with another account.',
     description: 'Registration blocked: the device hardware_id is already linked to a different cz_user_id. One account per physical device.',
     icon: CzErrorIcon.PERMISSION_DENIED,
+  },
+  [CzUserErrorCodes.CONTACT_REQUIRED]: {
+    message: 'Please enter your username or number.',
+    description: 'POST /api/users/me/onboarding/contacts got a contact_value that is blank after trimming.',
+    icon: CzErrorIcon.VALIDATION_FAILED,
   },
   [CzWalletErrorCodes.WALLET_NOT_FOUND]: {
     message: 'We could not load your wallet. Please try again.',

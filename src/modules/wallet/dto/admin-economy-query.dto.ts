@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsDateString, IsIn, IsOptional } from 'class-validator';
+import type { UserSignupPlatform } from '../../../database/entities/user.entity';
 
 export class AdminEconomyQueryDto {
   @ApiPropertyOptional({
@@ -17,4 +18,12 @@ export class AdminEconomyQueryDto {
   @IsOptional()
   @IsDateString({ strict: true })
   date_end?: string;
+
+  @ApiPropertyOptional({
+    enum: ['app', 'web'],
+    description: 'Only users who signed up there. Omit for everyone.',
+  })
+  @IsOptional()
+  @IsIn(['app', 'web'])
+  signup_platform?: UserSignupPlatform;
 }

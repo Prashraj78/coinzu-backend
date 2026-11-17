@@ -114,6 +114,8 @@ const typeOrmConf: TypeOrmModuleOptions = {
 export const Env = {
   nodeEnv: NODE_ENV,
   isProduction: IS_PRODUCTION,
+  // A local server pointed at the shared database must not also run production's scheduled jobs.
+  cronDisabled: bool('CRON_DISABLED', false),
   port: num('PORT', 4000),
   timezone: 'UTC',
   db: { typeOrmConf },
@@ -205,6 +207,8 @@ export const Env = {
   telegram: {
     botToken: str('TELEGRAM_BOT_TOKEN', ''),
     chatId: str('TELEGRAM_CHAT_ID', ''),
+    // Client ID of the Coinzu login bot (@BotFather mini app > bot > Login Widget). Not a secret; empty = Telegram sign-in is off.
+    loginClientId: str('TELEGRAM_LOGIN_CLIENT_ID', ''),
   },
   // RewardTym v3 /v3/coinzu APIs. Coinzu calls these as a partner.
   rewardtym: {

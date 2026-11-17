@@ -2,11 +2,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEmail,
+  IsIn,
   IsOptional,
   IsString,
   Length,
   MinLength,
 } from 'class-validator';
+import type { UserSignupPlatform } from '../../../database/entities/user.entity';
 
 /** Used internally by the auth service for both password and Google signup. */
 export class CreateUserDto {
@@ -41,4 +43,14 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean()
   email_verified?: boolean;
+
+  @ApiPropertyOptional({ example: '123456789' })
+  @IsOptional()
+  @IsString()
+  telegram_id?: string;
+
+  @ApiPropertyOptional({ example: 'web', enum: ['app', 'web'] })
+  @IsOptional()
+  @IsIn(['app', 'web'])
+  signup_platform?: UserSignupPlatform;
 }

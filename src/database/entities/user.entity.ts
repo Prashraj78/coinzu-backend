@@ -18,6 +18,12 @@ export type UserKycStatus =
 
 export type UserAgeRange = '18-24' | '25-34' | '35-44' | '45-54+';
 export type UserTier = 'silver' | 'gold' | 'platinum' | 'diamond';
+export type UserSignupPlatform = 'app' | 'web';
+export type ContactPlatform = 'telegram' | 'whatsapp' | 'skype' | 'discord';
+export interface UserContact {
+  platform: ContactPlatform;
+  value: string;
+}
 
 /**
  * Push opt-outs the user controls. `false` mutes that category; anything
@@ -51,6 +57,18 @@ export class User {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   google_id: string | null;
+
+  /** Telegram user id for Telegram sign-in (web). Such accounts carry a placeholder email. */
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  telegram_id: string | null;
+
+  /** Web sign-ups get no welcome bonus and skip the face-duplicate check. */
+  @Column({ type: 'varchar', length: 10, default: 'app' })
+  signup_platform: UserSignupPlatform;
+
+  /** Where to reach the user, picked on the web: one app plus the handle or number on it. */
+  @Column({ type: 'jsonb', nullable: true })
+  contact: UserContact | null;
 
   @Column({ type: 'varchar', length: 120, nullable: true })
   name: string | null;

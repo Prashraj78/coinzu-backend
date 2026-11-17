@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class UserContactDto {
+  @ApiProperty({ enum: ['telegram', 'whatsapp', 'skype', 'discord'] })
+  platform: string;
+
+  @ApiProperty({ example: '+919875643266' })
+  value: string;
+}
+
 export class UserDto {
   @ApiProperty({ format: 'uuid' })
   cz_user_id: string;
@@ -12,6 +20,12 @@ export class UserDto {
 
   @ApiProperty({ type: String, nullable: true })
   google_id: string | null;
+
+  @ApiProperty({ enum: ['app', 'web'], description: 'Where the account was created.' })
+  signup_platform: string;
+
+  @ApiProperty({ type: () => UserContactDto, nullable: true, description: 'Where to reach the user (set on the web).' })
+  contact: UserContactDto | null;
 
   @ApiProperty({ type: String, nullable: true, example: 'Ada Lovelace' })
   name: string | null;

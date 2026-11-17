@@ -17,6 +17,7 @@ const KYC_STATUSES = [
   'manual_review',
 ] as const;
 const TIERS = ['silver', 'gold', 'platinum', 'diamond'] as const;
+const PLATFORMS = ['app', 'web'] as const;
 
 export class AdminListUsersDto extends ListQueryDto {
   @ApiPropertyOptional({
@@ -41,6 +42,11 @@ export class AdminListUsersDto extends ListQueryDto {
   @IsOptional()
   @IsIn(TIERS)
   tier?: (typeof TIERS)[number];
+
+  @ApiPropertyOptional({ enum: PLATFORMS, description: 'Where the account was created.' })
+  @IsOptional()
+  @IsIn(PLATFORMS)
+  signup_platform?: (typeof PLATFORMS)[number];
 
   @ApiPropertyOptional({
     example: 'IN',

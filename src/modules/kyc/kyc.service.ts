@@ -122,7 +122,8 @@ export class KycService {
     // faces can't be matched to anyone, so leave those to the normal rejection.
     // Exclude the submitter's own enrolled face(s) so a retry doesn't match
     // itself and mask a genuine duplicate on another account underneath it.
-    if (result.face_count === 1) {
+    // Web sign-ups skip the check; their faces are still indexed below, so an app account reusing one is caught.
+    if (result.face_count === 1 && user.signup_platform === 'app') {
       const match = await this.face.searchFace(
         image.buffer,
         matchThreshold,

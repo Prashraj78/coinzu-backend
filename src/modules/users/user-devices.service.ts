@@ -2,10 +2,11 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
 import type { Request } from 'express';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { UserDevice } from '../../database/entities/user-device.entity';
 import { User } from '../../database/entities/user.entity';
-import { extractRequestIp, resolveDevicePlatform } from '../../common/utils/device-platform.util';
+import { extractRequestIp, isLoopbackIp, resolveCountryFromRequestHeaders, resolveDevicePlatform } from '../../common/utils/device-platform.util';
+import { Env } from '../../common/config/env';
 import { CzUserErrorCodes } from '../../common/errors/error.constants';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { RegisterDeviceDto } from './dto/register-device.dto';
@@ -122,6 +123,14 @@ export class UserDevicesService {
     await this.userDevices.save(saved);
 
     await this.recomputeUserFraud(cz_user_id);
+
+    // Web accounts skip the app's setup step that sets country, so fill it from this sign-in when still empty.
+    // Local dev: a loopback caller has no country, so use this machine's own public IP (never in production).
+    const localGeo = !geo?.country_code && ip && !Env.isProduction && isLoopbackIp(ip) ? await this.geoLookup.lookup('') : null;
+    const country = resolveCountryFromRequestHeaders(req) ?? geo?.country_code ?? localGeo?.country_code ?? null;
+    if (country) {
+      await this.users.update({ cz_user_id, country: IsNull() }, { country });
+    }
     return saved;
   }
 

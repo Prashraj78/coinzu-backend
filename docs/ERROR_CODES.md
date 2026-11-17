@@ -48,6 +48,8 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDAUTH016` | 429 | You just requested a link. Please wait a while before asking for another. | A verify-email link was resent to this user within the cooldown window; `retry_after_seconds` carries the remaining wait. | `TooManyAttemptsIcon` |
 | `CZDAUTH017` | 404 | We couldn't find an account with that email. Please check it, or create a new account. | Password reset requested for an email that has no user row. | `AccountNotFoundIcon` |
 | `CZDAUTH018` | 401 | This account was deleted. Please contact support to reopen it. | Login blocked: the account was soft-deleted by the user (status is "deleted"). | `AccountInactiveIcon` |
+| `CZDAUTH019` | 401 | We could not sign you in with Telegram. Please try again. | Telegram `id_token` failed verification: bad signature, wrong iss/aud, expired, or nonce mismatch. | `GoogleSignInFailedIcon` |
+| `CZDAUTH020` | 503 | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set on the server. | `GoogleSignInFailedIcon` |
 
 ## User — `CZDUSER`
 
@@ -64,6 +66,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDUSER009` | 404 | We couldn’t find a Google photo on your account. Pick an avatar instead. | `use_google` on an account with no `google_avatar_url`. | `NotFoundIcon` |
 | `CZDUSER010` | 400 | Please choose an avatar or your Google photo. | `PATCH /api/users/me/avatar` got both fields or neither. | `ValidationFailedIcon` |
 | `CZDUSER011` | 409 | This device is already registered with another account. | Registration blocked: the device `hardware_id` is already linked to a different `cz_user_id`. One account per physical device. | `PermissionDeniedIcon` |
+| `CZDUSER012` | 400 | Please enter your username or number. | `POST /api/users/me/onboarding/contacts` got a `contact_value` that is blank after trimming. | `ValidationFailedIcon` |
 
 ## Wallet — `CZDWLT`
 

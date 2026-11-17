@@ -54,6 +54,22 @@ scores cleanly.
 value as the row's `rejection_code`. An admin rejection always clears it to
 `null`; the admin's sentence lives in `rejection_reason` instead.
 
+### `signup_platform` — where the account was created
+
+| Value | Meaning |
+|---|---|
+| `app` | Signed up in the mobile app. Every account made before this field existed is `app`. Gets the welcome bonus and the face-duplicate check. |
+| `web` | Signed up on the web build. No welcome bonus; KYC skips the face-duplicate search (the face is still indexed). |
+
+### `contact.platform` — where to reach a user
+
+| Value | Meaning |
+|---|---|
+| `telegram` | `contact.value` is a Telegram username or number. |
+| `whatsapp` | `contact.value` is a WhatsApp number. |
+| `skype` | `contact.value` is a Skype ID. |
+| `discord` | `contact.value` is a Discord username. |
+
 ### `tier` — loyalty tier
 
 | Value |

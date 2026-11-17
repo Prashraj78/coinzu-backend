@@ -121,6 +121,16 @@ export class AdminEconomyService {
 
     const q = <T>(sql: string, params: unknown[]) =>
       this.dataSource.query(sql, params) as Promise<T>;
+    // App or web sign-ups only; `n` is the placeholder number the platform takes in that query.
+    const platform = query.signup_platform;
+    const only = (col: string, n: number) =>
+      platform
+        ? ` AND ${col} IN (SELECT cz_user_id FROM users WHERE signup_platform = $${n})`
+        : '';
+    const signupsOnly = (n: number) =>
+      platform ? ` AND signup_platform = $${n}` : '';
+    const withPlatform = (params: unknown[]) =>
+      platform ? [...params, platform] : params;
 
     const [
       rows,
@@ -138,22 +148,22 @@ export class AdminEconomyService {
                 COUNT(*)::int AS transactions,
                 COUNT(DISTINCT t.user_id)::int AS users
            FROM wallet_transactions t ${PROGRAM_JOINS}
-          WHERE t.created_at >= $1 AND t.created_at < $2
+          WHERE t.created_at >= $1 AND t.created_at < $2${only('t.user_id', 3)}
           GROUP BY 1, t.currency, t.type`,
-        [from, end],
+        withPlatform([from, end]),
       ),
       q<{ revenue_usd: string; conversions: number }[]>(
         `SELECT COALESCE(SUM(revenue_usd), 0) AS revenue_usd,
                 COUNT(*) FILTER (WHERE revenue_usd IS NOT NULL)::int AS conversions
            FROM wallet_transactions
-          WHERE created_at >= $1 AND created_at < $2`,
-        [from, end],
+          WHERE created_at >= $1 AND created_at < $2${only('user_id', 3)}`,
+        withPlatform([from, end]),
       ),
       q<{ new_signups: number; active: number; earners: number }[]>(
-        `SELECT (SELECT COUNT(*) FROM users WHERE created_at >= $1 AND created_at < $2)::int AS new_signups,
-                (SELECT COUNT(DISTINCT user_id) FROM wallet_transactions WHERE created_at >= $1 AND created_at < $2)::int AS active,
-                (SELECT COUNT(DISTINCT user_id) FROM wallet_transactions WHERE created_at >= $1 AND created_at < $2 AND revenue_usd IS NOT NULL)::int AS earners`,
-        [from, end],
+        `SELECT (SELECT COUNT(*) FROM users WHERE created_at >= $1 AND created_at < $2${signupsOnly(3)})::int AS new_signups,
+                (SELECT COUNT(DISTINCT user_id) FROM wallet_transactions WHERE created_at >= $1 AND created_at < $2${only('user_id', 3)})::int AS active,
+                (SELECT COUNT(DISTINCT user_id) FROM wallet_transactions WHERE created_at >= $1 AND created_at < $2 AND revenue_usd IS NOT NULL${only('user_id', 3)})::int AS earners`,
+        withPlatform([from, end]),
       ),
       q<Record<string, number>[]>(
         `SELECT COUNT(*)::int AS orders,
@@ -162,8 +172,8 @@ export class AdminEconomyService {
                 COUNT(*) FILTER (WHERE status = 'failed')::int AS failed,
                 COALESCE(SUM(price_coins) FILTER (WHERE status = 'fulfilled'), 0)::bigint AS fulfilled_coins
            FROM gift_card_orders
-          WHERE created_at >= $1 AND created_at < $2`,
-        [from, end],
+          WHERE created_at >= $1 AND created_at < $2${only('user_id', 3)}`,
+        withPlatform([from, end]),
       ),
       q<Record<string, string | number>[]>(
         `SELECT COUNT(*)::int AS requests,
@@ -172,15 +182,16 @@ export class AdminEconomyService {
                 COALESCE(SUM(amount_usd::numeric), 0) AS requested_usd,
                 COALESCE(SUM(amount_usd::numeric) FILTER (WHERE status = 'paid'), 0) AS paid_usd
            FROM withdrawal_requests
-          WHERE created_at >= $1 AND created_at < $2`,
-        [from, end],
+          WHERE created_at >= $1 AND created_at < $2${only('user_id', 3)}`,
+        withPlatform([from, end]),
       ),
       q<{ coins: string; gems: string; wallets: number }[]>(
         `SELECT COALESCE(SUM(coin_balance), 0)::bigint AS coins,
                 COALESCE(SUM(gem_balance), 0)::bigint AS gems,
                 COUNT(*) FILTER (WHERE coin_balance > 0 OR gem_balance > 0)::int AS wallets
-           FROM wallets`,
-        [],
+           FROM wallets
+          WHERE TRUE${only('cz_user_id', 1)}`,
+        withPlatform([]),
       ),
       q<Record<string, string>[]>(
         `SELECT to_char(d.day, 'YYYY-MM-DD') AS date,
@@ -188,12 +199,12 @@ export class AdminEconomyService {
                 COALESCE(SUM(CASE WHEN t.type = 'earn' THEN t.amount * CASE WHEN t.currency = 'coin' THEN $3::numeric ELSE $4::numeric END END), 0) AS rewards_usd,
                 COALESCE(SUM(t.amount) FILTER (WHERE t.currency = 'coin' AND t.type = 'earn'), 0)::bigint AS coins_earned,
                 COALESCE(-SUM(t.amount) FILTER (WHERE t.currency = 'coin' AND t.type IN ('spend', 'withdrawal')), 0)::bigint AS coins_spent,
-                (SELECT COUNT(*) FROM users u WHERE u.created_at >= d.day AND u.created_at < d.day + interval '1 day')::int AS signups
+                (SELECT COUNT(*) FROM users u WHERE u.created_at >= d.day AND u.created_at < d.day + interval '1 day'${signupsOnly(5)})::int AS signups
            FROM generate_series($1::timestamptz, $2::timestamptz - interval '1 day', interval '1 day') AS d(day)
-           LEFT JOIN wallet_transactions t ON t.created_at >= d.day AND t.created_at < d.day + interval '1 day'
+           LEFT JOIN wallet_transactions t ON t.created_at >= d.day AND t.created_at < d.day + interval '1 day'${only('t.user_id', 5)}
           GROUP BY d.day
           ORDER BY d.day`,
-        [trendFrom, end, usdPerCoin, usdPerGem],
+        withPlatform([trendFrom, end, usdPerCoin, usdPerGem]),
       ),
     ]);
 

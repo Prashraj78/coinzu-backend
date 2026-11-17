@@ -15,6 +15,7 @@ import { ApiData } from '../../common/decorators/api-envelope.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { OnboardingGoalDto } from './dto/onboarding-goal.dto';
+import { OnboardingContactsDto } from './dto/onboarding-contacts.dto';
 import { OnboardingInfoDto } from './dto/onboarding-info.dto';
 import { OnboardingInterestsDto } from './dto/onboarding-interests.dto';
 import { OnboardingPermissionsDto } from './dto/onboarding-permissions.dto';
@@ -101,6 +102,16 @@ export class UsersController {
     @Body() dto: OnboardingGoalDto,
   ) {
     return this.usersService.saveOnboardingGoal(user.cz_user_id, dto);
+  }
+
+  @Post('me/onboarding/contacts')
+  @ApiOperation({ summary: 'Web account setup — at least one chat handle, finishes onboarding' })
+  onboardingContacts(
+    @CurrentUser() user: RequestUser,
+    @Body() dto: OnboardingContactsDto,
+    @Req() req: Request,
+  ) {
+    return this.usersService.saveOnboardingContacts(user.cz_user_id, dto, req);
   }
 
   @Patch('me/notification-preferences')
