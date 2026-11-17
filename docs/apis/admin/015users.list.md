@@ -31,6 +31,7 @@ Every Coinzu user with their wallet balance, paginated and searchable by email, 
 | `kyc_status` | string | no | Exact match on KYC state. One of the `kyc_status` enum values below. |
 | `tier` | string | no | Exact match on loyalty tier. One of the `tier` enum values below. |
 | `signup_platform` | string | no | `app` or `web`: where the account was created. Each row also returns `signup_platform`. |
+| `signup_method` | string | no | `email`, `google` or `telegram`: how the account signed up (Telegram and Google sign-ups carry their provider id, email ones neither). Each row also returns `signup_method`, `telegram_id`, `google_id` and `contact`. |
 | `country` | string | no | Exact match on ISO country code. |
 | `date_from` | string (date) | no | Only users who joined on/after this UTC date (inclusive), `yyyy-MM-dd`. |
 | `date_end` | string (date) | no | Only users who joined on/before this UTC date (inclusive), `yyyy-MM-dd`. |

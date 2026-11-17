@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsIn, IsOptional } from 'class-validator';
 import type { UserSignupPlatform } from '../../../database/entities/user.entity';
+import { SIGNUP_METHODS, type SignupMethod } from '../../../common/utils/device-platform.util';
 
 export class AdminEconomyQueryDto {
   @ApiPropertyOptional({
@@ -26,4 +27,12 @@ export class AdminEconomyQueryDto {
   @IsOptional()
   @IsIn(['app', 'web'])
   signup_platform?: UserSignupPlatform;
+
+  @ApiPropertyOptional({
+    enum: SIGNUP_METHODS,
+    description: 'Only users who signed up by email, Google or Telegram. Omit for everyone.',
+  })
+  @IsOptional()
+  @IsIn(SIGNUP_METHODS)
+  signup_method?: SignupMethod;
 }

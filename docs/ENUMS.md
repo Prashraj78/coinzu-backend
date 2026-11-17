@@ -61,6 +61,14 @@ value as the row's `rejection_code`. An admin rejection always clears it to
 | `app` | Signed up in the mobile app. Every account made before this field existed is `app`. Gets the welcome bonus and the face-duplicate check. |
 | `web` | Signed up on the web build. No welcome bonus; KYC skips the face-duplicate search (the face is still indexed). |
 
+### `signup_method` — how an account signed up (admin filters)
+
+| Value | Meaning |
+|---|---|
+| `email` | Email and password (no Google or Telegram id on the account). |
+| `google` | Google sign-in (`google_id` set). |
+| `telegram` | Telegram Login (`telegram_id` set; the email is a `tg<id>@telegram.coinzu.invalid` placeholder). |
+
 ### `contact.platform` — where to reach a user
 
 | Value | Meaning |

@@ -13,7 +13,7 @@ import { generateReferralCode } from '../../common/utils/random.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
 import {
   extractRequestIp,
-  resolveCountryFromRequestHeaders, isLoopbackIp } from '../../common/utils/device-platform.util';
+  resolveCountryFromRequestHeaders, isLoopbackIp, signupMethodOf, signupMethodSql } from '../../common/utils/device-platform.util';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { RekognitionFaceExternal } from '../../external/rekognition-face.external';
 import type { Request } from 'express';
@@ -561,6 +561,10 @@ export class UsersService {
         'u.country',
         'u.referral_code',
         'u.signup_platform',
+        // Telegram accounts: the admin list shows their t.me profile instead of the placeholder email.
+        'u.telegram_id',
+        'u.google_id',
+        'u.contact',
         'u.created_at',
         'u.last_login_at',
         // select:false columns — pulled in explicitly for the admin risk badge.
@@ -592,6 +596,9 @@ export class UsersService {
       builder.andWhere('u.signup_platform = :signup_platform', {
         signup_platform: query.signup_platform,
       });
+    }
+    if (query.signup_method) {
+      builder.andWhere(signupMethodSql(query.signup_method, 'u'));
     }
     if (query.country) {
       builder.andWhere('u.country = :country', { country: query.country });
@@ -631,6 +638,7 @@ export class UsersService {
       return {
         ...rest,
         joined_at: created_at,
+        signup_method: signupMethodOf(u),
         coin_balance: wallet?.coin_balance ?? 0,
         gem_balance: wallet?.gem_balance ?? 0,
         /** Rarest medal they hold, for the row's badge. Null when none. */

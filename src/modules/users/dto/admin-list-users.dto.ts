@@ -7,6 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { ListQueryDto } from '../../../common/dto/list-query.dto';
+import { SIGNUP_METHODS, type SignupMethod } from '../../../common/utils/device-platform.util';
 
 const STATUSES = ['active', 'suspended', 'banned', 'deleted'] as const;
 const KYC_STATUSES = [
@@ -47,6 +48,11 @@ export class AdminListUsersDto extends ListQueryDto {
   @IsOptional()
   @IsIn(PLATFORMS)
   signup_platform?: (typeof PLATFORMS)[number];
+
+  @ApiPropertyOptional({ enum: SIGNUP_METHODS, description: 'How the account signed up: email, Google or Telegram.' })
+  @IsOptional()
+  @IsIn(SIGNUP_METHODS)
+  signup_method?: SignupMethod;
 
   @ApiPropertyOptional({
     example: 'IN',

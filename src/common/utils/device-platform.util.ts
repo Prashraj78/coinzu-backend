@@ -84,3 +84,21 @@ export function extractRequestIp(req: Request): string | null {
 export function isLoopbackIp(ip: string): boolean {
   return ip === '::1' || ip.startsWith('127.') || ip === '::ffff:127.0.0.1';
 }
+
+export type SignupMethod = 'email' | 'google' | 'telegram';
+export const SIGNUP_METHODS: SignupMethod[] = ['email', 'google', 'telegram'];
+
+/** How an account signed up: Telegram and Google sign-ups carry their provider id, email ones carry neither. */
+export function signupMethodOf(user: { telegram_id?: string | null; google_id?: string | null }): SignupMethod {
+  if (user.telegram_id) return 'telegram';
+  if (user.google_id) return 'google';
+  return 'email';
+}
+
+/** The same rule as SQL on the users table (fixed strings, never user input). `alias` is the users table alias, if any. */
+export function signupMethodSql(method: SignupMethod, alias = ''): string {
+  const col = (name: string) => (alias ? `${alias}.${name}` : name);
+  if (method === 'telegram') return `${col('telegram_id')} IS NOT NULL`;
+  if (method === 'google') return `${col('telegram_id')} IS NULL AND ${col('google_id')} IS NOT NULL`;
+  return `${col('telegram_id')} IS NULL AND ${col('google_id')} IS NULL`;
+}

@@ -99,7 +99,8 @@ export class RekognitionFaceExternal implements OnModuleInit {
     return {
       face_count: faces.length,
       confidence: first?.Confidence ?? 0,
-      eyes_open: this.isTrue(first?.EyesOpen),
+      // Only a confident "eyes closed" counts against the user; an unsure "eyes open" (e.g. 85%) still passes.
+      eyes_open: !this.isConfidentlyFalse(first?.EyesOpen),
       sunglasses: this.isTrue(first?.Sunglasses),
       face_occluded: this.isTrue(first?.FaceOccluded),
       sharp: (first?.Quality?.Sharpness ?? 0) >= MIN_SHARPNESS,
@@ -291,6 +292,12 @@ export class RekognitionFaceExternal implements OnModuleInit {
   /** Rekognition answers every attribute with a guess and a confidence. */
   private isTrue(attribute?: { Value?: boolean; Confidence?: number }): boolean {
     if (!attribute?.Value) return false;
+    return (attribute.Confidence ?? 0) >= MIN_ATTRIBUTE_CONFIDENCE;
+  }
+
+  /** The attribute is confidently absent (e.g. eyes confidently closed). Missing or unsure is not. */
+  private isConfidentlyFalse(attribute?: { Value?: boolean; Confidence?: number }): boolean {
+    if (!attribute || attribute.Value !== false) return false;
     return (attribute.Confidence ?? 0) >= MIN_ATTRIBUTE_CONFIDENCE;
   }
 

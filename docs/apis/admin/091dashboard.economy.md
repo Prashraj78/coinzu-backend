@@ -26,6 +26,7 @@ The money view of Coinzu for a date range: coins and gems in and out, where they
 |---|---|---|---|
 | `date_from` | string (`YYYY-MM-DD`) | no | First UTC day included. Defaults to today. |
 | `date_end` | string (`YYYY-MM-DD`) | no | Last UTC day included. Defaults to today. Swapped with `date_from` if earlier; the range is capped at 366 days. |
+| `signup_method` | string | no | `email`, `google` or `telegram`. Combines with `signup_platform`; both narrow the same set of users. |
 | `signup_platform` | string | no | `app` or `web`. Counts only users who signed up there (signups, activity, revenue, orders, withdrawals, liability, daily trend). Omit for everyone. |
 
 ### Body

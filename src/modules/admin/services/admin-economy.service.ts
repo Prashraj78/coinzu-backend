@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { SettingsService } from '../../settings/settings.service';
 import { SettingKeys } from '../../settings/setting.keys';
 import { AdminEconomyQueryDto } from '../../wallet/dto/admin-economy-query.dto';
+import { signupMethodSql } from '../../../common/utils/device-platform.util';
 
 const DAY_MS = 86_400_000;
 const MAX_RANGE_DAYS = 366;
@@ -123,12 +124,20 @@ export class AdminEconomyService {
       this.dataSource.query(sql, params) as Promise<T>;
     // App or web sign-ups only; `n` is the placeholder number the platform takes in that query.
     const platform = query.signup_platform;
+    // The users a filter keeps: signed up on app/web (a $n param) and/or by email/Google/Telegram (fixed SQL).
+    const userWhere = (n: number) =>
+      [
+        platform ? `signup_platform = $${n}` : null,
+        query.signup_method ? signupMethodSql(query.signup_method) : null,
+      ]
+        .filter(Boolean)
+        .join(' AND ');
     const only = (col: string, n: number) =>
-      platform
-        ? ` AND ${col} IN (SELECT cz_user_id FROM users WHERE signup_platform = $${n})`
+      userWhere(n)
+        ? ` AND ${col} IN (SELECT cz_user_id FROM users WHERE ${userWhere(n)})`
         : '';
     const signupsOnly = (n: number) =>
-      platform ? ` AND signup_platform = $${n}` : '';
+      userWhere(n) ? ` AND ${userWhere(n)}` : '';
     const withPlatform = (params: unknown[]) =>
       platform ? [...params, platform] : params;
 
