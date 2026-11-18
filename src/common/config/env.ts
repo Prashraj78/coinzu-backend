@@ -107,8 +107,9 @@ const typeOrmConf: TypeOrmModuleOptions = {
   synchronize: false,
   migrationsRun: false,
   logging: !IS_PRODUCTION,
-  // Every session talks UTC so timestamps never shift.
-  extra: { options: '-c timezone=UTC' },
+  // Every session talks UTC so timestamps never shift. Neon's pooler drops idle connections, so the pool
+  // closes its own idle clients first and keeps sockets alive (a reused dead socket fails with ECONNRESET).
+  extra: { options: '-c timezone=UTC', idleTimeoutMillis: 30_000, keepAlive: true },
 };
 
 export const Env = {

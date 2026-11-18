@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,7 +13,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import type { UploadedFile as StoredFile } from '../../external/r2-storage.external';
 import { ApiData } from '../../common/decorators/api-envelope.decorator';
@@ -40,8 +43,9 @@ export class KycController {
   submitSelfie(
     @CurrentUser() user: RequestUser,
     @UploadedFile() file: StoredFile,
+    @Req() req: Request,
   ) {
-    return this.kycService.submitSelfie(user.cz_user_id, file);
+    return this.kycService.submitSelfie(user.cz_user_id, file, resolveDevicePlatform(undefined, req));
   }
 
 }

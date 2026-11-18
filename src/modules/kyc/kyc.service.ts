@@ -1,3 +1,4 @@
+import type { DevicePlatformType } from '../../database/entities/user-device.entity';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -88,7 +89,7 @@ export class KycService {
    * Uploads the selfie, runs face detection, and decides on the spot.
    * A borderline score goes to a human instead of failing the user.
    */
-  async submitSelfie(user_id: string, file?: UploadedFile) {
+  async submitSelfie(user_id: string, file: UploadedFile | undefined, platform: DevicePlatformType) {
     const [user, pending] = await Promise.all([
       this.usersService.getOrFail(user_id),
       this.verifications.findOne({
@@ -122,8 +123,9 @@ export class KycService {
     // faces can't be matched to anyone, so leave those to the normal rejection.
     // Exclude the submitter's own enrolled face(s) so a retry doesn't match
     // itself and mask a genuine duplicate on another account underneath it.
-    // Web sign-ups skip the check; their faces are still indexed below, so an app account reusing one is caught.
-    if (result.face_count === 1 && user.signup_platform === 'app') {
+    // Only app accounts verifying from the app are checked; web sign-ups and selfies sent from the web skip it.
+    // Their faces are still indexed below, so an app account reusing one is caught.
+    if (result.face_count === 1 && user.signup_platform === 'app' && platform !== 'web') {
       const match = await this.face.searchFace(
         image.buffer,
         matchThreshold,
