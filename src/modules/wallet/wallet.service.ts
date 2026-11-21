@@ -1,3 +1,4 @@
+import type { DevicePlatformType } from '../../database/entities/user-device.entity';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { forwardRef, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -63,14 +64,14 @@ export class WalletService {
    * Balance plus everything the Wallet screen prints under it — the cash value
    * of the coins, what the gems convert to, and the live rates.
    */
-  async getBalanceSummary(user_id: string) {
+  async getBalanceSummary(user_id: string, platform: DevicePlatformType) {
     const [wallet, coinsPerUsd, coinsPerGem, minWithdrawalCoins, requiresKyc] =
       await Promise.all([
         this.getBalance(user_id),
         this.settingsService.getNumber(SettingKeys.COINS_PER_USD),
         this.settingsService.getNumber(SettingKeys.COINS_PER_GEM),
         this.settingsService.getNumber(SettingKeys.MIN_WITHDRAWAL_COINS),
-        this.settingsService.getBoolean(SettingKeys.WITHDRAWAL_REQUIRES_KYC),
+        this.settingsService.withdrawalRequiresKyc(platform),
       ]);
 
     return {
@@ -196,13 +197,17 @@ export class WalletService {
    * The rate book the app renders Convert from — every definition spelled out,
    * plus an exact preview so the client never re-implements the flooring.
    */
-  async getRates(gem_amount?: number, coin_amount?: number) {
+  async getRates(
+    platform: DevicePlatformType,
+    gem_amount?: number,
+    coin_amount?: number,
+  ) {
     const [coinsPerUsd, coinsPerGem, minWithdrawalCoins, requiresKyc] =
       await Promise.all([
         this.settingsService.getNumber(SettingKeys.COINS_PER_USD),
         this.settingsService.getNumber(SettingKeys.COINS_PER_GEM),
         this.settingsService.getNumber(SettingKeys.MIN_WITHDRAWAL_COINS),
-        this.settingsService.getBoolean(SettingKeys.WITHDRAWAL_REQUIRES_KYC),
+        this.settingsService.withdrawalRequiresKyc(platform),
       ]);
 
     const gemsPerCoin = coinsPerGem > 0 ? 1 / coinsPerGem : 0;

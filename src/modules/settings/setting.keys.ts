@@ -4,6 +4,8 @@ export const SettingKeys = {
   COINS_PER_GEM: 'coins_per_gem',
   MIN_WITHDRAWAL_COINS: 'min_withdrawal_coins',
   WITHDRAWAL_REQUIRES_KYC: 'withdrawal_requires_kyc',
+  WITHDRAWAL_REQUIRES_KYC_WEB: 'withdrawal_requires_kyc_web',
+  USDT_WITHDRAWAL_FEE_PERCENT: 'usdt_withdrawal_fee_percent',
   KYC_CONFIDENCE_THRESHOLD: 'kyc_confidence_threshold',
   KYC_FACE_MATCH_THRESHOLD: 'kyc_face_match_threshold',
   REFERRAL_MAX_COINS_PER_FRIEND: 'referral_max_coins_per_friend',
@@ -76,10 +78,27 @@ export const SettingCatalogue: Record<string, SettingMeta> = {
   },
   [SettingKeys.WITHDRAWAL_REQUIRES_KYC]: {
     group: 'withdrawals',
-    label: 'Require KYC to withdraw',
+    label: 'Require face verification to withdraw — app',
     description:
-      'When on, a user must be KYC-verified before a payout is accepted. Off lets anyone cash out.',
+      'Android/iOS app. When on, a user must pass face verification before a payout or gift card is accepted, and the app shows Face Verification. Off lets app users cash out without it and hides it.',
     value_type: 'boolean',
+  },
+  [SettingKeys.WITHDRAWAL_REQUIRES_KYC_WEB]: {
+    group: 'withdrawals',
+    label: 'Require face verification to withdraw — web',
+    description:
+      'Web app (app.coinzu.online). When on, a web user must pass face verification before a payout or gift card is accepted, and the web shows Face Verification. Off lets web users cash out without it and hides it.',
+    value_type: 'boolean',
+  },
+  [SettingKeys.USDT_WITHDRAWAL_FEE_PERCENT]: {
+    group: 'withdrawals',
+    label: 'USDT network fee',
+    description:
+      'Percentage of each USDT withdrawal kept to cover the network fee. It is deducted from the payout: the user is sent the USD value minus this fee. Applies to new requests only.',
+    value_type: 'decimal',
+    unit: '%',
+    min: 0,
+    max: 50,
   },
   [SettingKeys.KYC_CONFIDENCE_THRESHOLD]: {
     group: 'withdrawals',
@@ -235,6 +254,8 @@ export const SettingDefaults: Record<string, string> = {
   [SettingKeys.COINS_PER_GEM]: '0.025',
   [SettingKeys.MIN_WITHDRAWAL_COINS]: '5000',
   [SettingKeys.WITHDRAWAL_REQUIRES_KYC]: 'true',
+  [SettingKeys.WITHDRAWAL_REQUIRES_KYC_WEB]: 'false',
+  [SettingKeys.USDT_WITHDRAWAL_FEE_PERCENT]: '7',
   [SettingKeys.KYC_CONFIDENCE_THRESHOLD]: '90',
   [SettingKeys.KYC_FACE_MATCH_THRESHOLD]: '90',
   [SettingKeys.REFERRAL_MAX_COINS_PER_FRIEND]: '0',

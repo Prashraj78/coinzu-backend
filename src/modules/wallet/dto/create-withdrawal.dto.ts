@@ -1,21 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsInt, IsObject, Min } from 'class-validator';
-import type { WithdrawalMethod } from '../../../database/entities/withdrawal-request.entity';
+import { IsIn, IsInt, IsString, MaxLength, Min } from 'class-validator';
+import {
+  USDT_NETWORKS,
+  type UsdtNetwork,
+} from '../../../database/entities/withdrawal-request.entity';
 
 export class CreateWithdrawalDto {
-  @ApiProperty({ example: 5000, description: 'Coins to withdraw.' })
+  @ApiProperty({
+    example: 10000,
+    description: 'Coins to withdraw. Up to the whole coin balance.',
+  })
   @IsInt()
   @Min(1)
   amount_coins: number;
 
-  @ApiProperty({ example: 'paypal', enum: ['paypal', 'bank', 'crypto'] })
-  @IsIn(['paypal', 'bank', 'crypto'])
-  method: WithdrawalMethod;
+  @ApiProperty({ example: 'TRC20', enum: USDT_NETWORKS })
+  @IsIn(USDT_NETWORKS)
+  network: UsdtNetwork;
 
   @ApiProperty({
-    example: { paypal_email: 'user@coinzu.app' },
-    description: 'Payout account details. Encrypted before it is stored.',
+    example: 'TXYZabcdefghijkmnopqrstuvwxyz12345',
+    description:
+      'USDT address on the chosen network. Checked against the network format.',
   })
-  @IsObject()
-  destination_details: Record<string, string>;
+  @IsString()
+  @MaxLength(64)
+  wallet_address: string;
 }

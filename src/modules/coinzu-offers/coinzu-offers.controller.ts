@@ -7,9 +7,12 @@ import {
   Param,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Request } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
 import { Public } from '../../common/decorators/public.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
 import { ApiData, ApiList } from '../../common/decorators/api-envelope.decorator';
@@ -85,8 +88,11 @@ export class CoinzuOffersController {
   redirect(
     @CurrentUser() user: RequestUser,
     @Param('offer_id') offerId: string,
+    @Req() req: Request,
   ) {
-    return this.service.getRedirectUrl(user.cz_user_id, offerId);
+    // Web clicks get RewardTym's fraud gate (it judges the browser's own request); app clicks do not.
+    const platform = resolveDevicePlatform(undefined, req) === 'web' ? 'web' : 'app';
+    return this.service.getRedirectUrl(user.cz_user_id, offerId, platform);
   }
 
   @Get('offers/:id')

@@ -1,3 +1,4 @@
+import type { DevicePlatformType } from '../../database/entities/user-device.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +8,7 @@ import {
   SettingCatalogue,
   SettingDefaults,
   SettingGroupMeta,
+  SettingKeys,
   type SettingGroup,
   type SettingMeta,
 } from './setting.keys';
@@ -51,6 +53,13 @@ export class SettingsService {
 
   async getBoolean(key: string): Promise<boolean> {
     return (await this.getString(key)).toLowerCase() === 'true';
+  }
+
+  /** Whether a payout or gift card needs face verification on this platform (admin sets app and web separately). */
+  withdrawalRequiresKyc(platform: DevicePlatformType): Promise<boolean> {
+    return this.getBoolean(
+      platform === 'web' ? SettingKeys.WITHDRAWAL_REQUIRES_KYC_WEB : SettingKeys.WITHDRAWAL_REQUIRES_KYC,
+    );
   }
 
   /** Admin Configuration tab: the whole catalogue, grouped, with live values. */

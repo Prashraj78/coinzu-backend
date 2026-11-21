@@ -19,7 +19,7 @@ Removed along the way, and not coming back: the phone OTP endpoints (dropped wit
 | [CONVENTIONS.md](CONVENTIONS.md) | Response envelope, auth, time zone, pagination, naming. **Read first.** |
 | [CURLS.md](CURLS.md) | Every endpoint as a copy-paste `curl`. |
 | [ENUMS.md](ENUMS.md) | Every fixed-value field and all of its values. |
-| [ERROR_CODES.md](ERROR_CODES.md) | All 118 `cz_error_code` values with status and message. |
+| [ERROR_CODES.md](ERROR_CODES.md) | All 134 `cz_error_code` values with status and message. |
 | [apis/user/033app-changes.md](apis/user/033app-changes.md) | **What the app must configure.** A running numbered sequence of backend changes that need work inside the app. The one non-endpoint file in `user/`. |
 | [PUSH_NOTIFICATIONS.md](PUSH_NOTIFICATIONS.md) | Firebase setup and the app developer's push integration steps. |
 | [API_DOC_TEMPLATE.md](API_DOC_TEMPLATE.md) | The shape each endpoint file follows. |
@@ -33,7 +33,7 @@ Removed along the way, and not coming back: the phone OTP endpoints (dropped wit
 - Lists take `page` (1-based, default `1`) and `limit` (default `20`, max `100`) and return `{ data, total }`.
 - Unknown body fields are rejected with `400 CZDCOMM001`, so send exactly what the doc lists.
 
-# App API — 70 endpoints
+# App API — 71 endpoints
 
 Everything the mobile app and website integrate against. Each row's doc link shows which folder it is in: `user/` is verified, `inprogress/` is not.
 
@@ -69,7 +69,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. | [028](apis/user/028users.register-device.md) |
 | `PATCH /api/users/me/notification-preferences` | user token | Turns push categories on or off and sets the quiet-hours opt-in. | [032](apis/user/032users.notification-preferences.md) |
 
-## Wallet — 6 endpoints
+## Wallet — 7 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
@@ -77,10 +77,11 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `GET /api/wallet/transactions` | user token | Lists the wallet ledger of the signed-in user, newest first. | [012](apis/user/012wallet.transactions.md) |
 | `GET /api/wallet/rates` | user token | Coin, gem, convert and withdrawal rate definitions, with an optional exact conversion preview. | [030](apis/user/030wallet.rates.md) |
 | `POST /api/wallet/convert` | user token | Converts coins into gems, or gems back into coins, at the admin-set rate. | [013](apis/user/013wallet.convert.md) |
-| `POST /api/wallet/withdrawals` | user token | Asks for a cash payout. The coins leave the wallet straight away and an admin reviews the request. | [001](apis/inprogress/001wallet.withdrawals.create.md) |
-| `GET /api/wallet/withdrawals` | user token | Lists the withdrawal requests of the signed-in user, newest first. | [002](apis/inprogress/002wallet.withdrawals.list.md) |
+| `POST /api/wallet/withdrawals` | user token (**web only**) | Asks for a USDT payout (BEP20/TRC20). The coins leave the wallet straight away and an admin sends the USDT by hand. | [001](apis/inprogress/001wallet.withdrawals.create.md) |
+| `GET /api/wallet/withdrawals` | user token | Lists the withdrawal requests of the signed-in user, newest first, with fee, payout, tx hash and explorer link. | [002](apis/inprogress/002wallet.withdrawals.list.md) |
+| `GET /api/wallet/withdrawals/form` | user token | Everything the web withdraw page needs: balance, rate, minimum, fee, KYC need, pending request, last address, and whether the user may withdraw. | [028](apis/inprogress/028wallet.withdrawals.form.md) |
 
-## Offerwall — 7 endpoints
+## Offerwall — 8 endpoints
 
 | Endpoint | Access | What it does | Doc |
 |---|---|---|---|
@@ -89,6 +90,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `GET /api/offers/:id` | user token | Returns one offer by id. | [005](apis/inprogress/005offers.get.md) |
 | `POST /api/offers/:id/click` | user token | Records that the user started an offer and returns the provider tracking URL to open. | [006](apis/inprogress/006offers.click.md) |
 | `GET /api/offers/mine` | user token | Lists the offers the signed-in user started, newest click first, with the reward status of each. | [007](apis/inprogress/007offers.mine.md) |
+| `POST /api/rewardtym/webhook` | public (signed) | RewardTym's webhook: credits completed offers and applies `user.blocked` / `user.unblocked`. | [027](apis/inprogress/027rewardtym.webhook.md) |
 
 ## Daily — 4 endpoints
 
@@ -156,7 +158,7 @@ Buy entries, spin, and see who won. Replaces the retired `lucky-draw` module.
 | `GET /api/redeem/products` | user token | Lists the gift cards that can be ordered, featured first and then cheapest first. | [011](apis/inprogress/011redeem.products.list.md) |
 | `GET /api/redeem/categories` | user token | Lists the categories that active gift cards are filed under, for the filter chips on the redeem screen. | [012](apis/inprogress/012redeem.categories.md) |
 | `GET /api/redeem/products/:id` | user token | Returns one gift card product by id. | [013](apis/inprogress/013redeem.products.get.md) |
-| `POST /api/redeem/products/:id/order` | user token | Buys a gift card with coins. Coins are charged first, then the vendor is asked for the code. | [014](apis/inprogress/014redeem.products.order.md) |
+| `POST /api/redeem/products/:id/order` | user token (**app only**) | Buys a gift card with coins. Coins are charged first, then the vendor is asked for the code. | [014](apis/inprogress/014redeem.products.order.md) |
 | `GET /api/redeem/orders` | user token | Lists the gift card orders of the signed-in user, newest first. | [015](apis/inprogress/015redeem.orders.list.md) |
 | `GET /api/redeem/orders/:id` | user token | Returns one of the signed-in user’s gift card orders. | [016](apis/inprogress/016redeem.orders.get.md) |
 | `GET /api/redeem/orders/:id/code` | user token | Reveals the gift card code of a fulfilled order. | [017](apis/inprogress/017redeem.orders.code.md) |
@@ -222,7 +224,7 @@ The partner reward callback (`GET`/`POST /api/offerwall/postback/:slug/:token`) 
 
 A per-user offerwall summary is deliberately **not** a separate endpoint — credited/reversed offerwall activity shows up in [`GET /api/wallet/transactions`](apis/user/012wallet.transactions.md) instead, as `source_type: "offerwall"` rows.
 
-# Admin API — `apis/admin/` (83 endpoints)
+# Admin API — `apis/admin/` (88 endpoints)
 
 Panel-only, with two exceptions. Every route needs a **Rewardtym admin token**
 whose `product_access` claim is `both` or `coinzu`; the app never calls these —
@@ -426,3 +428,16 @@ renumbers the folder, so identify an endpoint by its method and path.
 | `POST /api/admin/avatars/image` | admin token | Uploads an avatar image to R2 and returns its URL. | [089](apis/admin/089avatars.upload-image.md) |
 | `POST /api/admin/redeem/phaze/webhook` | admin token | Registers this backend as Phaze's order-status webhook. | [090](apis/admin/090redeem.phaze-webhook.md) |
 | `GET /api/admin/dashboard/economy` | admin token | Coins, gems, revenue, gift cards, withdrawals and outstanding balances for a date range, with a daily trend. | [091](apis/admin/091dashboard.economy.md) |
+
+## Withdrawals — 5 endpoints
+
+Manual USDT payouts. Blocking a user from withdrawing uses the account status, not a route here.
+
+| Endpoint | Access | What it does | Doc |
+|---|---|---|---|
+| `GET /api/admin/withdrawals` | admin token | The USDT payout queue with each request's user, filterable, newest first. | [092](apis/admin/092withdrawals.list.md) |
+| `GET /api/admin/withdrawals/summary` | admin token | Pending count and USD, paid today / this month, rejected this month. | [093](apis/admin/093withdrawals.summary.md) |
+| `GET /api/admin/withdrawals/:cz_withdrawal_request_id` | admin token | One request with the user's balances, lifetime payouts and previous requests. | [094](apis/admin/094withdrawals.detail.md) |
+| `PATCH /api/admin/withdrawals/:cz_withdrawal_request_id/pay` | admin token | Marks a pending request paid with its tx hash; fires the withdrawal rewards. | [095](apis/admin/095withdrawals.pay.md) |
+| `PATCH /api/admin/withdrawals/:cz_withdrawal_request_id/reject` | admin token | Rejects a pending request with a note shown to the user and refunds the coins. | [096](apis/admin/096withdrawals.reject.md) |
+| `PATCH /api/admin/users/:cz_user_id/status` | admin token | Blocks (suspends/bans) or restores a user, effective on their next request. | [097](apis/admin/097users.status.md) |

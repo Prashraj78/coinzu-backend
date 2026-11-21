@@ -26,6 +26,7 @@ export const CzAuthErrorCodes = {
   ACCOUNT_DELETED: 'CZDAUTH018',
   TELEGRAM_AUTH_INVALID: 'CZDAUTH019',
   TELEGRAM_LOGIN_UNAVAILABLE: 'CZDAUTH020',
+  ACCOUNT_BLOCKED: 'CZDAUTH021',
 } as const;
 
 /** User module error codes */
@@ -51,13 +52,16 @@ export const CzWalletErrorCodes = {
   INSUFFICIENT_COINS: 'CZDWLT002',
   INSUFFICIENT_GEMS: 'CZDWLT003',
   BELOW_MINIMUM_WITHDRAWAL: 'CZDWLT004',
-  // Both retired with the admin reset — only the deleted withdrawal review endpoint threw these.
+  // 005/006 are live again with the admin withdrawals tab (pay / reject).
   WITHDRAWAL_NOT_FOUND: 'CZDWLT005',
   WITHDRAWAL_ALREADY_REVIEWED: 'CZDWLT006',
   KYC_REQUIRED: 'CZDWLT007',
   INVALID_CONVERT_AMOUNT: 'CZDWLT008',
   PENDING_WITHDRAWAL_EXISTS: 'CZDWLT009',
   TRANSACTION_NOT_FOUND: 'CZDWLT010',
+  WITHDRAWAL_WEB_ONLY: 'CZDWLT011',
+  INVALID_WALLET_ADDRESS: 'CZDWLT012',
+  INVALID_TX_HASH: 'CZDWLT013',
 } as const;
 
 /** Offer module error codes */
@@ -109,6 +113,7 @@ export const CzRedeemErrorCodes = {
   FULFILLMENT_FAILED: 'CZDRDM004',
   CODE_NOT_READY: 'CZDRDM005',
   WEBHOOK_UNAUTHORIZED: 'CZDRDM006',
+  GIFT_CARD_APP_ONLY: 'CZDRDM007',
 } as const;
 
 /** Referral module error codes */
@@ -239,6 +244,8 @@ export const CzErrorIcon = {
   KYC_REQUIRED: 'KycRequiredIcon',
   INVALID_AMOUNT: 'InvalidAmountIcon',
   WITHDRAWAL_PENDING: 'WithdrawalPendingIcon',
+  WRONG_PLATFORM: 'WrongPlatformIcon',
+  WALLET_ADDRESS_INVALID: 'WalletAddressInvalidIcon',
   OFFER_NOT_FOUND: 'OfferNotFoundIcon',
   OFFER_UNAVAILABLE: 'OfferUnavailableIcon',
   OFFER_RESTRICTED_REGION: 'OfferRestrictedRegionIcon',
@@ -306,6 +313,11 @@ export const CzErrorMap: Record<
   [CzAuthErrorCodes.ACCOUNT_INACTIVE]: {
     message: 'Your account is inactive. Please contact support.',
     description: 'Login failed. Your account is inactive.',
+    icon: CzErrorIcon.ACCOUNT_INACTIVE,
+  },
+  [CzAuthErrorCodes.ACCOUNT_BLOCKED]: {
+    message: 'Your account has been blocked for activity that breaks our rules. Contact support if you think this is a mistake.',
+    description: 'The account is not active (blocked by fraud checks, banned or deleted), so every authenticated request is refused.',
     icon: CzErrorIcon.ACCOUNT_INACTIVE,
   },
   [CzAuthErrorCodes.TOKEN_EXPIRED]: {
@@ -490,7 +502,7 @@ export const CzErrorMap: Record<
   },
   [CzWalletErrorCodes.WITHDRAWAL_ALREADY_REVIEWED]: {
     message: 'This withdrawal has already been reviewed.',
-    description: 'Withdrawal status is no longer pending.',
+    description: 'Withdrawal status is no longer pending (another admin paid or rejected it first).',
     icon: CzErrorIcon.WITHDRAWAL_REVIEWED,
   },
   [CzWalletErrorCodes.KYC_REQUIRED]: {
@@ -502,6 +514,21 @@ export const CzErrorMap: Record<
     message: 'Please enter a valid amount to convert.',
     description: 'Conversion amount is zero, negative, or not a whole number.',
     icon: CzErrorIcon.INVALID_AMOUNT,
+  },
+  [CzWalletErrorCodes.WITHDRAWAL_WEB_ONLY]: {
+    message: 'Cash withdrawals are available on the website. In the app, redeem your coins for gift cards.',
+    description: 'USDT withdrawals are web only; the request came from the iOS or Android app (X-Device-Type / User-Agent).',
+    icon: CzErrorIcon.WRONG_PLATFORM,
+  },
+  [CzWalletErrorCodes.INVALID_WALLET_ADDRESS]: {
+    message: 'That wallet address does not look right for the selected network. Please check it and try again.',
+    description: 'wallet_address does not match the network format: BEP20 ^0x[a-fA-F0-9]{40}$, TRC20 ^T[1-9A-HJ-NP-Za-km-z]{33}$.',
+    icon: CzErrorIcon.WALLET_ADDRESS_INVALID,
+  },
+  [CzWalletErrorCodes.INVALID_TX_HASH]: {
+    message: 'That transaction hash does not look right for this network. Please check it and try again.',
+    description: 'tx_hash does not match the withdrawal network format: BEP20 ^0x[a-fA-F0-9]{64}$, TRC20 ^[a-fA-F0-9]{64}$.',
+    icon: CzErrorIcon.VALIDATION_FAILED,
   },
   [CzWalletErrorCodes.PENDING_WITHDRAWAL_EXISTS]: {
     message: 'You already have a withdrawal being reviewed.',
@@ -702,6 +729,11 @@ export const CzErrorMap: Record<
     message: 'We could not verify this request.',
     description: 'The gift-card vendor webhook did not carry the shared secret we registered.',
     icon: CzErrorIcon.REQUEST_UNVERIFIED,
+  },
+  [CzRedeemErrorCodes.GIFT_CARD_APP_ONLY]: {
+    message: 'Gift cards are available in the app. On the website, withdraw to USDT.',
+    description: 'Gift card orders are app only; the request came from the web (X-Device-Type / User-Agent).',
+    icon: CzErrorIcon.WRONG_PLATFORM,
   },
   [CzReferralErrorCodes.SELF_REFERRAL]: {
     message: 'You cannot use your own referral code.',

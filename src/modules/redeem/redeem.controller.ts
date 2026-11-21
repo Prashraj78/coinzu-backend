@@ -7,8 +7,11 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UnauthorizedException,
 } from '@nestjs/common';
+import type { Request } from 'express';
+import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
@@ -64,8 +67,16 @@ export class RedeemController {
   @Post('products/:id/order')
   @ApiOperation({ summary: 'Spend coins on a gift card' })
   @ApiData(GiftCardOrderDto, 201)
-  order(@CurrentUser() user: RequestUser, @Param('id') id: string) {
-    return this.redeemService.order(user.cz_user_id, id);
+  order(
+    @CurrentUser() user: RequestUser,
+    @Param('id') id: string,
+    @Req() req: Request,
+  ) {
+    return this.redeemService.order(
+      user.cz_user_id,
+      id,
+      resolveDevicePlatform(undefined, req),
+    );
   }
 
   @Get('orders')

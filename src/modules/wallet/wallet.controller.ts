@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import type { Request } from 'express';
+import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { RequestUser } from '../../common/auth/request-user.types';
@@ -13,6 +15,7 @@ import {
   WalletRatesDto,
   WalletTransactionDto,
   WithdrawalDto,
+  WithdrawalFormDto,
 } from './dto/wallet.response';
 import { WalletService } from './wallet.service';
 import { WithdrawalService } from './withdrawal.service';
@@ -31,8 +34,11 @@ export class WalletController {
     summary: 'Coin and gem balances with their cash/coin value and live rates',
   })
   @ApiData(WalletBalanceDto)
-  getBalance(@CurrentUser() user: RequestUser) {
-    return this.walletService.getBalanceSummary(user.cz_user_id);
+  getBalance(@CurrentUser() user: RequestUser, @Req() req: Request) {
+    return this.walletService.getBalanceSummary(
+      user.cz_user_id,
+      resolveDevicePlatform(undefined, req),
+    );
   }
 
   @Get('rates')
@@ -41,8 +47,12 @@ export class WalletController {
       'Coin, gem, convert and withdrawal rate definitions, with an optional exact preview',
   })
   @ApiData(WalletRatesDto)
-  getRates(@Query() query: RatesQueryDto) {
-    return this.walletService.getRates(query.gem_amount, query.coin_amount);
+  getRates(@Query() query: RatesQueryDto, @Req() req: Request) {
+    return this.walletService.getRates(
+      resolveDevicePlatform(undefined, req),
+      query.gem_amount,
+      query.coin_amount,
+    );
   }
 
   @Get('transactions')
@@ -70,14 +80,26 @@ export class WalletController {
     );
   }
 
+  @Get('withdrawals/form')
+  @ApiOperation({ summary: 'Everything the web withdraw page needs: balance, rates, fee, eligibility, last address' })
+  @ApiData(WithdrawalFormDto)
+  withdrawalForm(@CurrentUser() user: RequestUser, @Req() req: Request) {
+    return this.withdrawalService.form(user.cz_user_id, resolveDevicePlatform(undefined, req));
+  }
+
   @Post('withdrawals')
-  @ApiOperation({ summary: 'Request a payout of coins to real money' })
+  @ApiOperation({ summary: 'Request a USDT payout of coins (web only)' })
   @ApiData(WithdrawalDto, 201)
   createWithdrawal(
     @CurrentUser() user: RequestUser,
     @Body() dto: CreateWithdrawalDto,
+    @Req() req: Request,
   ) {
-    return this.withdrawalService.create(user.cz_user_id, dto);
+    return this.withdrawalService.create(
+      user.cz_user_id,
+      dto,
+      resolveDevicePlatform(undefined, req),
+    );
   }
 
   @Get('withdrawals')

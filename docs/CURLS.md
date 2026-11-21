@@ -17,7 +17,7 @@ export ADMIN_TOKEN=<rewardtym_admin_access_token>
 - List endpoints take `page` (1-based, default `1`) and `limit` (default `20`, capped at `100`) and return `{ data, total }`.
 - Unknown body fields are rejected, so send exactly the documented fields.
 
-# Part 1 — App API (72 endpoints)
+# Part 1 — App API (73 endpoints)
 
 What the mobile app and website call. No admin token reaches these.
 
@@ -339,25 +339,32 @@ curl -X POST $BASE/wallet/convert \
 
 ### POST /api/wallet/withdrawals
 
-Asks for a cash payout. The coins leave the wallet straight away and an admin reviews the request. — [`apis/inprogress/001wallet.withdrawals.create.md`](apis/inprogress/001wallet.withdrawals.create.md)
+Asks for a USDT payout (web only). The coins leave the wallet straight away and an admin sends the USDT by hand. — [`apis/inprogress/001wallet.withdrawals.create.md`](apis/inprogress/001wallet.withdrawals.create.md)
 
 ```bash
 curl -X POST $BASE/wallet/withdrawals \
   -H 'Content-Type: application/json' \
+  -H 'X-Device-Type: web' \
   -H 'Authorization: Bearer $TOKEN' \
-  -d '{
-    "amount_coins": 5000,
-    "method": "paypal",
-    "destination_details": { "paypal_email": "user@coinzu.app" }
-  }'
+  -d '{ "amount_coins": 10000, "network": "TRC20", "wallet_address": "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE" }'
 ```
 
 ### GET /api/wallet/withdrawals
 
-Lists the withdrawal requests of the signed-in user, newest first. — [`apis/inprogress/002wallet.withdrawals.list.md`](apis/inprogress/002wallet.withdrawals.list.md)
+Lists the withdrawal requests of the signed-in user, newest first, with fee, payout, tx hash and explorer link. — [`apis/inprogress/002wallet.withdrawals.list.md`](apis/inprogress/002wallet.withdrawals.list.md)
 
 ```bash
 curl '$BASE/wallet/withdrawals?page=1&limit=20' \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
+### GET /api/wallet/withdrawals/form
+
+Everything the web withdraw page needs in one call. — [`apis/inprogress/028wallet.withdrawals.form.md`](apis/inprogress/028wallet.withdrawals.form.md)
+
+```bash
+curl $BASE/wallet/withdrawals/form \
+  -H 'X-Device-Type: web' \
   -H 'Authorization: Bearer $TOKEN'
 ```
 
@@ -449,6 +456,16 @@ Claims the Daily Master Chest. Once a day, only when every tile is finished. —
 ```bash
 curl -X POST $BASE/daily/challenges/chest \
   -H 'Authorization: Bearer $TOKEN'
+```
+
+### POST /api/rewardtym/webhook
+
+RewardTym's webhook: credits completed offers and applies `user.blocked` / `user.unblocked`. — [`apis/inprogress/027rewardtym.webhook.md`](apis/inprogress/027rewardtym.webhook.md)
+
+```bash
+curl -X POST $BASE/rewardtym/webhook \
+  -H 'Content-Type: application/json' \
+  -d '{ "event_name": "user.blocked", "user_id": "<cz_user_id>", "signature": "<hmac-sha256>" }'
 ```
 
 ## Games
@@ -840,7 +857,7 @@ curl $BASE/offerwall \
 
 The partner reward callback (`GET`/`POST /api/offerwall/postback/:slug/:token`) is public and unauthenticated, but its curl examples live in the Admin API section below since the URL itself is admin-managed — see [011](apis/admin/011offerwall.postback-get.md)/[012](apis/admin/012offerwall.postback-post.md).
 
-# Part 2 — Admin API (37 endpoints)
+# Part 2 — Admin API (42 endpoints)
 
 Numbers `001`–`053` are retired — every admin feature except Dropdown was
 removed to start the panel clean. New admin curls are added back one at a
@@ -1920,4 +1937,65 @@ Coins, gems, revenue, gift cards, withdrawals and outstanding balances for a dat
 
 ```bash
 curl "$BASE/admin/dashboard/economy?date_from=2026-11-01&date_end=2026-11-11" -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+## Withdrawals
+
+Manual USDT payouts.
+
+### GET /api/admin/withdrawals
+
+The USDT payout queue with each request's user, filterable, newest first. — [`apis/admin/092withdrawals.list.md`](apis/admin/092withdrawals.list.md)
+
+```bash
+curl "$BASE/admin/withdrawals?status=pending&network=TRC20&search=asha&page=1&limit=20" -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+### GET /api/admin/withdrawals/summary
+
+Pending count and USD, paid today / this month, rejected this month. — [`apis/admin/093withdrawals.summary.md`](apis/admin/093withdrawals.summary.md)
+
+```bash
+curl $BASE/admin/withdrawals/summary -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+### GET /api/admin/withdrawals/:cz_withdrawal_request_id
+
+One request with the user's balances, lifetime payouts and previous requests. — [`apis/admin/094withdrawals.detail.md`](apis/admin/094withdrawals.detail.md)
+
+```bash
+curl $BASE/admin/withdrawals/<cz_withdrawal_request_id> -H 'Authorization: Bearer $ADMIN_TOKEN'
+```
+
+### PATCH /api/admin/withdrawals/:cz_withdrawal_request_id/pay
+
+Marks a pending request paid with its tx hash. — [`apis/admin/095withdrawals.pay.md`](apis/admin/095withdrawals.pay.md)
+
+```bash
+curl -X PATCH $BASE/admin/withdrawals/<cz_withdrawal_request_id>/pay \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -d '{ "tx_hash": "0x3f1c8a5e9b2d4c6f8a1b3d5e7f9a2c4e6b8d0f1a3c5e7b9d2f4a6c8e0b1d3f5a", "note": "Sent from treasury wallet #2." }'
+```
+
+### PATCH /api/admin/withdrawals/:cz_withdrawal_request_id/reject
+
+Rejects a pending request with a note shown to the user and refunds the coins. — [`apis/admin/096withdrawals.reject.md`](apis/admin/096withdrawals.reject.md)
+
+```bash
+curl -X PATCH $BASE/admin/withdrawals/<cz_withdrawal_request_id>/reject \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -d '{ "note": "The wallet address belongs to an exchange that does not accept TRC20." }'
+```
+
+### PATCH /api/admin/users/:cz_user_id/status
+
+Blocks (suspends/bans) or restores a user, effective on their next request. — [`apis/admin/097users.status.md`](apis/admin/097users.status.md)
+
+```bash
+curl -X PATCH $BASE/admin/users/<cz_user_id>/status \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{ "status": "suspended" }'
 ```

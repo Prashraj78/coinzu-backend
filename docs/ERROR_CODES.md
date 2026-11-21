@@ -50,6 +50,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDAUTH018` | 401 | This account was deleted. Please contact support to reopen it. | Login blocked: the account was soft-deleted by the user (status is "deleted"). | `AccountInactiveIcon` |
 | `CZDAUTH019` | 401 | We could not sign you in with Telegram. Please try again. | Telegram `id_token` failed verification: bad signature, wrong iss/aud, expired, or nonce mismatch. | `GoogleSignInFailedIcon` |
 | `CZDAUTH020` | 503 | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set on the server. | `GoogleSignInFailedIcon` |
+| `CZDAUTH021` | 403 | Your account has been blocked for activity that breaks our rules. Contact support if you think this is a mistake. | The account is not active (blocked by fraud checks, banned or deleted), so every authenticated request is refused. | `AccountInactiveIcon` |
 
 ## User — `CZDUSER`
 
@@ -76,12 +77,15 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDWLT002` | 400 | You do not have enough coins for this. | Requested coin debit exceeds the current coin balance. | `InsufficientCoinsIcon` |
 | `CZDWLT003` | 400 | You do not have enough gems for this. | Requested gem debit exceeds the current gem balance. | `InsufficientGemsIcon` |
 | `CZDWLT004` | 400 | This amount is below the minimum you can withdraw. | amount_coins is under the min_withdrawal_coins setting. | `BelowMinimumWithdrawalIcon` |
-| `CZDWLT005` | 404 | We could not find that withdrawal. | *Retired.* Only the deleted admin withdrawal review endpoint threw this. Never thrown. | `WithdrawalNotFoundIcon` |
-| `CZDWLT006` | 409 | This withdrawal has already been reviewed. | *Retired.* Only the deleted admin withdrawal review endpoint threw this. Never thrown. | `WithdrawalReviewedIcon` |
+| `CZDWLT005` | 404 | We could not find that withdrawal. | No withdrawal request exists for the given id (admin withdrawals tab). | `WithdrawalNotFoundIcon` |
+| `CZDWLT006` | 409 | This withdrawal has already been reviewed. | Pay or reject on a withdrawal that is no longer `pending` — another admin acted first. | `WithdrawalReviewedIcon` |
 | `CZDWLT007` | 403 | Please complete identity verification before withdrawing. | User kyc_status is not verified. | `KycRequiredIcon` |
 | `CZDWLT008` | 400 | Please enter a valid amount to convert. | Conversion amount is zero, negative, or not a whole number. | `InvalidAmountIcon` |
 | `CZDWLT009` | 409 | You already have a withdrawal being reviewed. | A pending withdrawal request already exists for this user. | `WithdrawalPendingIcon` |
 | `CZDWLT010` | 404 | We could not find that transaction. | No `wallet_transactions` row exists for the given id. | `WalletNotFoundIcon` |
+| `CZDWLT011` | 403 | Cash withdrawals are available on the website. In the app, redeem your coins for gift cards. | USDT withdrawals are web only; the request came from the iOS or Android app (`X-Device-Type` / User-Agent). | `WrongPlatformIcon` |
+| `CZDWLT012` | 400 | That wallet address does not look right for the selected network. Please check it and try again. | `wallet_address` does not match the network format: BEP20 `^0x[a-fA-F0-9]{40}$`, TRC20 `^T[1-9A-HJ-NP-Za-km-z]{33}$`. | `WalletAddressInvalidIcon` |
+| `CZDWLT013` | 400 | That transaction hash does not look right for this network. Please check it and try again. | `tx_hash` does not match the withdrawal's network: BEP20 `^0x[a-fA-F0-9]{64}$`, TRC20 `^[a-fA-F0-9]{64}$`. | `ValidationFailedIcon` |
 
 ## Offers — `CZDOFR`
 
@@ -136,6 +140,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDRDM004` | 500 | We could not complete this redemption. Your coins were returned. | *Reserved.* The gift card provider rejected or failed the order. | `FulfillmentFailedIcon` |
 | `CZDRDM005` | 400 | Your gift card code is not ready yet. Please check back soon. | Order status is still pending; no code has been issued. | `CodeNotReadyIcon` |
 | `CZDRDM006` | 401 | We could not verify this request. | The gift-card vendor webhook did not carry the shared secret we registered. | `RequestUnverifiedIcon` |
+| `CZDRDM007` | 403 | Gift cards are available in the app. On the website, withdraw to USDT. | Gift card orders are app only; the request came from the web (`X-Device-Type` / User-Agent). | `WrongPlatformIcon` |
 
 ## Referrals — `CZDREF`
 

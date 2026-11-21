@@ -68,6 +68,7 @@ export class CoinzuOffersService {
   async getRedirectUrl(
     userId: string,
     offerId: string,
+    platform: 'web' | 'app',
   ): Promise<{ offer_id: string; redirect_url: string }> {
     const device = await this.latestDevice(userId);
     const offer = await this.rewardtym.getOfferDetail(
@@ -83,7 +84,7 @@ export class CoinzuOffersService {
     const redirect_url = this.rewardtym.buildRedirectUrl(
       offer.redirect_url,
       userId,
-      this.toRedirectContext(device),
+      { ...this.toRedirectContext(device), platform },
     );
     return { offer_id: offer.offer_id, redirect_url };
   }

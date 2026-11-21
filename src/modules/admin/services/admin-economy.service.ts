@@ -247,10 +247,10 @@ export class AdminEconomyService {
         .sort((a, b) => b.usd - a.usd);
     };
 
-    // A failed gift card or withdrawal is credited back as "earn"; that is a
-    // refund of the user's own coins, not a reward, so it nets off spending.
+    // A failed gift card ("earn") or rejected withdrawal ("reversal") returns the
+    // user's own coins, not a reward, so it nets off spending.
     const isRefund = (r: ProgramRow) =>
-      r.type === 'earn' && REFUND_PROGRAMS.has(r.program);
+      (r.type === 'earn' || r.type === 'reversal') && REFUND_PROGRAMS.has(r.program);
     const rewards = fold((r) => r.type === 'earn' && !isRefund(r), 'credited');
     const refunds = fold(isRefund, 'credited');
     const spending = fold(

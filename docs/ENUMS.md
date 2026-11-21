@@ -16,11 +16,11 @@ its own **Enum values** section. This page is the full list.
 | Value | Meaning |
 |---|---|
 | `active` | Normal account. Can sign in and earn. |
-| `suspended` | Temporarily blocked by an admin. Sign-in is refused. |
+| `suspended` | Blocked by an admin, or by RewardTym's fraud checks (`user.blocked` on `POST /api/rewardtym/webhook`; a RewardTym unblock restores it). Sign-in and every authenticated request are refused (`CZDAUTH021`). |
 | `banned` | Permanently blocked by an admin. Sign-in is refused. |
 | `deleted` | Soft-deleted. The user deactivated their own account (`DELETE /api/users/me`) — the row and its data are kept, sign-in is refused. Not the admin hard delete, which removes the row entirely. |
 
-Set by `PATCH /api/admin/users/:id/status`, or by `DELETE /api/users/me` (which sets `deleted` and stamps `deleted_at`).
+Set by `PATCH /api/admin/users/:cz_user_id/status`, or by `DELETE /api/users/me` (which sets `deleted` and stamps `deleted_at`).
 
 ### `kyc_status` — identity check state on the user
 
@@ -190,7 +190,7 @@ The fraud signals that fired, stored on both `user_devices.risk_flags` and the u
 | `withdrawal` | Balance was held for a cash-out. |
 | `convert_in` | The receiving side of a coin/gem conversion. |
 | `convert_out` | The paying side of a coin/gem conversion. |
-| `reversal` | Balance went down because an advertiser reversed an already-credited offerwall conversion. |
+| `reversal` | An earlier movement was undone: balance went down because an advertiser reversed an offerwall conversion, or went up because an admin rejected a withdrawal and its coins were returned (`source_type` `withdrawal`, same `source_id`). |
 
 ### `source_type` — which feature moved the balance
 
@@ -219,18 +219,36 @@ The fraud signals that fired, stored on both `user_devices.risk_flags` and the u
 | `bank` |
 | `crypto` |
 
+Stored only. Every new request is `crypto` (USDT); `paypal` and `bank` exist on old rows. The API no longer sends or accepts `method`.
+
+### Withdrawal `network` — USDT chain
+
+| Value | Address format | Tx hash format | Explorer |
+|---|---|---|---|
+| `BEP20` | `^0x[a-fA-F0-9]{40}$` | `^0x[a-fA-F0-9]{64}$` | BscScan — `https://bscscan.com/tx/<hash>`, `https://bscscan.com/address/<address>` |
+| `TRC20` | `^T[1-9A-HJ-NP-Za-km-z]{33}$` | `^[a-fA-F0-9]{64}$` | TronScan — `https://tronscan.org/#/transaction/<hash>`, `https://tronscan.org/#/address/<address>` |
+
+`null` only on pre-USDT rows.
+
 ### Withdrawal `status`
 
 | Value | Meaning |
 |---|---|
-| `pending` | Waiting on an admin. |
-| `approved` | Accepted, not yet paid out. |
-| `rejected` | Refused. The coins are returned to the user. |
-| `paid` | Money has left. |
+| `pending` | Waiting on an admin. The coins are already out of the wallet. A user has at most one. |
+| `approved` | Reserved. Nothing sets it — USDT payouts go straight from `pending` to `paid` or `rejected`. |
+| `rejected` | Refused by an admin (`PATCH /api/admin/withdrawals/:id/reject`). The coins are returned and `rejection_reason` holds the admin's note. |
+| `paid` | An admin sent the USDT (`PATCH /api/admin/withdrawals/:id/pay`). `tx_hash` and `paid_at` are set. |
 
-*Retired with the admin reset:* `approved`, `rejected` and `paid` were only
-ever set by the deleted admin withdrawal review endpoint. Every row now stays
-`pending` forever — nothing in the codebase moves it further.
+### Withdrawal form `reason` — why `can_withdraw` is false
+
+| Value | Meaning |
+|---|---|
+| `not_web` | The request came from the iOS/Android app. Cash withdrawals are web only; the app redeems gift cards. |
+| `pending_exists` | A `pending` withdrawal already exists. |
+| `kyc_required` | Face verification is required on this platform and the user is not `verified`. |
+| `below_minimum` | The coin balance is below `min_withdrawal_coins`. |
+
+Checked in this order; only the first that applies is returned. `null` when `can_withdraw` is true.
 
 ## Earning
 
@@ -578,9 +596,11 @@ One subtab each in the admin Configuration Settings tab. Returned by `GET /api/a
 
 ### `setting_key` — the tunable catalogue
 
-`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end`
+`coins_per_usd`, `coins_per_gem`, `min_withdrawal_coins`, `withdrawal_requires_kyc`, `withdrawal_requires_kyc_web`, `usdt_withdrawal_fee_percent`, `kyc_confidence_threshold`, `referral_max_coins_per_friend`, `referral_max_gems_per_friend`, `welcome_bonus_gems`, `push_quiet_hours_start`, `push_quiet_hours_end`
 
 A key outside this list is rejected by `PATCH /api/admin/settings` with `CZDADM004`.
+
+`usdt_withdrawal_fee_percent` (group `withdrawals`, `decimal`, `%`, 0–50, default `7`): the USDT network fee, deducted from the payout. `gross_usd = amount_coins / coins_per_usd`, `fee_usd = round(gross_usd × fee% / 100, 2)`, `payout_usd = gross_usd − fee_usd`. The percent used is stored on each request, so a later change never alters an existing one.
 
 ## Referral rewards
 

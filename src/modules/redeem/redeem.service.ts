@@ -1,15 +1,20 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
+import type { DevicePlatformType } from '../../database/entities/user-device.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { GiftCardProduct } from '../../database/entities/gift-card-product.entity';
 import { GiftCardOrder } from '../../database/entities/gift-card-order.entity';
 import { User } from '../../database/entities/user.entity';
-import { CzRedeemErrorCodes } from '../../common/errors/error.constants';
+import {
+  CzRedeemErrorCodes,
+  CzWalletErrorCodes,
+} from '../../common/errors/error.constants';
 import { encryptText, decryptText } from '../../common/utils/crypto.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
 import { SettingsService } from '../settings/settings.service';
@@ -219,13 +224,34 @@ export class RedeemService {
   }
 
   /** Charges coins first, then asks the vendor for a code. */
-  async order(user_id: string, product_id: string) {
-    const enabled = await this.settingsService.getBoolean(
-      SettingKeys.GIFT_CARD_ENABLED,
-    );
+  async order(
+    user_id: string,
+    product_id: string,
+    platform: DevicePlatformType,
+  ) {
+    // The web cashes out to USDT instead; gift cards stay in the app.
+    if (platform === 'web') {
+      throw new ForbiddenException({
+        cz_error_code: CzRedeemErrorCodes.GIFT_CARD_APP_ONLY,
+      });
+    }
+    const [enabled, requiresKyc, user] = await Promise.all([
+      this.settingsService.getBoolean(SettingKeys.GIFT_CARD_ENABLED),
+      this.settingsService.withdrawalRequiresKyc(platform),
+      this.users.findOne({
+        where: { cz_user_id: user_id },
+        select: { cz_user_id: true, kyc_status: true },
+      }),
+    ]);
     if (!enabled) {
       throw new BadRequestException({
         cz_error_code: CzRedeemErrorCodes.PRODUCT_INACTIVE,
+      });
+    }
+    // A gift card is a withdrawal: same face-verification rule as a cash payout, per platform.
+    if (requiresKyc && user?.kyc_status !== 'verified') {
+      throw new ForbiddenException({
+        cz_error_code: CzWalletErrorCodes.KYC_REQUIRED,
       });
     }
     const [product, plan] = await Promise.all([

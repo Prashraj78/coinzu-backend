@@ -87,6 +87,8 @@ export interface RewardtymOfferContext {
 export interface RewardtymRedirectContext extends RewardtymOfferContext {
   hardware_id: string | null;
   ip: string | null;
+  /** `web` makes RewardTym run its pre-redirect fraud gate on the click. */
+  platform?: 'web' | 'app';
 }
 
 /** RewardTym wraps every response as { success, data }. */
@@ -189,6 +191,7 @@ export class RewardtymExternal {
       ip: deviceCtx.ip,
       country: deviceCtx.country,
       device: deviceCtx.device,
+      platform: deviceCtx.platform ?? null,
     };
     for (const [key, value] of Object.entries(params)) {
       if (value != null && value !== '') url.searchParams.set(key, value);

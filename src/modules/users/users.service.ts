@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { User, UserStatus } from '../../database/entities/user.entity';
+import { blockedUsers } from '../../common/guards/jwt-auth.guard';
 import { CzUserErrorCodes } from '../../common/errors/error.constants';
 import { generateReferralCode } from '../../common/utils/random.util';
 import { toSkipTake } from '../../common/utils/pagination.util';
@@ -529,8 +530,23 @@ export class UsersService {
   /** Blocks an account. Login and token refresh are refused for any non-active status. */
   async ban(cz_user_id: string): Promise<void> {
     await this.users.update({ cz_user_id }, { status: 'banned' });
+    blockedUsers.add(cz_user_id);
     // Free the device so a banned account's hardware_id doesn't block re-registration.
     await this.releaseDevices(cz_user_id);
+  }
+
+  /** Admin block / restore. The in-memory list makes it bite on the user's very next request. */
+  async setStatusByAdmin(
+    cz_user_id: string,
+    status: 'active' | 'suspended' | 'banned',
+  ): Promise<{ cz_user_id: string; status: string }> {
+    const result = await this.users.update({ cz_user_id }, { status });
+    if (!result.affected) {
+      throw new NotFoundException({ cz_error_code: CzUserErrorCodes.USER_NOT_FOUND });
+    }
+    if (status === 'active') blockedUsers.delete(cz_user_id);
+    else blockedUsers.add(cz_user_id);
+    return { cz_user_id, status };
   }
 
   async touchLastLogin(cz_user_id: string): Promise<void> {

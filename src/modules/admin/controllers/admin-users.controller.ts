@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../../../common/decorators/roles.decorator';
 import { AdminDeleteUserDto } from '../../users/dto/admin-delete-user.dto';
 import { AdminListUsersDto } from '../../users/dto/admin-list-users.dto';
+import { AdminUpdateUserStatusDto } from '../../users/dto/admin-update-user-status.dto';
 import { UsersService } from '../../users/users.service';
 import { AdminUsersService } from '../services/admin-users.service';
 
@@ -30,6 +31,17 @@ export class AdminUsersController {
   })
   detail(@Param('cz_user_id') cz_user_id: string) {
     return this.adminUsersService.getAdminDetail(cz_user_id);
+  }
+
+  @Patch(':cz_user_id/status')
+  @ApiOperation({
+    summary: 'Block (suspend/ban) or restore a user; takes effect on their next request (admin only)',
+  })
+  setStatus(
+    @Param('cz_user_id') cz_user_id: string,
+    @Body() body: AdminUpdateUserStatusDto,
+  ) {
+    return this.usersService.setStatusByAdmin(cz_user_id, body.status);
   }
 
   @Delete()

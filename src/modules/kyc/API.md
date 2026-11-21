@@ -387,7 +387,7 @@ Stop polling when `kyc_status` becomes `verified` or `rejected`. Reviews usually
 
 ## Where KYC bites elsewhere
 
-Withdrawals require `kyc_status: "verified"` while the `withdrawal_requires_kyc` setting is on. `POST /api/wallet/withdrawals` fails with `CZDWLT007` otherwise. Check `kyc_status` before showing the withdrawal form and send the user here first.
+Withdrawals and gift cards require `kyc_status: "verified"` while the setting for the caller's platform is on (`withdrawal_requires_kyc` for the app, `withdrawal_requires_kyc_web` for the web). `POST /api/wallet/withdrawals` and `POST /api/redeem/products/:id/order` fail with `CZDWLT007` otherwise; `GET /api/wallet` reports the rule as `requires_kyc`. Check `kyc_status` before showing the withdrawal form and send the user here first.
 
 ## Permissions
 

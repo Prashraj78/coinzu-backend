@@ -979,6 +979,46 @@
         ]
       }
     },
+    "/api/wallet/withdrawals/form": {
+      "get": {
+        "operationId": "WalletController_withdrawalForm",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/WithdrawalFormDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Everything the web withdraw page needs: balance, rates, fee, eligibility, last address",
+        "tags": [
+          "wallet"
+        ]
+      }
+    },
     "/api/wallet/withdrawals": {
       "post": {
         "operationId": "WalletController_createWithdrawal",
@@ -1023,7 +1063,7 @@
             "bearer": []
           }
         ],
-        "summary": "Request a payout of coins to real money",
+        "summary": "Request a USDT payout of coins (web only)",
         "tags": [
           "wallet"
         ]
@@ -5016,6 +5056,20 @@
                 "web"
               ]
             }
+          },
+          {
+            "name": "signup_method",
+            "required": false,
+            "in": "query",
+            "description": "Only users who signed up by email, Google or Telegram. Omit for everyone.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "email",
+                "google",
+                "telegram"
+              ]
+            }
           }
         ],
         "responses": {
@@ -7463,6 +7517,20 @@
             }
           },
           {
+            "name": "signup_method",
+            "required": false,
+            "in": "query",
+            "description": "How the account signed up: email, Google or Telegram.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "email",
+                "google",
+                "telegram"
+              ]
+            }
+          },
+          {
             "name": "country",
             "required": false,
             "in": "query",
@@ -7573,6 +7641,440 @@
         "summary": "One user's full profile: wallet, KYC, referrals, and recent activity (admin only)",
         "tags": [
           "admin-users"
+        ]
+      }
+    },
+    "/api/admin/users/{cz_user_id}/status": {
+      "patch": {
+        "operationId": "AdminUsersController_setStatus",
+        "parameters": [
+          {
+            "name": "cz_user_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminUpdateUserStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Block (suspend/ban) or restore a user; takes effect on their next request (admin only)",
+        "tags": [
+          "admin-users"
+        ]
+      }
+    },
+    "/api/admin/withdrawals": {
+      "get": {
+        "operationId": "AdminWithdrawalsController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Matches email, name, cz_user_id, wallet_address or tx_hash.",
+            "schema": {
+              "example": "0x3f1c",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "paid"
+              ]
+            }
+          },
+          {
+            "name": "network",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BEP20",
+                "TRC20"
+              ]
+            }
+          },
+          {
+            "name": "signup_platform",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "app",
+                "web"
+              ]
+            }
+          },
+          {
+            "name": "kyc_status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          {
+            "name": "min_usd",
+            "required": false,
+            "in": "query",
+            "description": "Payout USD at least this.",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "max_usd",
+            "required": false,
+            "in": "query",
+            "description": "Payout USD at most this.",
+            "schema": {
+              "example": 500,
+              "type": "number"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Requested on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-11-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Requested on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-11-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "USDT withdrawal queue with its users, filterable, newest first (admin only)",
+        "tags": [
+          "admin-withdrawals"
+        ]
+      }
+    },
+    "/api/admin/withdrawals/summary": {
+      "get": {
+        "operationId": "AdminWithdrawalsController_summary",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "1-based page number.",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Rows per page, max 100.",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Matches email, name, cz_user_id, wallet_address or tx_hash.",
+            "schema": {
+              "example": "0x3f1c",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "approved",
+                "rejected",
+                "paid"
+              ]
+            }
+          },
+          {
+            "name": "network",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BEP20",
+                "TRC20"
+              ]
+            }
+          },
+          {
+            "name": "signup_platform",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "app",
+                "web"
+              ]
+            }
+          },
+          {
+            "name": "kyc_status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "verified",
+                "rejected",
+                "manual_review"
+              ]
+            }
+          },
+          {
+            "name": "min_usd",
+            "required": false,
+            "in": "query",
+            "description": "Payout USD at least this.",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "max_usd",
+            "required": false,
+            "in": "query",
+            "description": "Payout USD at most this.",
+            "schema": {
+              "example": 500,
+              "type": "number"
+            }
+          },
+          {
+            "name": "date_from",
+            "required": false,
+            "in": "query",
+            "description": "Requested on/after this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-11-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_end",
+            "required": false,
+            "in": "query",
+            "description": "Requested on/before this UTC date (inclusive), yyyy-MM-dd.",
+            "schema": {
+              "example": "2026-11-30",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Pending, paid today/this month and rejected this month tiles (admin only)",
+        "tags": [
+          "admin-withdrawals"
+        ]
+      }
+    },
+    "/api/admin/withdrawals/{cz_withdrawal_request_id}": {
+      "get": {
+        "operationId": "AdminWithdrawalsController_detail",
+        "parameters": [
+          {
+            "name": "cz_withdrawal_request_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "One withdrawal with balance, lifetime payouts and previous requests (admin only)",
+        "tags": [
+          "admin-withdrawals"
+        ]
+      }
+    },
+    "/api/admin/withdrawals/{cz_withdrawal_request_id}/pay": {
+      "patch": {
+        "operationId": "AdminWithdrawalsController_pay",
+        "parameters": [
+          {
+            "name": "cz_withdrawal_request_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Mark a pending withdrawal paid with its on-chain tx hash (admin only)",
+        "tags": [
+          "admin-withdrawals"
+        ]
+      }
+    },
+    "/api/admin/withdrawals/{cz_withdrawal_request_id}/reject": {
+      "patch": {
+        "operationId": "AdminWithdrawalsController_reject",
+        "parameters": [
+          {
+            "name": "cz_withdrawal_request_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reject a pending withdrawal and refund its coins (admin only)",
+        "tags": [
+          "admin-withdrawals"
         ]
       }
     },
@@ -9171,26 +9673,6 @@
             "type": "string",
             "format": "uuid"
           },
-          "user_id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "amount_coins": {
-            "type": "number",
-            "example": 5000
-          },
-          "amount_usd": {
-            "type": "string",
-            "example": "5.00"
-          },
-          "method": {
-            "type": "string",
-            "enum": [
-              "paypal",
-              "bank",
-              "crypto"
-            ]
-          },
           "status": {
             "type": "string",
             "enum": [
@@ -9200,14 +9682,49 @@
               "paid"
             ]
           },
-          "reviewed_by": {
+          "amount_coins": {
+            "type": "number",
+            "example": 10000
+          },
+          "gross_usd": {
             "type": "string",
-            "format": "uuid",
+            "example": "10.00",
+            "description": "amount_coins / coins_per_usd."
+          },
+          "fee_percent": {
+            "type": "string",
+            "example": "7.00",
             "nullable": true
           },
-          "reviewed_at": {
+          "fee_usd": {
             "type": "string",
-            "format": "date-time",
+            "example": "0.70",
+            "nullable": true
+          },
+          "payout_usd": {
+            "type": "string",
+            "example": "9.30",
+            "nullable": true,
+            "description": "USDT actually sent."
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "BEP20",
+              "TRC20"
+            ],
+            "nullable": true
+          },
+          "wallet_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "tx_hash": {
+            "type": "string",
+            "nullable": true
+          },
+          "explorer_url": {
+            "type": "string",
             "nullable": true
           },
           "rejection_reason": {
@@ -9217,19 +9734,151 @@
           "created_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "required": [
           "cz_withdrawal_request_id",
-          "user_id",
-          "amount_coins",
-          "amount_usd",
-          "method",
           "status",
-          "reviewed_by",
-          "reviewed_at",
+          "amount_coins",
+          "gross_usd",
+          "fee_percent",
+          "fee_usd",
+          "payout_usd",
+          "network",
+          "wallet_address",
+          "tx_hash",
+          "explorer_url",
           "rejection_reason",
-          "created_at"
+          "created_at",
+          "reviewed_at",
+          "paid_at"
+        ]
+      },
+      "WithdrawalDestinationDto": {
+        "type": "object",
+        "properties": {
+          "network": {
+            "type": "string",
+            "enum": [
+              "BEP20",
+              "TRC20"
+            ]
+          },
+          "wallet_address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "network",
+          "wallet_address"
+        ]
+      },
+      "WithdrawalFormDto": {
+        "type": "object",
+        "properties": {
+          "coin_balance": {
+            "type": "number",
+            "example": 25000
+          },
+          "coins_per_usd": {
+            "type": "number",
+            "example": 1000
+          },
+          "min_withdrawal_coins": {
+            "type": "number",
+            "example": 5000
+          },
+          "max_withdrawal_coins": {
+            "type": "number",
+            "example": 25000,
+            "description": "Equal to coin_balance — no other cap."
+          },
+          "fee_percent": {
+            "type": "number",
+            "example": 7
+          },
+          "requires_kyc": {
+            "type": "boolean"
+          },
+          "kyc_status": {
+            "type": "string",
+            "enum": [
+              "none",
+              "pending",
+              "verified",
+              "rejected",
+              "manual_review"
+            ]
+          },
+          "has_pending": {
+            "type": "boolean"
+          },
+          "pending": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalDto"
+              }
+            ]
+          },
+          "last_destination": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalDestinationDto"
+              }
+            ]
+          },
+          "networks": {
+            "example": [
+              "BEP20",
+              "TRC20"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "can_withdraw": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "not_web",
+              "pending_exists",
+              "kyc_required",
+              "below_minimum"
+            ]
+          }
+        },
+        "required": [
+          "coin_balance",
+          "coins_per_usd",
+          "min_withdrawal_coins",
+          "max_withdrawal_coins",
+          "fee_percent",
+          "requires_kyc",
+          "kyc_status",
+          "has_pending",
+          "pending",
+          "last_destination",
+          "networks",
+          "can_withdraw",
+          "reason"
         ]
       },
       "CreateWithdrawalDto": {
@@ -9237,30 +9886,27 @@
         "properties": {
           "amount_coins": {
             "type": "number",
-            "example": 5000,
-            "description": "Coins to withdraw."
+            "example": 10000,
+            "description": "Coins to withdraw. Up to the whole coin balance."
           },
-          "method": {
+          "network": {
             "type": "string",
-            "example": "paypal",
+            "example": "TRC20",
             "enum": [
-              "paypal",
-              "bank",
-              "crypto"
+              "BEP20",
+              "TRC20"
             ]
           },
-          "destination_details": {
-            "type": "object",
-            "example": {
-              "paypal_email": "user@coinzu.app"
-            },
-            "description": "Payout account details. Encrypted before it is stored."
+          "wallet_address": {
+            "type": "string",
+            "example": "TXYZabcdefghijkmnopqrstuvwxyz12345",
+            "description": "USDT address on the chosen network. Checked against the network format."
           }
         },
         "required": [
           "amount_coins",
-          "method",
-          "destination_details"
+          "network",
+          "wallet_address"
         ]
       },
       "AchievementEarnedDto": {
@@ -13255,6 +13901,24 @@
           "is_active"
         ]
       },
+      "AdminUpdateUserStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "suspended",
+              "banned"
+            ],
+            "example": "suspended",
+            "description": "`suspended`/`banned` block sign-in and every request at once; `active` restores the account."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
       "AdminDeleteUserDto": {
         "type": "object",
         "properties": {
@@ -13266,6 +13930,36 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "PayWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "tx_hash": {
+            "type": "string",
+            "example": "0x3f1c8a5e9b2d4c6f8a1b3d5e7f9a2c4e6b8d0f1a3c5e7b9d2f4a6c8e0b1d3f5a",
+            "description": "On-chain hash of the USDT transfer. Checked against the withdrawal network format."
+          },
+          "note": {
+            "type": "string",
+            "example": "Sent from treasury wallet #2."
+          }
+        },
+        "required": [
+          "tx_hash"
+        ]
+      },
+      "RejectWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": "string",
+            "example": "The wallet address belongs to an exchange that does not accept TRC20.",
+            "description": "Shown to the user as the rejection reason."
+          }
+        },
+        "required": [
+          "note"
         ]
       },
       "DropdownOptionDto": {

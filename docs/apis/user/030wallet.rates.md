@@ -57,7 +57,7 @@ None.
 | `convert.coin_to_gem.preview.to_gems` | number | Gems that conversion would credit, already floored. |
 | `withdrawal.min_withdrawal_coins` | number | Smallest payout the backend accepts. |
 | `withdrawal.min_withdrawal_usd` | string | That floor in dollars, two decimals exact. |
-| `withdrawal.requires_kyc` | boolean | Whether identity verification is required before a payout. |
+| `withdrawal.requires_kyc` | boolean | Whether face verification is required before a payout or gift card **on the calling platform** (`withdrawal_requires_kyc` for the app, `withdrawal_requires_kyc_web` for the web). The app shows Face Verification only when this is true. |
 
 ```json
 {

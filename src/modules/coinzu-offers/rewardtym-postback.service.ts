@@ -6,6 +6,7 @@ import { WalletTransaction } from '../../database/entities/wallet-transaction.en
 import { User } from '../../database/entities/user.entity';
 import { CzOfferErrorCodes } from '../../common/errors/error.constants';
 import { Env } from '../../common/config/env';
+import { blockedUsers } from '../../common/guards/jwt-auth.guard';
 import { WalletService } from '../wallet/wallet.service';
 import { NotificationsService } from '../notifications/notifications.service';
 
@@ -20,6 +21,7 @@ const UUID_RE =
  * nothing is stored here; idempotency rides on the wallet ledger — each
  * conversion maps to one deterministic source_id, and a retry that finds an
  * existing credited row is a no-op. A reversed status debits those amounts.
+ * The same signed endpoint also carries `user.blocked` / `user.unblocked`.
  */
 @Injectable()
 export class RewardtymPostbackService {
@@ -36,6 +38,11 @@ export class RewardtymPostbackService {
 
   async handle(payload: Record<string, unknown>): Promise<{ status: string }> {
     this.assertSigned(payload);
+
+    const event = this.readString(payload, 'event_name');
+    if (event === 'user.blocked' || event === 'user.unblocked') {
+      return this.applyUserStatus(payload, event === 'user.blocked');
+    }
 
     const conversion_id = this.readString(payload, 'conversion_id');
     if (!conversion_id) return { status: 'invalid_payload' };
@@ -177,6 +184,31 @@ export class RewardtymPostbackService {
     if (coins > 0) parts.push(`${coins} coins`);
     if (gems > 0) parts.push(`${gems} gems`);
     return `You earned ${parts.join(' + ')} for ${note}.`;
+  }
+
+  /**
+   * RewardTym blocked (or unblocked) this user on its side. A block suspends the
+   * account and takes effect on the very next request (the guard's in-memory
+   * list); an unblock only restores accounts RewardTym suspended, never one
+   * banned or deleted here. Idempotent: a retried delivery changes nothing.
+   */
+  private async applyUserStatus(
+    payload: Record<string, unknown>,
+    blocked: boolean,
+  ): Promise<{ status: string }> {
+    const user_id = this.readString(payload, 'user_id');
+    if (!user_id || !UUID_RE.test(user_id)) return { status: 'invalid_payload' };
+
+    const result = await this.users.update(
+      { cz_user_id: user_id, status: blocked ? 'active' : 'suspended' },
+      { status: blocked ? 'suspended' : 'active' },
+    );
+    if (blocked) blockedUsers.add(user_id);
+    else if (result.affected) blockedUsers.delete(user_id);
+    this.logger.warn(
+      `RewardTym ${blocked ? 'blocked' : 'unblocked'} user=${user_id} changed=${result.affected ?? 0} reason=${this.readString(payload, 'reason') ?? '-'}`,
+    );
+    return { status: blocked ? 'user_blocked' : 'user_unblocked' };
   }
 
   /** Prefer the explicit level number; the webhook has no milestone title. */

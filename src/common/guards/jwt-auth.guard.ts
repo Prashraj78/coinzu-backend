@@ -1,10 +1,15 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { DataSource } from 'typeorm';
 import type { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Env } from '../config/env';
@@ -18,12 +23,51 @@ import type {
 } from '../auth/request-user.types';
 
 /**
- * Verifies the bearer token and nothing else. Identity comes from the claims,
- * so a request never costs a database read.
+ * Users who may not act: anyone whose status is not `active` (blocked by
+ * RewardTym's fraud checks, banned, deleted). Held in memory so the per-request
+ * check is a Set lookup, never a database read; the guard reloads it every
+ * minute and the RewardTym webhook updates it the moment a block lands.
+ */
+export const blockedUsers = new Set<string>();
+
+const BLOCKED_REFRESH_MS = 60_000;
+
+/**
+ * Verifies the bearer token and refuses blocked users. Identity comes from the
+ * claims, so a request never costs a database read.
  */
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+export class JwtAuthGuard implements CanActivate, OnModuleInit, OnModuleDestroy {
+  private readonly logger = new Logger(JwtAuthGuard.name);
+  private refreshTimer?: NodeJS.Timeout;
+
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly dataSource: DataSource,
+  ) {}
+
+  async onModuleInit(): Promise<void> {
+    await this.loadBlockedUsers();
+    this.refreshTimer = setInterval(() => void this.loadBlockedUsers(), BLOCKED_REFRESH_MS);
+    this.refreshTimer.unref();
+  }
+
+  onModuleDestroy(): void {
+    clearInterval(this.refreshTimer);
+  }
+
+  private async loadBlockedUsers(): Promise<void> {
+    try {
+      const rows: { cz_user_id: string }[] = await this.dataSource.query(
+        `SELECT cz_user_id FROM users WHERE status <> 'active'`,
+      );
+      blockedUsers.clear();
+      for (const row of rows) blockedUsers.add(row.cz_user_id);
+    } catch (err) {
+      // Keep the last known list; a failed reload must not unblock anyone.
+      this.logger.warn(`Blocked-user reload failed: ${String(err)}`);
+    }
+  }
 
   canActivate(context: ExecutionContext): boolean {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -42,6 +86,11 @@ export class JwtAuthGuard implements CanActivate {
 
     const claims = this.verify(token);
     req.user = this.toRequestUser(claims);
+    if (req.user.role === 'user' && blockedUsers.has(req.user.cz_user_id)) {
+      throw new ForbiddenException({
+        cz_error_code: CzAuthErrorCodes.ACCOUNT_BLOCKED,
+      });
+    }
     return true;
   }
 

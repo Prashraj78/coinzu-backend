@@ -59,6 +59,7 @@ import { AdminRedeemController } from './controllers/admin-redeem.controller';
 import { AdminTicketsController } from './controllers/admin-tickets.controller';
 import { AdminTransactionsController } from './controllers/admin-transactions.controller';
 import { AdminUsersController } from './controllers/admin-users.controller';
+import { AdminWithdrawalsController } from './controllers/admin-withdrawals.controller';
 import { AdminKycService } from './services/admin-kyc.service';
 import { AdminPushService } from './services/admin-push.service';
 import { AdminPushTemplateService } from './services/admin-push-template.service';
@@ -83,6 +84,7 @@ import { AdminLeaderboardService } from './services/admin-leaderboard.service';
 import { AdminTicketsService } from './services/admin-tickets.service';
 import { AdminTransactionsService } from './services/admin-transactions.service';
 import { AdminUsersService } from './services/admin-users.service';
+import { AdminWithdrawalsService } from './services/admin-withdrawals.service';
 
 /**
  * Every /api/admin route lives here. There is no Coinzu admin table — the
@@ -163,6 +165,7 @@ import { AdminUsersService } from './services/admin-users.service';
     AdminTicketsController,
     AdminTransactionsController,
     AdminUsersController,
+    AdminWithdrawalsController,
   ],
   providers: [
     AdminKycService,
@@ -180,6 +183,7 @@ import { AdminUsersService } from './services/admin-users.service';
     AdminTicketsService,
     AdminTransactionsService,
     AdminUsersService,
+    AdminWithdrawalsService,
   ],
 })
 export class AdminModule {}

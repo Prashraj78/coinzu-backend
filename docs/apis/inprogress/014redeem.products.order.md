@@ -73,9 +73,11 @@ None.
 
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
+| 403 | `CZDRDM007` | Gift cards are available in the app. On the website, withdraw to USDT. | The request came from the web (`X-Device-Type: web`, or a User-Agent that is not iOS/Android). Checked first. | `WrongPlatformIcon` |
 | 404 | `CZDRDM001` | We could not find that gift card. | No product exists with that id. | `ProductNotFoundIcon` |
 | 400 | `CZDRDM002` | This gift card is no longer available. | The product is not on sale any more. | `ProductUnavailableIcon` |
 | 400 | `CZDWLT002` | You do not have enough coins for this. | The coin balance is lower than `price_coins`. | `InsufficientCoinsIcon` |
+| 403 | `CZDWLT007` | Please complete identity verification before withdrawing. | Face verification is required on this platform (`withdrawal_requires_kyc` app / `withdrawal_requires_kyc_web` web) and the user is not `verified`. | `KycRequiredIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field failed validation, or an unknown field was sent. | `ValidationFailedIcon` |
 | 401 | `CZDAUTH005` | Please sign in to continue. | Authorization header is missing. | `SignInRequiredIcon` |
 | 401 | `CZDAUTH003` | Your session has expired. Please sign in again. | Access token has expired. | `SessionExpiredIcon` |
@@ -112,6 +114,7 @@ curl -X POST http://localhost:4000/api/redeem/products/6c1d5a83-90b7-4f2e-8a41-3
 
 ## Notes
 
+- **App only.** The web is refused with `CZDRDM007`; web users cash out with `POST /api/wallet/withdrawals` (USDT). The app must send `X-Device-Type: ios` / `android` (or a mobile User-Agent).
 - The response comes back as soon as the vendor answers. A slow vendor leaves `status: "pending"`, and a cron job polls the vendor until the order is `fulfilled` or `failed`.
 - A `failed` order returns the coins automatically through a ledger credit and sends a notification. There is nothing for the client to retry.
 - The code is never in this response. Call `GET /api/redeem/orders/:id/code` once `status` is `fulfilled`.

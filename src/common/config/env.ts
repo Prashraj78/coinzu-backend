@@ -208,6 +208,8 @@ export const Env = {
   telegram: {
     botToken: str('TELEGRAM_BOT_TOKEN', ''),
     chatId: str('TELEGRAM_CHAT_ID', ''),
+    // Group that gets "withdrawal requested" alerts; empty = the main ops chat above.
+    withdrawalsChatId: str('TELEGRAM_WITHDRAWALS_CHAT_ID', ''),
     // Client ID of the Coinzu login bot (@BotFather mini app > bot > Login Widget). Not a secret; empty = Telegram sign-in is off.
     loginClientId: str('TELEGRAM_LOGIN_CLIENT_ID', ''),
   },

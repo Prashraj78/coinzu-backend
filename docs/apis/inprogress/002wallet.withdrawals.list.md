@@ -1,6 +1,6 @@
 # GET /api/wallet/withdrawals
 
-Lists the withdrawal requests of the signed-in user, newest first.
+Lists the withdrawal requests of the signed-in user, newest first — the withdrawal history on the web withdraw page.
 
 ## Overview
 
@@ -37,7 +37,22 @@ None.
 
 | Field | Type | Description |
 |---|---|---|
-| `data` | object[] | Withdrawal requests on this page. Fields are listed in `docs/001wallet.withdrawals.create.md`. |
+| `data` | object[] | Withdrawal requests on this page, newest first. |
+| `data[].cz_withdrawal_request_id` | string (uuid) | Request id. |
+| `data[].status` | string | `pending`, `approved`, `rejected` or `paid`. |
+| `data[].amount_coins` | number | Coins taken from the wallet. |
+| `data[].gross_usd` | string | `amount_coins / coins_per_usd` at request time. |
+| `data[].fee_percent` | string \| null | Fee percent used. `null` on pre-USDT rows. |
+| `data[].fee_usd` | string \| null | Fee in USD. `null` on pre-USDT rows. |
+| `data[].payout_usd` | string \| null | USDT sent (`gross_usd − fee_usd`). `null` on pre-USDT rows. |
+| `data[].network` | string \| null | `BEP20` or `TRC20`. `null` on pre-USDT rows. |
+| `data[].wallet_address` | string \| null | Destination address. |
+| `data[].tx_hash` | string \| null | On-chain transaction hash, set when `paid`. |
+| `data[].explorer_url` | string \| null | BscScan (`https://bscscan.com/tx/<hash>`) or TronScan (`https://tronscan.org/#/transaction/<hash>`) link, set when `paid`. |
+| `data[].rejection_reason` | string \| null | The admin's note, set when `rejected`. Show it to the user. |
+| `data[].created_at` | string (iso date) | When the request was made. |
+| `data[].reviewed_at` | string (iso date) \| null | When an admin paid or rejected it. |
+| `data[].paid_at` | string (iso date) \| null | When it was paid. |
 | `total` | number | Total requests made by this user. |
 
 ```json
@@ -45,21 +60,25 @@ None.
   "success": true,
   "data": {
     "data": [
-  {
-      "cz_withdrawal_request_id": "9c1e5f30-77aa-4d21-8b6f-3e02a4d19b55",
-      "user_id": "0f7c2b9e-1d4a-4c8b-9f3e-2a6d5b8c1e40",
-      "amount_coins": 5000,
-      "amount_usd": "5.00",
-      "method": "paypal",
-      "destination_details_encrypted": "9f2c...:8a11...:c4d7...",
-      "status": "pending",
-      "reviewed_by": null,
-      "reviewed_at": null,
-      "rejection_reason": null,
-      "created_at": "2026-08-27T09:02:41.000Z"
-    }
+      {
+        "cz_withdrawal_request_id": "9c1e5f30-77aa-4d21-8b6f-3e02a4d19b55",
+        "status": "paid",
+        "amount_coins": 10000,
+        "gross_usd": "10.00",
+        "fee_percent": "7.00",
+        "fee_usd": "0.70",
+        "payout_usd": "9.30",
+        "network": "BEP20",
+        "wallet_address": "0x8d12A197cB00D4747a1fe03395095ce2A5CC6819",
+        "tx_hash": "0x3f1c8a5e9b2d4c6f8a1b3d5e7f9a2c4e6b8d0f1a3c5e7b9d2f4a6c8e0b1d3f5a",
+        "explorer_url": "https://bscscan.com/tx/0x3f1c8a5e9b2d4c6f8a1b3d5e7f9a2c4e6b8d0f1a3c5e7b9d2f4a6c8e0b1d3f5a",
+        "rejection_reason": null,
+        "created_at": "2026-11-20T09:02:41.000Z",
+        "reviewed_at": "2026-11-20T14:30:00.000Z",
+        "paid_at": "2026-11-20T14:30:00.000Z"
+      }
     ],
-    "total": 3
+    "total": 1
   }
 }
 ```
@@ -83,18 +102,16 @@ None.
   "cz_error_description": "One or more fields in the request are invalid.",
   "cz_error_icon": "ValidationFailedIcon",
   "statusCode": 400,
-  "timestamp": "2026-08-27T09:12:44.183Z"
+  "timestamp": "2026-11-21T09:12:44.183Z"
 }
 ```
 
 ## Enum values
 
-Every value this endpoint can send or accept for its fixed-value fields.
-
 | Field | Allowed values | Notes |
 |---|---|---|
-| `method` | `paypal`, `bank`, `crypto` | — |
-| `status` | `pending`, `approved`, `rejected`, `paid` | — |
+| `status` | `pending`, `approved`, `rejected`, `paid` | `approved` is reserved and never set. |
+| `network` | `BEP20`, `TRC20` | `null` on pre-USDT rows. |
 
 ## Example
 
@@ -106,6 +123,6 @@ curl 'http://localhost:4000/api/wallet/withdrawals?page=1&limit=20' \
 ## Notes
 
 - Lists always return `{ data, total }`. `total` is the count before `page`/`limit` are applied, so the client can build the pager.
-- `destination_details_encrypted` is returned as ciphertext. The client should show `method` instead.
-- A row stays visible after it is paid, so this doubles as the payout history screen.
+- Works on every platform (read-only), so the app can still show old history.
+- The response no longer carries `user_id`, `method`, `amount_usd` (now `gross_usd`) or `destination_details_encrypted`.
 - All dates and times are UTC, ISO-8601 with a `Z` suffix. Send UTC, read UTC, convert only for display.

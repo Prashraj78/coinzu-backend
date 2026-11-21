@@ -266,7 +266,7 @@ None.
 | `recent_wallet_transactions.data[].currency` | `coin`, `gem` | |
 | `recent_wallet_transactions.data[].type` | `earn`, `spend`, `withdrawal`, `convert_in`, `convert_out`, `reversal` | |
 | `recent_wallet_transactions.data[].source_type` | `offer`, `daily_checkin`, `referral`, `game`, `streak`, `withdrawal`, `redeem`, `lucky_draw`, `achievement`, `challenge`, `convert`, `admin_adjustment`, `offerwall` | |
-| `recent_withdrawals.data[].method` | `paypal`, `bank`, `crypto` | |
+| `recent_withdrawals.data[].network` | `BEP20`, `TRC20` | `null` on pre-USDT rows. |
 | `recent_withdrawals.data[].status` | `pending`, `approved`, `rejected`, `paid` | |
 | `recent_redeem_orders.data[].status` | `pending`, `fulfilled`, `failed` | |
 | `devices.data[].platform_type` | `ios`, `android`, `web` | |

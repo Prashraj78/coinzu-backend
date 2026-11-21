@@ -14,9 +14,9 @@ const MAX_LEN = 3800;
 export class TelegramExternal {
   private readonly logger = new Logger(TelegramExternal.name);
 
-  async sendAlert(html: string): Promise<void> {
+  /** `chatId` sends to a dedicated group (e.g. withdrawals); omitted = the main ops chat. */
+  async sendAlert(html: string, chatId = Env.telegram.chatId?.trim()): Promise<void> {
     const token = Env.telegram.botToken?.trim();
-    const chatId = Env.telegram.chatId?.trim();
     if (!token || !chatId) {
       this.logger.warn(`[telegram skipped] ${html.replace(/<[^>]+>/g, '')}`);
       return;

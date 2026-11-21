@@ -205,30 +205,98 @@ export class WithdrawalDto {
   @ApiProperty({ format: 'uuid' })
   cz_withdrawal_request_id: string;
 
-  @ApiProperty({ format: 'uuid' })
-  user_id: string;
-
-  @ApiProperty({ example: 5000 })
-  amount_coins: number;
-
-  @ApiProperty({ example: '5.00' })
-  amount_usd: string;
-
-  @ApiProperty({ enum: ['paypal', 'bank', 'crypto'] })
-  method: string;
-
   @ApiProperty({ enum: ['pending', 'approved', 'rejected', 'paid'] })
   status: string;
 
-  @ApiProperty({ type: String, format: 'uuid', nullable: true })
-  reviewed_by: string | null;
+  @ApiProperty({ example: 10000 })
+  amount_coins: number;
 
-  @ApiProperty({ type: String, format: 'date-time', nullable: true })
-  reviewed_at: Date | null;
+  @ApiProperty({ example: '10.00', description: 'amount_coins / coins_per_usd.' })
+  gross_usd: string;
+
+  @ApiProperty({ type: String, example: '7.00', nullable: true })
+  fee_percent: string | null;
+
+  @ApiProperty({ type: String, example: '0.70', nullable: true })
+  fee_usd: string | null;
+
+  @ApiProperty({ type: String, example: '9.30', nullable: true, description: 'USDT actually sent.' })
+  payout_usd: string | null;
+
+  @ApiProperty({ type: String, enum: ['BEP20', 'TRC20'], nullable: true })
+  network: string | null;
+
+  @ApiProperty({ type: String, nullable: true })
+  wallet_address: string | null;
+
+  @ApiProperty({ type: String, nullable: true })
+  tx_hash: string | null;
+
+  @ApiProperty({ type: String, nullable: true })
+  explorer_url: string | null;
 
   @ApiProperty({ type: String, nullable: true })
   rejection_reason: string | null;
 
   @ApiProperty({ type: String, format: 'date-time' })
   created_at: Date;
+
+  @ApiProperty({ type: String, format: 'date-time', nullable: true })
+  reviewed_at: Date | null;
+
+  @ApiProperty({ type: String, format: 'date-time', nullable: true })
+  paid_at: Date | null;
+}
+
+export class WithdrawalDestinationDto {
+  @ApiProperty({ enum: ['BEP20', 'TRC20'] })
+  network: string;
+
+  @ApiProperty()
+  wallet_address: string;
+}
+
+export class WithdrawalFormDto {
+  @ApiProperty({ example: 25000 })
+  coin_balance: number;
+
+  @ApiProperty({ example: 1000 })
+  coins_per_usd: number;
+
+  @ApiProperty({ example: 5000 })
+  min_withdrawal_coins: number;
+
+  @ApiProperty({ example: 25000, description: 'Equal to coin_balance — no other cap.' })
+  max_withdrawal_coins: number;
+
+  @ApiProperty({ example: 7 })
+  fee_percent: number;
+
+  @ApiProperty()
+  requires_kyc: boolean;
+
+  @ApiProperty({ enum: ['none', 'pending', 'verified', 'rejected', 'manual_review'] })
+  kyc_status: string;
+
+  @ApiProperty()
+  has_pending: boolean;
+
+  @ApiProperty({ type: WithdrawalDto, nullable: true })
+  pending: WithdrawalDto | null;
+
+  @ApiProperty({ type: WithdrawalDestinationDto, nullable: true })
+  last_destination: WithdrawalDestinationDto | null;
+
+  @ApiProperty({ example: ['BEP20', 'TRC20'] })
+  networks: string[];
+
+  @ApiProperty()
+  can_withdraw: boolean;
+
+  @ApiProperty({
+    type: String,
+    nullable: true,
+    enum: ['not_web', 'pending_exists', 'kyc_required', 'below_minimum'],
+  })
+  reason: string | null;
 }
