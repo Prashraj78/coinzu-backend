@@ -47,9 +47,9 @@ export class AdminUsersController {
   @Delete()
   @ApiOperation({
     summary:
-      'Hard-delete a user by email and every row that references them (admin only). Irreversible.',
+      'Hard-delete a user by email or Telegram id, and every row that references them (admin only). Irreversible.',
   })
   remove(@Body() body: AdminDeleteUserDto) {
-    return this.usersService.hardDeleteByEmail(body.email);
+    return this.usersService.hardDelete(body);
   }
 }

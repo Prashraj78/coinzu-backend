@@ -225,10 +225,13 @@ export class UsersService {
    * scripts/delete-user.ts maintenance utility; the admin delete endpoint calls
    * this. Irreversible — the caller is trusted (admin-only route).
    */
-  async hardDeleteByEmail(
-    email: string,
-  ): Promise<{ cz_user_id: string; email: string }> {
-    const found = await this.findByEmail(email);
+  async hardDelete(by: {
+    email?: string;
+    telegram_id?: string;
+  }): Promise<{ cz_user_id: string; email: string; telegram_id: string | null }> {
+    const found = by.telegram_id
+      ? await this.findByTelegramId(by.telegram_id)
+      : await this.findByEmail(by.email ?? '');
     if (!found) {
       throw new NotFoundException({
         cz_error_code: CzUserErrorCodes.USER_NOT_FOUND,
@@ -287,14 +290,14 @@ export class UsersService {
     // a recreated account never collides with this user's own orphaned face.
     await this.face.deleteUserFaces(userId);
 
-    return { cz_user_id: userId, email: found.email };
+    return { cz_user_id: userId, email: found.email, telegram_id: found.telegram_id };
   }
 
   /**
    * The in-app "Delete account" action: a soft delete. The row and its data
    * are kept; the account is marked deleted so login is refused (auth only
    * lets `active` through). The irreversible wipe stays admin-only
-   * (`hardDeleteByEmail`).
+   * (`hardDelete`).
    */
   async deactivateSelf(
     cz_user_id: string,
@@ -593,11 +596,13 @@ export class UsersService {
 
     if (query.search) {
       builder.andWhere(
-        '(u.email ILIKE :search OR u.name ILIKE :search OR u.phone ILIKE :search)',
+        "(u.email ILIKE :search OR u.name ILIKE :search OR u.phone ILIKE :search OR u.telegram_id ILIKE :search OR u.contact->>'value' ILIKE :search)",
         { search: `%${query.search}%` },
       );
     }
-    if (query.status) {
+    if (query.status === 'blocked') {
+      builder.andWhere("u.status IN ('suspended', 'banned')");
+    } else if (query.status) {
       builder.andWhere('u.status = :status', { status: query.status });
     }
     if (query.kyc_status) {

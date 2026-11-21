@@ -9,7 +9,8 @@ import {
 import { ListQueryDto } from '../../../common/dto/list-query.dto';
 import { SIGNUP_METHODS, type SignupMethod } from '../../../common/utils/device-platform.util';
 
-const STATUSES = ['active', 'suspended', 'banned', 'deleted'] as const;
+// `blocked` is a filter-only value: suspended or banned.
+const STATUSES = ['active', 'suspended', 'banned', 'deleted', 'blocked'] as const;
 const KYC_STATUSES = [
   'none',
   'pending',
@@ -23,13 +24,13 @@ const PLATFORMS = ['app', 'web'] as const;
 export class AdminListUsersDto extends ListQueryDto {
   @ApiPropertyOptional({
     example: 'shubham@coinzu.app',
-    description: 'Case-insensitive match against email, name, or phone.',
+    description: 'Case-insensitive match against email, name, phone, Telegram id or contact handle.',
   })
   @IsOptional()
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ enum: STATUSES, description: 'Exact account status.' })
+  @ApiPropertyOptional({ enum: STATUSES, description: 'Account status; `blocked` matches suspended and banned together.' })
   @IsOptional()
   @IsIn(STATUSES)
   status?: (typeof STATUSES)[number];

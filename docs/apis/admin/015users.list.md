@@ -1,6 +1,6 @@
 # GET /api/admin/users
 
-Every Coinzu user with their wallet balance, paginated and searchable by email, name, or phone — the Users tab table.
+Every Coinzu user with their wallet balance, paginated and searchable by email, name, phone, Telegram id or contact handle — the Users tab table.
 
 ## Overview
 
@@ -26,8 +26,8 @@ Every Coinzu user with their wallet balance, paginated and searchable by email, 
 |---|---|---|---|
 | `page` | integer | no | 1-based page number. Default `1`. |
 | `limit` | integer | no | Rows per page, max 100. Default `20`. |
-| `search` | string | no | Case-insensitive substring match against `email`, `name`, or `phone`. Omit to list everyone. |
-| `status` | string | no | Exact match on account status. One of the `status` enum values below. |
+| `search` | string | no | Case-insensitive substring match against `email`, `name`, `phone`, `telegram_id`, or the contact handle (`contact.value`, e.g. `@username`). Omit to list everyone. |
+| `status` | string | no | Account status: one of the `data[].status` values below, or `blocked` for suspended and banned together. |
 | `kyc_status` | string | no | Exact match on KYC state. One of the `kyc_status` enum values below. |
 | `tier` | string | no | Exact match on loyalty tier. One of the `tier` enum values below. |
 | `signup_platform` | string | no | `app` or `web`: where the account was created. Each row also returns `signup_platform`. |
@@ -126,6 +126,7 @@ None.
 | `data[].kyc_status` | `none`, `pending`, `verified`, `rejected`, `manual_review` | `none` is the value on a fresh account. |
 | `data[].role` | `user`, `admin` | Always `user` on this endpoint — see the field description above. |
 | `data[].status` | `active`, `suspended`, `banned`, `deleted` | Account state. |
+| `status` (query) | `active`, `suspended`, `banned`, `deleted`, `blocked` | `blocked` is filter-only and matches `suspended` + `banned`. |
 | `data[].fraud_flags[]` | `SHARED_HARDWARE_ID`, `EMULATOR`, `ROOTED`, `SIM_IP_COUNTRY_MISMATCH`, `VPN` | See `../../ENUMS.md` for the score weight of each. |
 
 ## Example
@@ -138,7 +139,7 @@ curl "$BASE/admin/users?page=1&limit=20&search=shubham&status=active&tier=gold&d
 ## Notes
 
 - Every user is listed, including a brand-new account with a zero wallet — wallets are created lazily on first use, and a user with no wallet row yet shows `coin_balance: 0, gem_balance: 0` here rather than a missing wallet.
-- `search` matches `email`, `name`, and `phone` independently (an `OR`, not all three) — a query only needs to hit one field.
+- `search` matches `email`, `name`, `phone`, `telegram_id` and `contact.value` independently (an `OR`) — a query only needs to hit one field, so a numeric Telegram id finds that Telegram sign-up.
 - `status`, `kyc_status`, `tier`, `country`, `date_from`, and `date_end` all combine with `search` and each other as `AND` filters — narrowing further whatever `search` (or its absence) already matched.
 - `date_from`/`date_end` filter on `joined_at`, both inclusive, in UTC.
 - Tap a row's `cz_user_id` to open `GET /api/admin/users/:cz_user_id` for that user's full profile.

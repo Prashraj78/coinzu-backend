@@ -1059,13 +1059,19 @@ curl "$BASE/admin/users/f2eae717-1142-4c8b-b9d5-09d495d7b217" \
 
 ### DELETE /api/admin/users
 
-Hard-delete a user and every row that references them, matched by email. Irreversible. — [`apis/admin/017users.delete.md`](apis/admin/017users.delete.md)
+Hard-delete a user and every row that references them, matched by email or Telegram id. Irreversible. — [`apis/admin/017users.delete.md`](apis/admin/017users.delete.md)
 
 ```bash
 curl -X DELETE "$BASE/admin/users" \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer $ADMIN_TOKEN' \
   -d '{ "email": "someone@example.com" }'
+
+# or by Telegram id
+curl -X DELETE "$BASE/admin/users" \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -d '{ "telegram_id": "723723667" }'
 ```
 
 ### GET /api/admin/dropdown/types

@@ -7451,7 +7451,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Case-insensitive match against email, name, or phone.",
+            "description": "Case-insensitive match against email, name, phone, Telegram id or contact handle.",
             "schema": {
               "example": "shubham@coinzu.app",
               "type": "string"
@@ -7461,14 +7461,15 @@
             "name": "status",
             "required": false,
             "in": "query",
-            "description": "Exact account status.",
+            "description": "Account status; `blocked` matches suspended and banned together.",
             "schema": {
               "type": "string",
               "enum": [
                 "active",
                 "suspended",
                 "banned",
-                "deleted"
+                "deleted",
+                "blocked"
               ]
             }
           },
@@ -7609,7 +7610,7 @@
             "bearer": []
           }
         ],
-        "summary": "Hard-delete a user by email and every row that references them (admin only). Irreversible.",
+        "summary": "Hard-delete a user by email or Telegram id, and every row that references them (admin only). Irreversible.",
         "tags": [
           "admin-users"
         ]
@@ -13926,11 +13927,13 @@
             "type": "string",
             "example": "someone@example.com",
             "description": "Email of the Coinzu account to hard-delete. Case-insensitive. Irreversible."
+          },
+          "telegram_id": {
+            "type": "string",
+            "example": "723723667",
+            "description": "Numeric Telegram user id of a Telegram sign-up to hard-delete. Irreversible."
           }
-        },
-        "required": [
-          "email"
-        ]
+        }
       },
       "PayWithdrawalDto": {
         "type": "object",

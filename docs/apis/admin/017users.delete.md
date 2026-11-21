@@ -1,6 +1,6 @@
 # DELETE /api/admin/users
 
-Hard-deletes a Coinzu user and every row that references them, matched by email. The Rewardtym admin panel's "Delete User" action calls this. **Irreversible** — there is no undo. This is the only endpoint that wipes data: the user-facing `DELETE /api/users/me` is a soft delete (marks the account `deleted`, keeps the rows).
+Hard-deletes a Coinzu user and every row that references them, matched by email or by Telegram user id. The Rewardtym admin panel's "Delete User" action calls this. **Irreversible** — there is no undo. This is the only endpoint that wipes data: the user-facing `DELETE /api/users/me` is a soft delete (marks the account `deleted`, keeps the rows).
 
 ## Overview
 
@@ -29,10 +29,15 @@ None.
 
 | Name | Type | Required | Description |
 |---|---|---|---|
-| `email` | string (email) | yes | Email of the account to delete. Case-insensitive. |
+| `email` | string (email) | one of | Email of the account to delete. Case-insensitive. |
+| `telegram_id` | string (digits) | one of | Numeric Telegram user id of a Telegram sign-up. Wins when both are sent. |
 
 ```json
 { "email": "someone@example.com" }
+```
+
+```json
+{ "telegram_id": "723723667" }
 ```
 
 ## Response
@@ -42,14 +47,16 @@ None.
 | Field | Type | Description |
 |---|---|---|
 | `cz_user_id` | string (uuid) | The id of the account that was deleted. |
-| `email` | string | The stored email of the deleted account (canonical casing from the row). |
+| `email` | string | The stored email of the deleted account (canonical casing from the row). Telegram sign-ups carry the placeholder `tg<id>@telegram.coinzu.invalid`. |
+| `telegram_id` | string \| null | The deleted account's Telegram user id, or `null` for a non-Telegram account. |
 
 ```json
 {
   "success": true,
   "data": {
     "cz_user_id": "ca57bf15-2381-4a40-9bbe-c51b8ed2ccb2",
-    "email": "someone@example.com"
+    "email": "someone@example.com",
+    "telegram_id": null
   }
 }
 ```
@@ -58,8 +65,8 @@ None.
 
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
-| 404 | `CZDUSER002` | We could not find that account. | No user exists with that email. | `AccountNotFoundIcon` |
-| 400 | `CZDCOMM001` | Please check the details you entered and try again. | `email` missing or not a valid email. | `ValidationErrorIcon` |
+| 404 | `CZDUSER002` | We could not find that account. | No user exists with that email or Telegram id. | `AccountNotFoundIcon` |
+| 400 | `CZDCOMM001` | Please check the details you entered and try again. | Neither `email` nor `telegram_id` sent, `email` is not a valid email, or `telegram_id` is not 1–20 digits. | `ValidationErrorIcon` |
 | 401 | `CZDAUTH005` | Please sign in to continue. | Authorization header missing. | `SignInRequiredIcon` |
 | 401 | `CZDAUTH003` | Your session has expired. Please sign in again. | Access token expired. | `SessionExpiredIcon` |
 | 401 | `CZDAUTH004` | Your session is no longer valid. Please sign in again. | Access token could not be verified. | `SessionInvalidIcon` |
@@ -90,10 +97,16 @@ curl -X DELETE "$BASE/admin/users" \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer $ADMIN_TOKEN' \
   -d '{ "email": "someone@example.com" }'
+
+curl -X DELETE "$BASE/admin/users" \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer $ADMIN_TOKEN' \
+  -d '{ "telegram_id": "723723667" }'
 ```
 
 ## Notes
 
+- The account's indexed face is also removed from the Rekognition collection, so a new account by the same person is not flagged as a duplicate of the deleted one.
 - Deletes in one transaction: every child table keyed on the user (`daily_checkins`, `daily_chest_claims`, `gift_card_orders`, `kyc_verifications`, `lucky_draw_entries`, `lucky_draw_winners`, `notifications`, `offer_clicks`, `offerwall_postbacks`, `push_campaign_events`, `quiz_attempts`, `reward_plays`, `scratch_card_grants`, `scratch_history`, `spin_history`, `support_tickets`, `user_achievements`, `user_challenge_progress`, `wallet_transactions`, `withdrawal_requests`, `user_devices`, `user_streaks`, `wallets`) is cleared first, admin-authored content (`push_campaigns`, `push_templates`) has its `created_by` detached to `NULL`, anyone this user referred has `referred_by` detached, then the `users` row is deleted last. If any step fails the whole delete rolls back.
 - The database has no `ON DELETE CASCADE` on the user id, which is why every child table is listed explicitly. Adding a new table that references a user means adding it here (and in `scripts/delete-user.ts`, which this mirrors).
 - Mirrors the `scripts/delete-user.ts` maintenance utility (`npm run delete:prashant`) — same table list and order — so the panel action and the CLI stay in step.
