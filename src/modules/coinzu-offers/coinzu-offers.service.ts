@@ -1,6 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import type { Request } from 'express';
+import { Env } from '../../common/config/env';
+import {
+  extractRequestIp,
+  isLoopbackIp,
+  resolveCountryFromRequestHeaders,
+} from '../../common/utils/device-platform.util';
+import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { UserDevice } from '../../database/entities/user-device.entity';
 import { CzOfferErrorCodes } from '../../common/errors/error.constants';
 import {
@@ -10,7 +18,6 @@ import {
   CoinzuSectionPageDto,
   RewardtymExternal,
   RewardtymOfferContext,
-  RewardtymRedirectContext,
 } from '../../external/rewardtym.external';
 
 const DEFAULT_PAGE = 1;
@@ -20,23 +27,25 @@ const DEFAULT_LIMIT = 10;
 export class CoinzuOffersService {
   constructor(
     private readonly rewardtym: RewardtymExternal,
+    private readonly geoLookup: GeoLookupExternal,
     @InjectRepository(UserDevice)
     private readonly devices: Repository<UserDevice>,
   ) {}
 
-  async getHome(userId: string): Promise<CoinzuHomeSectionsDto> {
-    const ctx = await this.offerContext(userId);
+  async getHome(userId: string, req: Request): Promise<CoinzuHomeSectionsDto> {
+    const ctx = await this.offerContext(userId, req);
     return this.rewardtym.getHomeSections(userId, ctx);
   }
 
   /** One home section, paginated — the app loads each section independently. */
   async getSection(
     userId: string,
+    req: Request,
     section: string,
     page?: number,
     limit?: number,
   ): Promise<CoinzuSectionPageDto> {
-    const ctx = await this.offerContext(userId);
+    const ctx = await this.offerContext(userId, req);
     return this.rewardtym.getSection(
       userId,
       ctx,
@@ -46,17 +55,22 @@ export class CoinzuOffersService {
     );
   }
 
-  async getOffer(userId: string, offerId: string): Promise<CoinzuOfferDto> {
-    const ctx = await this.offerContext(userId);
+  async getOffer(
+    userId: string,
+    offerId: string,
+    req: Request,
+  ): Promise<CoinzuOfferDto> {
+    const ctx = await this.offerContext(userId, req);
     return this.rewardtym.getOfferDetail(userId, offerId, ctx);
   }
 
   async getInProgress(
     userId: string,
+    req: Request,
     page?: number,
     limit?: number,
   ): Promise<CoinzuInProgressPageDto> {
-    const ctx = await this.offerContext(userId);
+    const ctx = await this.offerContext(userId, req);
     return this.rewardtym.getInProgress(
       userId,
       ctx,
@@ -69,13 +83,13 @@ export class CoinzuOffersService {
     userId: string,
     offerId: string,
     platform: 'web' | 'app',
+    req: Request,
   ): Promise<{ offer_id: string; redirect_url: string }> {
-    const device = await this.latestDevice(userId);
-    const offer = await this.rewardtym.getOfferDetail(
-      userId,
-      offerId,
-      this.toOfferContext(device),
-    );
+    const caller = await this.callerContext(userId, req);
+    const offer = await this.rewardtym.getOfferDetail(userId, offerId, {
+      country: caller.country,
+      device: null,
+    });
     if (!offer.redirect_url) {
       throw new NotFoundException({
         cz_error_code: CzOfferErrorCodes.OFFER_NOT_FOUND,
@@ -84,14 +98,51 @@ export class CoinzuOffersService {
     const redirect_url = this.rewardtym.buildRedirectUrl(
       offer.redirect_url,
       userId,
-      { ...this.toRedirectContext(device), platform },
+      {
+        country: caller.country,
+        device: null,
+        hardware_id: caller.device?.hardware_id ?? null,
+        ip: caller.ip,
+        platform,
+      },
     );
     return { offer_id: offer.offer_id, redirect_url };
   }
 
-  private async offerContext(userId: string): Promise<RewardtymOfferContext> {
-    const device = await this.latestDevice(userId);
-    return this.toOfferContext(device);
+  // Device is never sent: offers show for all platforms.
+  private async offerContext(
+    userId: string,
+    req: Request,
+  ): Promise<RewardtymOfferContext> {
+    const { country } = await this.callerContext(userId, req);
+    return { country, device: null };
+  }
+
+  /** Country and IP of this request (falling back to the user's last device), plus that device. */
+  private async callerContext(userId: string, req: Request) {
+    const requestIp = extractRequestIp(req);
+    const ip = requestIp && !isLoopbackIp(requestIp) ? requestIp : null;
+    const [device, requestCountry] = await Promise.all([
+      this.latestDevice(userId),
+      this.requestCountry(req, requestIp),
+    ]);
+    return {
+      device,
+      country: requestCountry ?? device?.country_code ?? null,
+      ip: ip ?? device?.ip_address ?? null,
+    };
+  }
+
+  // CDN header first, then the cached IP lookup. Local dev (loopback) looks up this machine's own IP.
+  private async requestCountry(
+    req: Request,
+    ip: string | null,
+  ): Promise<string | null> {
+    const header = resolveCountryFromRequestHeaders(req);
+    if (header || !ip) return header;
+    if (isLoopbackIp(ip) && Env.isProduction) return null;
+    const geo = await this.geoLookup.lookup(isLoopbackIp(ip) ? '' : ip);
+    return geo.country_code;
   }
 
   /** Latest device row for the user — the capture used for geo/fraud context. */
@@ -108,26 +159,5 @@ export class CoinzuOffersService {
         last_seen_at: true,
       },
     });
-  }
-
-  // Device is never sent: offers show for all platforms. Country is hardcoded to
-  // US for now so the app sees the US offer catalogue regardless of the device's
-  // captured geo. Revert to device?.country_code when geo targeting goes live.
-  private toOfferContext(_device: UserDevice | null): RewardtymOfferContext {
-    return {
-      country: 'US',
-      device: null,
-    };
-  }
-
-  private toRedirectContext(
-    device: UserDevice | null,
-  ): RewardtymRedirectContext {
-    return {
-      country: 'US',
-      device: null,
-      hardware_id: device?.hardware_id ?? null,
-      ip: device?.ip_address ?? null,
-    };
   }
 }

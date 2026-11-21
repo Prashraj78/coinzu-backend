@@ -50,8 +50,8 @@ export class CoinzuOffersController {
   @Get('home')
   @ApiOperation({ summary: 'RewardTym home sections for the current user.' })
   @ApiData(CoinzuHomeResponseDto)
-  home(@CurrentUser() user: RequestUser) {
-    return this.service.getHome(user.cz_user_id);
+  home(@CurrentUser() user: RequestUser, @Req() req: Request) {
+    return this.service.getHome(user.cz_user_id, req);
   }
 
   @Get('section')
@@ -59,9 +59,14 @@ export class CoinzuOffersController {
     summary: 'One home section, paginated (10 at a time) for infinite scroll.',
   })
   @ApiData(CoinzuSectionPageResponseDto)
-  section(@CurrentUser() user: RequestUser, @Query() query: ListSectionDto) {
+  section(
+    @CurrentUser() user: RequestUser,
+    @Query() query: ListSectionDto,
+    @Req() req: Request,
+  ) {
     return this.service.getSection(
       user.cz_user_id,
+      req,
       query.section,
       query.page,
       query.limit,
@@ -74,9 +79,11 @@ export class CoinzuOffersController {
   inProgress(
     @CurrentUser() user: RequestUser,
     @Query() query: ListInProgressDto,
+    @Req() req: Request,
   ) {
     return this.service.getInProgress(
       user.cz_user_id,
+      req,
       query.page,
       query.limit,
     );
@@ -92,13 +99,17 @@ export class CoinzuOffersController {
   ) {
     // Web clicks get RewardTym's fraud gate (it judges the browser's own request); app clicks do not.
     const platform = resolveDevicePlatform(undefined, req) === 'web' ? 'web' : 'app';
-    return this.service.getRedirectUrl(user.cz_user_id, offerId, platform);
+    return this.service.getRedirectUrl(user.cz_user_id, offerId, platform, req);
   }
 
   @Get('offers/:id')
   @ApiOperation({ summary: 'Full detail for one RewardTym offer.' })
   @ApiData(CoinzuOfferResponseDto)
-  offer(@CurrentUser() user: RequestUser, @Param('id') id: string) {
-    return this.service.getOffer(user.cz_user_id, id);
+  offer(
+    @CurrentUser() user: RequestUser,
+    @Param('id') id: string,
+    @Req() req: Request,
+  ) {
+    return this.service.getOffer(user.cz_user_id, id, req);
   }
 }
