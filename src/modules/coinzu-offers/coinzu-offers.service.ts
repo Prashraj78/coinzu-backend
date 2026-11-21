@@ -7,6 +7,7 @@ import {
   extractRequestIp,
   isLoopbackIp,
   resolveCountryFromRequestHeaders,
+  resolveDevicePlatform,
 } from '../../common/utils/device-platform.util';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { UserDevice } from '../../database/entities/user-device.entity';
@@ -22,6 +23,8 @@ import {
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
+// The app always gets the US offer catalogue until geo targeting goes live there.
+const APP_COUNTRY = 'US';
 
 @Injectable()
 export class CoinzuOffersService {
@@ -118,8 +121,15 @@ export class CoinzuOffersService {
     return { country, device: null };
   }
 
-  /** Country and IP of this request (falling back to the user's last device), plus that device. */
+  /**
+   * App: the US catalogue and the last device's IP, as before. Web: the country and IP of
+   * this request (falling back to the user's last device).
+   */
   private async callerContext(userId: string, req: Request) {
+    if (resolveDevicePlatform(undefined, req) !== 'web') {
+      const device = await this.latestDevice(userId);
+      return { device, country: APP_COUNTRY, ip: device?.ip_address ?? null };
+    }
     const requestIp = extractRequestIp(req);
     const ip = requestIp && !isLoopbackIp(requestIp) ? requestIp : null;
     const [device, requestCountry] = await Promise.all([
