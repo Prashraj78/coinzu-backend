@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Env } from '../../common/config/env';
 import { CzAuthErrorCodes } from '../../common/errors/error.constants';
-import { SendgridMailExternal } from '../../external/sendgrid-mail.external';
+import { SesMailExternal } from '../../external/ses-mail.external';
 import { UsersService } from '../users/users.service';
 import { LinkTokenService } from './link-token.service';
 import { buildActionEmailHtml } from './mail-templates';
@@ -11,7 +11,7 @@ export class PasswordResetService {
   constructor(
     private readonly usersService: UsersService,
     private readonly linkTokens: LinkTokenService,
-    private readonly mailer: SendgridMailExternal,
+    private readonly mailer: SesMailExternal,
   ) {}
 
   /**

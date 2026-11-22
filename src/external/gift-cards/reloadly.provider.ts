@@ -56,7 +56,7 @@ export class ReloadlyProvider implements GiftCardProvider {
       quantity: 1,
       unitPrice: Number(unitPrice),
       customIdentifier: reference,
-      senderName: Env.sendgrid.fromName,
+      senderName: Env.mail.fromName,
     };
     try {
       const res = await axios.post(

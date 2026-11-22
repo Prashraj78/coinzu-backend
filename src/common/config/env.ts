@@ -174,11 +174,12 @@ export const Env = {
   },
   // From name must agree with the sending domain ("Coinzu" alone did not) and
   // reply-to must be a role address, not a personal mailbox.
-  sendgrid: {
-    apiKey: str('SENDGRID_API_KEY'),
-    fromAddress: str('SENDGRID_FROM_ADDRESS', 'no-reply@rewardtym.online'),
-    fromName: str('SENDGRID_FROM_NAME', 'Coinzu by RewardTym'),
-    replyToAddress: str('SENDGRID_REPLY_TO', 'rahul@rewardtym.online'),
+  // Sent through Amazon SES (AWS_* keys above) from the shared RewardTym sender.
+  mail: {
+    sesRegion: str('SES_REGION', 'us-east-1'),
+    fromAddress: str('MAIL_FROM_ADDRESS', 'no-reply@rewardtym.online'),
+    fromName: str('MAIL_FROM_NAME', 'Coinzu by RewardTym'),
+    replyToAddress: str('MAIL_REPLY_TO', 'rahul@rewardtym.online'),
   },
   giftCard: {
     // The active vendor is chosen at runtime from app_settings; these envs hold

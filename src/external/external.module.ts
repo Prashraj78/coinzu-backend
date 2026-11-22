@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { R2StorageExternal } from './r2-storage.external';
 import { RedisExternal } from './redis.external';
 import { RekognitionFaceExternal } from './rekognition-face.external';
-import { SendgridMailExternal } from './sendgrid-mail.external';
+import { SesMailExternal } from './ses-mail.external';
 import { GoogleAuthExternal } from './google-auth.external';
 import { TelegramAuthExternal } from './telegram-auth.external';
 import { GiftCardExternal } from './gift-card.external';
@@ -24,7 +24,7 @@ const EXTERNALS = [
   R2StorageExternal,
   RedisExternal,
   RekognitionFaceExternal,
-  SendgridMailExternal,
+  SesMailExternal,
   GoogleAuthExternal,
   TelegramAuthExternal,
   GiftCardExternal,
