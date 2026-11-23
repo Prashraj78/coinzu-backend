@@ -30,7 +30,10 @@ None.
 
 | Field | Type | Required | Rules | Description |
 |---|---|---|---|---|
-| `id_token` | string | yes | — | The OIDC `id_token` from `Telegram.Login.auth`. |
+| `id_token` | string | with no `code` | — | Popup login: the OIDC `id_token` from `Telegram.Login.auth`. |
+| `code` | string | with no `id_token` | 8 to 512 characters | Same-tab login (phones): the authorization code Telegram sent to `redirect_uri`. The server trades it at `https://oauth.telegram.org/token` (Basic auth with `TELEGRAM_LOGIN_CLIENT_ID` / `TELEGRAM_LOGIN_CLIENT_SECRET`) and verifies the `id_token` it gets back. |
+| `code_verifier` | string | with `code` | 43 to 128 characters | The PKCE verifier whose S256 challenge was sent to `https://oauth.telegram.org/auth`. |
+| `redirect_uri` | string | with `code` | URL | The redirect URI the code was issued for, e.g. `https://app.coinzu.online/telegram-callback.html`; must match a Redirect URI registered on the bot. |
 | `nonce` | string | no | 8 to 128 characters | The nonce passed to `Telegram.Login.auth`; must match the token. |
 
 ```json
@@ -59,9 +62,9 @@ Same body as `GET /api/users/me/telegram/status`.
 
 | Status | `cz_error_code` | `cz_error_message` | Cause | Icon |
 |---|---|---|---|---|
-| 400 | `CZDCOMM001` | Please check the details you entered and try again. | `id_token` is missing or `nonce` is out of range. | `ValidationFailedIcon` |
+| 400 | `CZDCOMM001` | Please check the details you entered and try again. | Neither `id_token` nor `code` is sent, `code` comes without `code_verifier` / `redirect_uri`, or a field is out of range. | `ValidationFailedIcon` |
 | 401 | `CZDAUTH019` | We could not sign you in with Telegram. Please try again. | The `id_token` failed verification: bad signature, wrong iss/aud, expired, or nonce mismatch. | `GoogleSignInFailedIcon` |
-| 503 | `CZDAUTH020` | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set on the server. | `GoogleSignInFailedIcon` |
+| 503 | `CZDAUTH020` | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set, or `code` was sent and `TELEGRAM_LOGIN_CLIENT_SECRET` is not set. | `GoogleSignInFailedIcon` |
 | 403 | `CZDAUTH021` | Your account has been blocked for activity that breaks our rules. Contact support if you think this is a mistake. | The account is suspended, banned or deleted. | `AccountInactiveIcon` |
 | 401 | `CZDAUTH005` | Please sign in to continue. | Authorization header is missing. | `SignInRequiredIcon` |
 | 401 | `CZDAUTH003` | Your session has expired. Please sign in again. | Access token has expired. | `SessionExpiredIcon` |

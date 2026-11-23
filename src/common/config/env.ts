@@ -218,6 +218,8 @@ export const Env = {
     withdrawalsChatId: str('TELEGRAM_WITHDRAWALS_CHAT_ID', ''),
     // Client ID of the Coinzu login bot (@BotFather mini app > bot > Login Widget). Not a secret; empty = Telegram sign-in is off.
     loginClientId: str('TELEGRAM_LOGIN_CLIENT_ID', ''),
+    // Same bot's Login Widget Client Secret; only the same-tab (phone) code flow needs it.
+    loginClientSecret: str('TELEGRAM_LOGIN_CLIENT_SECRET', ''),
     // Channel web users must join (the bot must be its admin); empty = no Telegram gate.
     channelId: str('TELEGRAM_CHANNEL_ID', ''),
     channelUrl: str('TELEGRAM_CHANNEL_URL', 'https://t.me/coinzuonline'),

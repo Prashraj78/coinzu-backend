@@ -28,7 +28,10 @@ None.
 
 | Field | Type | Required | Rules | Description |
 |---|---|---|---|---|
-| `id_token` | string | yes | Signed by Telegram. | The JWT `Telegram.Login.auth` returns. Verified against `https://oauth.telegram.org/.well-known/jwks.json` (RS256 / ES256), `iss` = `https://oauth.telegram.org`, `aud` = `TELEGRAM_LOGIN_CLIENT_ID`, not expired. |
+| `id_token` | string | with no `code` | Signed by Telegram. |
+| `code` | string | with no `id_token` | 8 to 512 characters | Same-tab login (phones): the authorization code Telegram sent to `redirect_uri`. The server trades it at `https://oauth.telegram.org/token` (Basic auth with `TELEGRAM_LOGIN_CLIENT_ID` / `TELEGRAM_LOGIN_CLIENT_SECRET`) and verifies the `id_token` it gets back. |
+| `code_verifier` | string | with `code` | 43 to 128 characters | The PKCE verifier whose S256 challenge was sent to `https://oauth.telegram.org/auth`. |
+| `redirect_uri` | string | with `code` | URL | The redirect URI the code was issued for, e.g. `https://app.coinzu.online/telegram-callback.html`; must match a Redirect URI registered on the bot. | The JWT `Telegram.Login.auth` returns. Verified against `https://oauth.telegram.org/.well-known/jwks.json` (RS256 / ES256), `iss` = `https://oauth.telegram.org`, `aud` = `TELEGRAM_LOGIN_CLIENT_ID`, not expired. |
 | `nonce` | string | no | 8–128 characters. | The nonce the page passed to `Telegram.Login.auth`; must equal the token's `nonce` claim. |
 | `referral_code` | string | no | 6–12 characters. | Attached only when the account is created. |
 | `device` | object | no | `RegisterDeviceDto`. | Device signals; `platform_type: "web"` marks a web sign-up. |
@@ -64,7 +67,7 @@ Same shape as `POST /api/auth/google`: `{ user, access_token, refresh_token }`.
 | Status | `cz_error_code` | `cz_error_message` | When | Icon |
 |---|---|---|---|---|
 | 401 | `CZDAUTH019` | We could not sign you in with Telegram. Please try again. | Bad signature, wrong `iss`/`aud`, expired token, or nonce mismatch. | `GoogleSignInFailedIcon` |
-| 503 | `CZDAUTH020` | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set. | `GoogleSignInFailedIcon` |
+| 503 | `CZDAUTH020` | Telegram sign-in is not available right now. Please continue with Google. | `TELEGRAM_LOGIN_CLIENT_ID` is not set, or `code` was sent and `TELEGRAM_LOGIN_CLIENT_SECRET` is not set. | `GoogleSignInFailedIcon` |
 | 401 | `CZDAUTH018` | This account was deleted. Please contact support to reopen it. | The account was soft-deleted. | `AccountInactiveIcon` |
 | 409 | `CZDUSER011` | This device is already registered with another account. | New account on a device another account owns. | `PermissionDeniedIcon` |
 | 400 | `CZDCOMM001` | Please check the details you entered and try again. | A field has the wrong type. | `ValidationFailedIcon` |

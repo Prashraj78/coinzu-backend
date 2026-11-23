@@ -186,7 +186,7 @@ export class AuthService {
    */
   async telegramLogin(dto: TelegramLoginDto, req: Request) {
     const { referral_code, device } = dto;
-    const profile = await this.telegramAuth.verify(dto.id_token, dto.nonce);
+    const profile = await this.telegramAuth.profileFrom(dto);
 
     let user = await this.usersService.findByTelegramId(profile.telegram_id);
     if (!user && device) {

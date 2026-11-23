@@ -10,6 +10,7 @@ export const TELEGRAM_EMAIL_DOMAIN = 'telegram.coinzu.invalid';
 
 const ISSUER = 'https://oauth.telegram.org';
 const JWKS_URL = 'https://oauth.telegram.org/.well-known/jwks.json';
+const TOKEN_URL = 'https://oauth.telegram.org/token';
 /** Telegram's signing keys rarely rotate; refetched after this or when a token names an unknown key. */
 const JWKS_TTL_MS = 60 * 60 * 1000;
 
@@ -69,6 +70,46 @@ export class TelegramAuthExternal {
       username: claims.preferred_username ?? null,
       avatar_url: claims.picture ?? null,
     };
+  }
+
+  /** Popup login sends an id_token; same-tab login on phones sends an authorization code. */
+  profileFrom(dto: { id_token?: string; nonce?: string; code?: string; code_verifier?: string; redirect_uri?: string }): Promise<TelegramProfile> {
+    if (dto.code && dto.code_verifier && dto.redirect_uri) return this.verifyCode(dto.code, dto.code_verifier, dto.redirect_uri);
+    return this.verify(dto.id_token ?? '', dto.nonce);
+  }
+
+  /**
+   * Same-tab login (phones): trades the authorization code for an id_token at Telegram's token endpoint
+   * (Basic auth with the Client ID and Secret, PKCE verifier), then verifies it like the popup's token.
+   */
+  async verifyCode(code: string, codeVerifier: string, redirectUri: string): Promise<TelegramProfile> {
+    const clientId = Env.telegram.loginClientId?.trim();
+    const secret = Env.telegram.loginClientSecret?.trim();
+    if (!clientId || !secret) {
+      throw new ServiceUnavailableException({ cz_error_code: CzAuthErrorCodes.TELEGRAM_LOGIN_UNAVAILABLE });
+    }
+    let idToken: string | undefined;
+    try {
+      const { data } = await axios.post<{ id_token?: string }>(
+        TOKEN_URL,
+        new URLSearchParams({ grant_type: 'authorization_code', code, redirect_uri: redirectUri, client_id: clientId, code_verifier: codeVerifier }).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Basic ${Buffer.from(`${clientId}:${secret}`).toString('base64')}`,
+          },
+          timeout: 8000,
+        },
+      );
+      idToken = data.id_token;
+    } catch (error) {
+      const detail = axios.isAxiosError(error) ? JSON.stringify(error.response?.data ?? error.message) : String(error);
+      this.logger.warn(`Telegram code exchange failed: ${detail}`);
+    }
+    if (!idToken) {
+      throw new UnauthorizedException({ cz_error_code: CzAuthErrorCodes.TELEGRAM_AUTH_INVALID });
+    }
+    return this.verify(idToken);
   }
 
   private async keyFor(kid?: string): Promise<KeyObject> {

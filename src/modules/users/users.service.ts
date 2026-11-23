@@ -102,7 +102,7 @@ export class UsersService {
 
   /** Links the Telegram a Google/email user signs into, so their channel membership can be checked. */
   async linkTelegram(cz_user_id: string, dto: TelegramLinkDto, platform: DevicePlatformType, req: Request) {
-    const profile = await this.telegramAuth.verify(dto.id_token, dto.nonce);
+    const profile = await this.telegramAuth.profileFrom(dto);
     await this.users.update(cz_user_id, {
       telegram_member_id: profile.telegram_id,
       telegram_joined_at: null,

@@ -8852,7 +8852,20 @@
         "properties": {
           "id_token": {
             "type": "string",
-            "description": "The OIDC id_token (JWT) from Telegram.Login.auth."
+            "description": "Popup login: the OIDC id_token (JWT) from Telegram.Login.auth. Send this or `code`."
+          },
+          "code": {
+            "type": "string",
+            "description": "Same-tab (phone) login: the authorization code Telegram returned to the redirect URI."
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "PKCE code_verifier for `code` (43 to 128 characters)."
+          },
+          "redirect_uri": {
+            "type": "string",
+            "example": "https://app.coinzu.online/telegram-callback.html",
+            "description": "The redirect_uri the code was issued for; must match exactly."
           },
           "nonce": {
             "type": "string",
@@ -8865,10 +8878,7 @@
           "device": {
             "$ref": "#/components/schemas/RegisterDeviceDto"
           }
-        },
-        "required": [
-          "id_token"
-        ]
+        }
       },
       "RefreshDto": {
         "type": "object",
@@ -9368,16 +9378,26 @@
         "properties": {
           "id_token": {
             "type": "string",
-            "description": "The OIDC id_token (JWT) from Telegram.Login.auth."
+            "description": "Popup login: the OIDC id_token (JWT) from Telegram.Login.auth. Send this or `code`."
+          },
+          "code": {
+            "type": "string",
+            "description": "Same-tab (phone) login: the authorization code Telegram returned to the redirect URI."
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "PKCE code_verifier for `code` (43 to 128 characters)."
+          },
+          "redirect_uri": {
+            "type": "string",
+            "example": "https://app.coinzu.online/telegram-callback.html",
+            "description": "The redirect_uri the code was issued for; must match exactly."
           },
           "nonce": {
             "type": "string",
             "description": "The nonce the page passed to Telegram.Login.auth; must match the token."
           }
-        },
-        "required": [
-          "id_token"
-        ]
+        }
       },
       "UpdateNotificationPreferencesDto": {
         "type": "object",
