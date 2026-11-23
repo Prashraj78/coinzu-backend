@@ -647,7 +647,9 @@ export class UsersService {
         'u.fraud_score',
         'u.fraud_flags',
       ])
-      .orderBy('u.created_at', 'DESC')
+      // Most recent sign-in first; never-signed-in accounts after them, newest first.
+      .orderBy('u.last_login_at', 'DESC', 'NULLS LAST')
+      .addOrderBy('u.created_at', 'DESC')
       .skip(skip)
       .take(take);
 

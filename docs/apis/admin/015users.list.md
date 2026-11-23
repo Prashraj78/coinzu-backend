@@ -138,6 +138,7 @@ curl "$BASE/admin/users?page=1&limit=20&search=shubham&status=active&tier=gold&d
 
 ## Notes
 
+- Ordered by `last_login_at` (most recent sign-in first); accounts that have never signed in come last, newest first. `last_login_at` is stamped on each sign-in (password, Google, Telegram), not on token refresh.
 - Every user is listed, including a brand-new account with a zero wallet — wallets are created lazily on first use, and a user with no wallet row yet shows `coin_balance: 0, gem_balance: 0` here rather than a missing wallet.
 - `search` matches `email`, `name`, `phone`, `telegram_id` and `contact.value` independently (an `OR`) — a query only needs to hit one field, so a numeric Telegram id finds that Telegram sign-up.
 - `status`, `kyc_status`, `tier`, `country`, `date_from`, and `date_end` all combine with `search` and each other as `AND` filters — narrowing further whatever `search` (or its absence) already matched.
