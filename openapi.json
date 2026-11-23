@@ -692,6 +692,96 @@
         ]
       }
     },
+    "/api/users/me/telegram/status": {
+      "get": {
+        "operationId": "UsersController_telegramStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/TelegramStatusDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Web Telegram gate: whether the user must, and does, belong to the Coinzu channel",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/me/telegram/link": {
+      "post": {
+        "operationId": "UsersController_linkTelegram",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramLinkDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/TelegramStatusDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Connect a Telegram account (Telegram Login id_token) for the channel check",
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/users/me/notification-preferences": {
       "patch": {
         "operationId": "UsersController_updateNotificationPreferences",
@@ -9241,6 +9331,52 @@
         "required": [
           "contact_platform",
           "contact_value"
+        ]
+      },
+      "TelegramStatusDto": {
+        "type": "object",
+        "properties": {
+          "required": {
+            "type": "boolean",
+            "example": true,
+            "description": "This request must be in the channel to use the web app (web and a channel configured)."
+          },
+          "linked": {
+            "type": "boolean",
+            "example": true,
+            "description": "A Telegram account is known for this user (Telegram sign-in or a linked one)."
+          },
+          "joined": {
+            "type": "boolean",
+            "example": false,
+            "description": "That Telegram account is in the channel."
+          },
+          "channel_url": {
+            "type": "string",
+            "example": "https://t.me/coinzuonline"
+          }
+        },
+        "required": [
+          "required",
+          "linked",
+          "joined",
+          "channel_url"
+        ]
+      },
+      "TelegramLinkDto": {
+        "type": "object",
+        "properties": {
+          "id_token": {
+            "type": "string",
+            "description": "The OIDC id_token (JWT) from Telegram.Login.auth."
+          },
+          "nonce": {
+            "type": "string",
+            "description": "The nonce the page passed to Telegram.Login.auth; must match the token."
+          }
+        },
+        "required": [
+          "id_token"
         ]
       },
       "UpdateNotificationPreferencesDto": {

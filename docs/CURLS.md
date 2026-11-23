@@ -245,6 +245,28 @@ curl -X POST $BASE/users/me/onboarding/contacts \
   -d '{ "contact_platform": "whatsapp", "contact_value": "+919875643266" }'
 ```
 
+### GET /api/users/me/telegram/status
+
+Web Telegram gate: whether the user must, and does, belong to the Coinzu Telegram channel. — [`apis/inprogress/029users.telegram-status.md`](apis/inprogress/029users.telegram-status.md)
+
+```bash
+curl $BASE/users/me/telegram/status \
+  -H 'X-Device-Type: web' \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
+### POST /api/users/me/telegram/link
+
+Connects a Telegram account so the channel check can run. — [`apis/inprogress/030users.telegram-link.md`](apis/inprogress/030users.telegram-link.md)
+
+```bash
+curl -X POST $BASE/users/me/telegram/link \
+  -H 'Content-Type: application/json' \
+  -H 'X-Device-Type: web' \
+  -H 'Authorization: Bearer $TOKEN' \
+  -d '{ "id_token": "<telegram id_token>", "nonce": "<nonce>" }'
+```
+
 ### POST /api/users/me/device
 
 Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. — [`apis/user/028users.register-device.md`](apis/user/028users.register-device.md)

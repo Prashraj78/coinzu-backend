@@ -138,7 +138,11 @@ export class CoinzuOffersService {
     ]);
     return {
       device,
-      country: requestCountry ?? device?.country_code ?? null,
+      country:
+        Env.rewardtym.localCountry ||
+        requestCountry ||
+        device?.country_code ||
+        null,
       ip: ip ?? device?.ip_address ?? null,
     };
   }

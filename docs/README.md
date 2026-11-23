@@ -66,6 +66,8 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/users/me/onboarding/interests` | user token | Account setup step 3 — saves the interest tags the user picked. | [009](apis/user/009users.onboarding-interests.md) |
 | `POST /api/users/me/onboarding/goal` | user token | Account setup step 4 — saves the primary goal and marks onboarding complete. | [010](apis/user/010users.onboarding-goal.md) |
 | `POST /api/users/me/onboarding/contacts` | user token | Web account setup — saves where to reach the user (Telegram, WhatsApp, Skype or Discord + handle) and marks onboarding complete. | [025](apis/inprogress/025users.onboarding-contacts.md) |
+| `GET /api/users/me/telegram/status` | user token | Web Telegram gate: whether the user must, and does, belong to the Coinzu Telegram channel. | [029](apis/inprogress/029users.telegram-status.md) |
+| `POST /api/users/me/telegram/link` | user token | Connects a Telegram account (Telegram Login `id_token`) so the channel check can run. | [030](apis/inprogress/030users.telegram-link.md) |
 | `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. | [028](apis/user/028users.register-device.md) |
 | `PATCH /api/users/me/notification-preferences` | user token | Turns push categories on or off and sets the quiet-hours opt-in. | [032](apis/user/032users.notification-preferences.md) |
 

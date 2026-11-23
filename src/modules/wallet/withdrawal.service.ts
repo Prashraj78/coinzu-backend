@@ -136,7 +136,7 @@ export class WithdrawalService {
         this.settingsService.getNumber(SettingKeys.USDT_WITHDRAWAL_FEE_PERCENT),
         this.users.findOne({
           where: { cz_user_id: user_id },
-          select: { cz_user_id: true, kyc_status: true },
+          select: { cz_user_id: true, kyc_status: true, telegram_id: true, telegram_member_id: true },
         }),
         this.withdrawals.findOne({
           where: { user_id, status: 'pending' },
@@ -159,6 +159,17 @@ export class WithdrawalService {
       throw new ConflictException({
         cz_error_code: CzWalletErrorCodes.PENDING_WITHDRAWAL_EXISTS,
       });
+    }
+    // Always a fresh check: leaving the channel right after the gate let them in must not pay out.
+    // Only a definite "not a member" blocks; a failed check lets the request through.
+    if (Env.telegram.channelId) {
+      const memberId = user?.telegram_member_id ?? user?.telegram_id;
+      const member = memberId ? await this.telegram.isChannelMember(memberId) : false;
+      if (member === false) {
+        throw new ForbiddenException({
+          cz_error_code: CzWalletErrorCodes.TELEGRAM_CHANNEL_REQUIRED,
+        });
+      }
     }
 
     // Integer cents so gross = fee + payout exactly.

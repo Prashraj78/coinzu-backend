@@ -17,6 +17,10 @@ import {
   resolveCountryFromRequestHeaders, isLoopbackIp, signupMethodOf, signupMethodSql } from '../../common/utils/device-platform.util';
 import { GeoLookupExternal } from '../../external/geo-lookup.external';
 import { RekognitionFaceExternal } from '../../external/rekognition-face.external';
+import { TelegramExternal } from '../../external/telegram.external';
+import { TelegramAuthExternal } from '../../external/telegram-auth.external';
+import type { DevicePlatformType } from '../../database/entities/user-device.entity';
+import { TelegramLinkDto } from './dto/telegram-link.dto';
 import type { Request } from 'express';
 import { WalletService } from '../wallet/wallet.service';
 import { SettingsService } from '../settings/settings.service';
@@ -49,6 +53,9 @@ const PROFILE_FIELDS: Array<keyof User> = [
   'primary_goal',
 ];
 
+// A confirmed channel membership is re-checked with Telegram once it is this old.
+const TELEGRAM_RECHECK_MS = 6 * 60 * 60 * 1000;
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -61,7 +68,57 @@ export class UsersService {
     private readonly settingsService: SettingsService,
     private readonly avatarsService: AvatarsService,
     private readonly face: RekognitionFaceExternal,
+    private readonly telegram: TelegramExternal,
+    private readonly telegramAuth: TelegramAuthExternal,
   ) {}
+
+  /**
+   * Web users must be in the Coinzu Telegram channel. A confirmed membership is trusted for
+   * TELEGRAM_RECHECK_MS; otherwise Telegram is asked again. A failed check counts as joined so
+   * a Telegram outage never locks anyone out.
+   */
+  async telegramStatus(cz_user_id: string, platform: DevicePlatformType) {
+    const required = platform === 'web' && !!Env.telegram.channelId;
+    const user = await this.users.findOne({
+      where: { cz_user_id },
+      select: { cz_user_id: true, telegram_id: true, telegram_member_id: true, telegram_joined_at: true, telegram_checked_at: true },
+    });
+    const memberId = user?.telegram_member_id ?? user?.telegram_id ?? null;
+    const status = { required, linked: !!memberId, joined: false, channel_url: Env.telegram.channelUrl };
+    if (!user || !memberId) return status;
+
+    const fresh = user.telegram_checked_at && Date.now() - user.telegram_checked_at.getTime() < TELEGRAM_RECHECK_MS;
+    if (user.telegram_joined_at && fresh) return { ...status, joined: true };
+    if (!required) return { ...status, joined: !!user.telegram_joined_at };
+
+    const member = await this.telegram.isChannelMember(memberId);
+    if (member === null) return { ...status, joined: true };
+    await this.users.update(cz_user_id, {
+      telegram_checked_at: new Date(),
+      telegram_joined_at: member ? (user.telegram_joined_at ?? new Date()) : null,
+    });
+    return { ...status, joined: member };
+  }
+
+  /** Links the Telegram a Google/email user signs into, so their channel membership can be checked. */
+  async linkTelegram(cz_user_id: string, dto: TelegramLinkDto, platform: DevicePlatformType, req: Request) {
+    const profile = await this.telegramAuth.verify(dto.id_token, dto.nonce);
+    await this.users.update(cz_user_id, {
+      telegram_member_id: profile.telegram_id,
+      telegram_joined_at: null,
+      telegram_checked_at: null,
+    });
+    const user = await this.getOrFail(cz_user_id);
+    // Connecting Telegram also answers the web's "how can we reach you" step.
+    if (!user.contact) {
+      await this.saveOnboardingContacts(
+        cz_user_id,
+        { contact_platform: 'telegram', contact_value: profile.username ? `@${profile.username}` : profile.telegram_id },
+        req,
+      );
+    }
+    return this.telegramStatus(cz_user_id, platform);
+  }
 
   async create(dto: CreateUserDto): Promise<User> {
     const email = dto.email.toLowerCase().trim();

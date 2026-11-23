@@ -218,6 +218,9 @@ export const Env = {
     withdrawalsChatId: str('TELEGRAM_WITHDRAWALS_CHAT_ID', ''),
     // Client ID of the Coinzu login bot (@BotFather mini app > bot > Login Widget). Not a secret; empty = Telegram sign-in is off.
     loginClientId: str('TELEGRAM_LOGIN_CLIENT_ID', ''),
+    // Channel web users must join (the bot must be its admin); empty = no Telegram gate.
+    channelId: str('TELEGRAM_CHANNEL_ID', ''),
+    channelUrl: str('TELEGRAM_CHANNEL_URL', 'https://t.me/coinzuonline'),
   },
   // RewardTym v3 /v3/coinzu APIs. Coinzu calls these as a partner.
   rewardtym: {
@@ -225,6 +228,8 @@ export const Env = {
     apiKey: str('REWARDTYM_API_KEY'),
     partnerId: str('REWARDTYM_PARTNER_ID', 'lt_partner_650bbf449de5f902'),
     webhookSecret: str('REWARDTYM_WEBHOOK_SECRET'),
+    // Local testing only: pins the web offer country (e.g. US). Ignored in production.
+    localCountry: IS_PRODUCTION ? '' : str('LOCAL_OFFER_COUNTRY', '').toUpperCase(),
   },
   otp: {
     length: num('OTP_LENGTH', 6),

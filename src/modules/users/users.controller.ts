@@ -23,7 +23,9 @@ import { UpdateNotificationPreferencesDto } from './dto/notification-preferences
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { SetAvatarDto } from './dto/set-avatar.dto';
-import { DeactivatedAccountDto, UserDto } from './dto/users.response';
+import { TelegramLinkDto } from './dto/telegram-link.dto';
+import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
+import { DeactivatedAccountDto, TelegramStatusDto, UserDto } from './dto/users.response';
 import { UserDevicesService } from './user-devices.service';
 import { UsersService } from './users.service';
 
@@ -112,6 +114,21 @@ export class UsersController {
     @Req() req: Request,
   ) {
     return this.usersService.saveOnboardingContacts(user.cz_user_id, dto, req);
+  }
+
+  @Get('me/telegram/status')
+  @ApiOperation({ summary: 'Web Telegram gate: whether the user must, and does, belong to the Coinzu channel' })
+  @ApiData(TelegramStatusDto)
+  telegramStatus(@CurrentUser() user: RequestUser, @Req() req: Request) {
+    return this.usersService.telegramStatus(user.cz_user_id, resolveDevicePlatform(undefined, req));
+  }
+
+  @Post('me/telegram/link')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Connect a Telegram account (Telegram Login id_token) for the channel check' })
+  @ApiData(TelegramStatusDto)
+  linkTelegram(@CurrentUser() user: RequestUser, @Body() dto: TelegramLinkDto, @Req() req: Request) {
+    return this.usersService.linkTelegram(user.cz_user_id, dto, resolveDevicePlatform(undefined, req), req);
   }
 
   @Patch('me/notification-preferences')

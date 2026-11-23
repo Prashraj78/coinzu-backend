@@ -62,6 +62,17 @@ export class User {
   @Column({ type: 'varchar', length: 32, nullable: true })
   telegram_id: string | null;
 
+  /** Telegram linked by a non-Telegram account to prove channel membership; shareable across accounts. */
+  @Column({ type: 'varchar', length: 32, nullable: true })
+  telegram_member_id: string | null;
+
+  /** Set while the last channel check found the user in it; cleared when they leave. */
+  @Column({ type: 'timestamptz', nullable: true })
+  telegram_joined_at: Date | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  telegram_checked_at: Date | null;
+
   /** Web sign-ups get no welcome bonus and skip the face-duplicate check. */
   @Column({ type: 'varchar', length: 10, default: 'app' })
   signup_platform: UserSignupPlatform;

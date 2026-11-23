@@ -86,6 +86,7 @@ The global `HttpExceptionFilter` turns that into the response above. Rows marked
 | `CZDWLT011` | 403 | Cash withdrawals are available on the website. In the app, redeem your coins for gift cards. | USDT withdrawals are web only; the request came from the iOS or Android app (`X-Device-Type` / User-Agent). | `WrongPlatformIcon` |
 | `CZDWLT012` | 400 | That wallet address does not look right for the selected network. Please check it and try again. | `wallet_address` does not match the network format: BEP20 `^0x[a-fA-F0-9]{40}$`, TRC20 `^T[1-9A-HJ-NP-Za-km-z]{33}$`. | `WalletAddressInvalidIcon` |
 | `CZDWLT013` | 400 | That transaction hash does not look right for this network. Please check it and try again. | `tx_hash` does not match the withdrawal's network: BEP20 `^0x[a-fA-F0-9]{64}$`, TRC20 `^[a-fA-F0-9]{64}$`. | `ValidationFailedIcon` |
+| `CZDWLT014` | 403 | Please join our Telegram channel to withdraw. | `TELEGRAM_CHANNEL_ID` is set and the user's Telegram account is not in that channel, or the user has no Telegram account linked. | `KycRequiredIcon` |
 
 ## Offers — `CZDOFR`
 

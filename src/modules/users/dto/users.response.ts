@@ -107,3 +107,17 @@ export class DeactivatedAccountDto {
   @ApiProperty({ enum: ['deleted'], example: 'deleted' })
   status: 'deleted';
 }
+
+export class TelegramStatusDto {
+  @ApiProperty({ example: true, description: 'This request must be in the channel to use the web app (web and a channel configured).' })
+  required: boolean;
+
+  @ApiProperty({ example: true, description: 'A Telegram account is known for this user (Telegram sign-in or a linked one).' })
+  linked: boolean;
+
+  @ApiProperty({ example: false, description: 'That Telegram account is in the channel.' })
+  joined: boolean;
+
+  @ApiProperty({ example: 'https://t.me/coinzuonline' })
+  channel_url: string;
+}

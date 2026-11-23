@@ -42,6 +42,34 @@ export class TelegramExternal {
     }
   }
 
+  /**
+   * Whether a Telegram user is in the Coinzu channel (the bot must be its admin).
+   * null when the check itself failed, so callers can decide how to treat an outage.
+   */
+  async isChannelMember(telegramUserId: string): Promise<boolean | null> {
+    const token = Env.telegram.botToken?.trim();
+    const chatId = Env.telegram.channelId?.trim();
+    if (!token || !chatId) return null;
+    try {
+      const res = await axios.get<{ result?: { status?: string; is_member?: boolean } }>(
+        `https://api.telegram.org/bot${token}/getChatMember`,
+        { params: { chat_id: chatId, user_id: telegramUserId }, timeout: SEND_TIMEOUT_MS },
+      );
+      const member = res.data.result;
+      if (!member?.status) return null;
+      if (member.status === 'restricted') return member.is_member === true;
+      return ['creator', 'administrator', 'member'].includes(member.status);
+    } catch (err) {
+      const detail = axios.isAxiosError(err)
+        ? (err.response?.data as { description?: string })?.description ?? err.message
+        : 'unknown error';
+      // "user not found" means they never joined; anything else is an outage.
+      if (/user not found|PARTICIPANT_ID_INVALID/i.test(detail)) return false;
+      this.logger.warn(`Telegram member check failed: ${detail}`);
+      return null;
+    }
+  }
+
   /** Escape user/vendor text before putting it inside an HTML alert. */
   escape(value: string): string {
     return value

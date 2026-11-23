@@ -97,6 +97,7 @@ All money fields are strings so two decimals stay exact.
 | 400 | `CZDWLT012` | That wallet address does not look right for the selected network. Please check it and try again. | `wallet_address` does not match the `network` format. | `WalletAddressInvalidIcon` |
 | 400 | `CZDWLT004` | This amount is below the minimum you can withdraw. | The amount is below the `min_withdrawal_coins` setting. | `BelowMinimumWithdrawalIcon` |
 | 403 | `CZDWLT007` | Please complete identity verification before withdrawing. | `withdrawal_requires_kyc_web` is on and the user is not `verified`. | `KycRequiredIcon` |
+| 403 | `CZDWLT014` | Please join our Telegram channel to withdraw. | `TELEGRAM_CHANNEL_ID` is set and the user's Telegram account is not in the channel (checked fresh on every request; a failed check lets it through). | `KycRequiredIcon` |
 | 409 | `CZDWLT009` | You already have a withdrawal being reviewed. | The user already has a `pending` withdrawal (also returned when two submits race). | `WithdrawalPendingIcon` |
 | 400 | `CZDWLT002` | You do not have enough coins for this. | The coin balance is lower than `amount_coins`. | `InsufficientCoinsIcon` |
 | 403 | `CZDAUTH021` | Your account has been blocked for activity that breaks our rules. Contact support if you think this is a mistake. | The account is suspended, banned or deleted. | `AccountInactiveIcon` |

@@ -62,6 +62,7 @@ export const CzWalletErrorCodes = {
   WITHDRAWAL_WEB_ONLY: 'CZDWLT011',
   INVALID_WALLET_ADDRESS: 'CZDWLT012',
   INVALID_TX_HASH: 'CZDWLT013',
+  TELEGRAM_CHANNEL_REQUIRED: 'CZDWLT014',
 } as const;
 
 /** Offer module error codes */
@@ -529,6 +530,11 @@ export const CzErrorMap: Record<
     message: 'That transaction hash does not look right for this network. Please check it and try again.',
     description: 'tx_hash does not match the withdrawal network format: BEP20 ^0x[a-fA-F0-9]{64}$, TRC20 ^[a-fA-F0-9]{64}$.',
     icon: CzErrorIcon.VALIDATION_FAILED,
+  },
+  [CzWalletErrorCodes.TELEGRAM_CHANNEL_REQUIRED]: {
+    message: 'Please join our Telegram channel to withdraw.',
+    description: 'Web withdrawals need the user (or the Telegram they linked) to be a member of the TELEGRAM_CHANNEL_ID channel.',
+    icon: CzErrorIcon.KYC_REQUIRED,
   },
   [CzWalletErrorCodes.PENDING_WITHDRAWAL_EXISTS]: {
     message: 'You already have a withdrawal being reviewed.',
