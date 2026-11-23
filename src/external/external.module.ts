@@ -11,6 +11,7 @@ import { GeoLookupExternal } from './geo-lookup.external';
 import { FirebasePushExternal } from './firebase-push.external';
 import { RewardtymExternal } from './rewardtym.external';
 import { TelegramExternal } from './telegram.external';
+import { Ga4External } from './ga4.external';
 import { ReloadlyProvider } from './gift-cards/reloadly.provider';
 import { PhazeProvider } from './gift-cards/phaze.provider';
 import { GiftCardProviderRegistry } from './gift-cards/gift-card-provider.registry';
@@ -33,6 +34,7 @@ const EXTERNALS = [
   FirebasePushExternal,
   RewardtymExternal,
   TelegramExternal,
+  Ga4External,
 ];
 
 // Every gift-card vendor implementation. Add a class here to make it selectable.

@@ -157,6 +157,11 @@ export class OfferwallPostbackService {
         source_id: saved.cz_offerwall_postback_id,
         note,
       });
+      void this.walletService.reportFirstOfferReward(user_id, {
+        source: 'offerwall',
+        offer_name: offer_name ?? partner.name,
+        coins,
+      });
       await this.notificationsService.push(
         user_id,
         milestone_name ? 'Offerwall milestone completed' : 'Offerwall reward credited',

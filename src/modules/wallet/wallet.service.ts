@@ -15,6 +15,9 @@ import { toSkipTake } from '../../common/utils/pagination.util';
 import { SettingsService } from '../settings/settings.service';
 import { SettingKeys } from '../settings/setting.keys';
 import { AchievementsService } from '../achievements/achievements.service';
+import { Ga4External } from '../../external/ga4.external';
+
+const OFFER_SOURCES: WalletSourceType[] = ['offer', 'offerwall', 'rewardtym'];
 
 export interface LedgerEntry {
   user_id: string;
@@ -42,7 +45,25 @@ export class WalletService {
     private readonly settingsService: SettingsService,
     @Inject(forwardRef(() => AchievementsService))
     private readonly achievementsService: AchievementsService,
+    private readonly ga4: Ga4External,
   ) {}
+
+  /** GA4 first_offer_complete, sent once: when the user's only offer reward (any offer source) is the one just credited. */
+  async reportFirstOfferReward(
+    user_id: string,
+    params: Record<string, string | number>,
+  ): Promise<void> {
+    const row = await this.transactions
+      .createQueryBuilder('t')
+      .select('COUNT(DISTINCT t.source_id)', 'n')
+      .where('t.user_id = :user_id', { user_id })
+      .andWhere("t.type = 'earn'")
+      .andWhere('t.source_type IN (:...sources)', { sources: OFFER_SOURCES })
+      .getRawOne<{ n: string }>()
+      .catch(() => undefined);
+    if (Number(row?.n) !== 1) return;
+    await this.ga4.sendEvent(user_id, 'first_offer_complete', params);
+  }
 
   async createWallet(user_id: string): Promise<Wallet> {
     const wallet = this.wallets.create({

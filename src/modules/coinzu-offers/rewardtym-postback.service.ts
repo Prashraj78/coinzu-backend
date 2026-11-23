@@ -111,6 +111,12 @@ export class RewardtymPostbackService {
     }
 
     if (coins > 0 || gems > 0) {
+      void this.walletService.reportFirstOfferReward(user_id, {
+        source: 'rewardtym',
+        offer_name: offer_name ?? '',
+        coins,
+        gems,
+      });
       await this.notificationsService.push(
         user_id,
         milestone_name ? 'Milestone completed' : 'Reward credited',

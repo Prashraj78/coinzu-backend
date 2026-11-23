@@ -181,6 +181,11 @@ export const Env = {
     fromName: str('MAIL_FROM_NAME', 'Coinzu by RewardTym'),
     replyToAddress: str('MAIL_REPLY_TO', 'rahul@rewardtym.online'),
   },
+  // Server-side GA4 events (Measurement Protocol) into the Coinzu Web stream; empty = off.
+  ga4: {
+    measurementId: str('GA4_MEASUREMENT_ID', ''),
+    apiSecret: str('GA4_API_SECRET', ''),
+  },
   giftCard: {
     // The active vendor is chosen at runtime from app_settings; these envs hold
     // each vendor's credentials. A new vendor = a new block here + a provider class.

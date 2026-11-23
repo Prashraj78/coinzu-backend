@@ -157,6 +157,11 @@ export class PostbackService {
       source_id: completion.cz_offer_completion_id,
       note,
     });
+    void this.walletService.reportFirstOfferReward(click.user_id, {
+      source: 'offer',
+      offer_name: note,
+      coins,
+    });
 
     await Promise.all([
       this.completions.update(completion.cz_offer_completion_id, {
