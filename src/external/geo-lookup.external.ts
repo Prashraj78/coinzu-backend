@@ -37,7 +37,7 @@ export class GeoLookupExternal {
   private async fromIpApi(ip: string): Promise<GeoLookupResult | null> {
     try {
       const { data } = await axios.get(
-        `http://ip-api.com/json/${ip}?fields=status,countryCode,as,isp,hosting`,
+        `http://ip-api.com/json/${ip}?fields=status,countryCode,as,isp,hosting,proxy`,
         { timeout: PROVIDER_TIMEOUT_MS },
       );
       if (data.status !== 'success') return null;
@@ -45,7 +45,8 @@ export class GeoLookupExternal {
         country_code: data.countryCode ?? null,
         asn: data.as ? String(data.as).split(' ')[0] : null,
         isp: data.isp ?? null,
-        is_vpn: Boolean(data.hosting),
+        // proxy = VPN / proxy / Tor exit; hosting = datacenter (includes iCloud Private Relay and WARP).
+        is_vpn: Boolean(data.hosting || data.proxy),
       };
     } catch (error) {
       this.logger.warn(`ip-api.com lookup failed: ${(error as Error).message}`);
@@ -63,7 +64,7 @@ export class GeoLookupExternal {
         country_code: data.country_code ?? null,
         asn: data.connection?.asn ? String(data.connection.asn) : null,
         isp: data.connection?.isp ?? null,
-        is_vpn: Boolean(data.security?.is_datacenter),
+        is_vpn: Boolean(data.security?.is_datacenter || data.security?.vpn || data.security?.proxy || data.security?.tor),
       };
     } catch (error) {
       this.logger.warn(`ipwho.is lookup failed: ${(error as Error).message}`);

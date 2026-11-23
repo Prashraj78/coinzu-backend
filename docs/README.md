@@ -68,6 +68,7 @@ Everything the mobile app and website integrate against. Each row's doc link sho
 | `POST /api/users/me/onboarding/contacts` | user token | Web account setup — saves where to reach the user (Telegram, WhatsApp, Skype or Discord + handle) and marks onboarding complete. | [025](apis/inprogress/025users.onboarding-contacts.md) |
 | `GET /api/users/me/telegram/status` | user token | Web Telegram gate: whether the user must, and does, belong to the Coinzu Telegram channel. | [029](apis/inprogress/029users.telegram-status.md) |
 | `POST /api/users/me/telegram/link` | user token | Connects a Telegram account (Telegram Login `id_token`) so the channel check can run. | [030](apis/inprogress/030users.telegram-link.md) |
+| `GET /api/users/me/network-check` | user token | Whether the request IP is a VPN, proxy, Tor or datacenter network; the app and web block while it is. | [031](apis/inprogress/031users.network-check.md) |
 | `POST /api/users/me/device` | user token | Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. | [028](apis/user/028users.register-device.md) |
 | `PATCH /api/users/me/notification-preferences` | user token | Turns push categories on or off and sets the quiet-hours opt-in. | [032](apis/user/032users.notification-preferences.md) |
 

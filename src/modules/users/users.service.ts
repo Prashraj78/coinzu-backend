@@ -72,6 +72,14 @@ export class UsersService {
     private readonly telegramAuth: TelegramAuthExternal,
   ) {}
 
+  /** Whether this request comes through a VPN / proxy / Tor / datacenter IP. Unknown or local IPs never block. */
+  async networkCheck(req: Request): Promise<{ blocked: boolean }> {
+    const ip = extractRequestIp(req);
+    if (!Env.networkBlockEnabled || !ip || isLoopbackIp(ip)) return { blocked: false };
+    const geo = await this.geoLookup.lookup(ip);
+    return { blocked: geo.is_vpn };
+  }
+
   /**
    * Web users must be in the Coinzu Telegram channel. A confirmed membership is trusted for
    * TELEGRAM_RECHECK_MS; otherwise Telegram is asked again. A failed check counts as joined so

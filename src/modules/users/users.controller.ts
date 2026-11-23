@@ -25,7 +25,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { SetAvatarDto } from './dto/set-avatar.dto';
 import { TelegramLinkDto } from './dto/telegram-link.dto';
 import { resolveDevicePlatform } from '../../common/utils/device-platform.util';
-import { DeactivatedAccountDto, TelegramStatusDto, UserDto } from './dto/users.response';
+import { DeactivatedAccountDto, NetworkCheckDto, TelegramStatusDto, UserDto } from './dto/users.response';
 import { UserDevicesService } from './user-devices.service';
 import { UsersService } from './users.service';
 
@@ -114,6 +114,13 @@ export class UsersController {
     @Req() req: Request,
   ) {
     return this.usersService.saveOnboardingContacts(user.cz_user_id, dto, req);
+  }
+
+  @Get('me/network-check')
+  @ApiOperation({ summary: 'Whether the request IP is a VPN, proxy, Tor or datacenter network (the app and web block while it is)' })
+  @ApiData(NetworkCheckDto)
+  networkCheck(@Req() req: Request) {
+    return this.usersService.networkCheck(req);
   }
 
   @Get('me/telegram/status')

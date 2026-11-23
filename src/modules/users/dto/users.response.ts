@@ -121,3 +121,8 @@ export class TelegramStatusDto {
   @ApiProperty({ example: 'https://t.me/coinzuonline' })
   channel_url: string;
 }
+
+export class NetworkCheckDto {
+  @ApiProperty({ example: false, description: 'The request IP is a VPN, proxy, Tor exit or datacenter network, and blocking is on.' })
+  blocked: boolean;
+}

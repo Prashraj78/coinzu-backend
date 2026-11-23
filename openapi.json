@@ -692,6 +692,46 @@
         ]
       }
     },
+    "/api/users/me/network-check": {
+      "get": {
+        "operationId": "UsersController_networkCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "data"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/NetworkCheckDto"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Whether the request IP is a VPN, proxy, Tor or datacenter network (the app and web block while it is)",
+        "tags": [
+          "users"
+        ]
+      }
+    },
     "/api/users/me/telegram/status": {
       "get": {
         "operationId": "UsersController_telegramStatus",
@@ -9341,6 +9381,19 @@
         "required": [
           "contact_platform",
           "contact_value"
+        ]
+      },
+      "NetworkCheckDto": {
+        "type": "object",
+        "properties": {
+          "blocked": {
+            "type": "boolean",
+            "example": false,
+            "description": "The request IP is a VPN, proxy, Tor exit or datacenter network, and blocking is on."
+          }
+        },
+        "required": [
+          "blocked"
         ]
       },
       "TelegramStatusDto": {

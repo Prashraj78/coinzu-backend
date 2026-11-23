@@ -267,6 +267,15 @@ curl -X POST $BASE/users/me/telegram/link \
   -d '{ "id_token": "<telegram id_token>", "nonce": "<nonce>" }'
 ```
 
+### GET /api/users/me/network-check
+
+Whether the request IP is a VPN, proxy, Tor or datacenter network. — [`apis/inprogress/031users.network-check.md`](apis/inprogress/031users.network-check.md)
+
+```bash
+curl $BASE/users/me/network-check \
+  -H 'Authorization: Bearer $TOKEN'
+```
+
 ### POST /api/users/me/device
 
 Registers or refreshes this device — IP/ASN/fingerprint + hardware_id/SIM/emulator fraud signals (scored & stored) plus push-token targeting. — [`apis/user/028users.register-device.md`](apis/user/028users.register-device.md)

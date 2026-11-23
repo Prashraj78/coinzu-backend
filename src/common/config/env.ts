@@ -181,6 +181,8 @@ export const Env = {
     fromName: str('MAIL_FROM_NAME', 'Coinzu by RewardTym'),
     replyToAddress: str('MAIL_REPLY_TO', 'rahul@rewardtym.online'),
   },
+  // VPN block: the app and web show a blocking sheet while the request IP is a VPN / proxy / datacenter (GeoLookupExternal).
+  networkBlockEnabled: bool('NETWORK_BLOCK_ENABLED', true),
   // Server-side GA4 events (Measurement Protocol) into the Coinzu Web stream; empty = off.
   ga4: {
     measurementId: str('GA4_MEASUREMENT_ID', ''),
