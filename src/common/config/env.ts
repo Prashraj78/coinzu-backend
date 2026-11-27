@@ -174,11 +174,11 @@ export const Env = {
   },
   // From name must agree with the sending domain ("Coinzu" alone did not) and
   // reply-to must be a role address, not a personal mailbox.
-  // Sent through Amazon SES (AWS_* keys above) from the shared RewardTym sender.
+  // Sent through Resend (RESEND_API_KEY) from the shared RewardTym sender domain, rewardtym.online.
   mail: {
-    sesRegion: str('SES_REGION', 'us-east-1'),
+    resendApiKey: str('RESEND_API_KEY', ''),
     fromAddress: str('MAIL_FROM_ADDRESS', 'no-reply@rewardtym.online'),
-    fromName: str('MAIL_FROM_NAME', 'Coinzu by RewardTym'),
+    fromName: str('MAIL_FROM_NAME', 'Coinzu by Rewardtym'),
     replyToAddress: str('MAIL_REPLY_TO', 'rahul@rewardtym.online'),
   },
   // VPN block: the app and web show a blocking sheet while the request IP is a VPN / proxy / datacenter (GeoLookupExternal).

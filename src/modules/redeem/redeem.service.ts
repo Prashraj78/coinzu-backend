@@ -28,7 +28,7 @@ import {
   GiftCardPurchaseResult,
   GiftCardVendorPlan,
 } from '../../external/gift-card.external';
-import { SesMailExternal } from '../../external/ses-mail.external';
+import { ResendMailExternal } from '../../external/resend-mail.external';
 import { TelegramExternal } from '../../external/telegram.external';
 import { ListProductsDto } from './dto/list-products.dto';
 import { AdminListProductsDto } from './dto/admin-list-products.dto';
@@ -73,7 +73,7 @@ export class RedeemService {
     private readonly notificationsService: NotificationsService,
     private readonly achievementsService: AchievementsService,
     private readonly referralRulesService: ReferralRulesService,
-    private readonly mail: SesMailExternal,
+    private readonly mail: ResendMailExternal,
     private readonly telegram: TelegramExternal,
     @InjectRepository(User)
     private readonly users: Repository<User>,

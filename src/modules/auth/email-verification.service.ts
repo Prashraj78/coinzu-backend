@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Env } from '../../common/config/env';
 import { CzAuthErrorCodes } from '../../common/errors/error.constants';
-import { SesMailExternal } from '../../external/ses-mail.external';
+import { ResendMailExternal } from '../../external/resend-mail.external';
 import { RedisExternal } from '../../external/redis.external';
 import { LinkTokenService } from './link-token.service';
 import { buildActionEmailHtml } from './mail-templates';
@@ -13,7 +13,7 @@ import { buildActionEmailHtml } from './mail-templates';
 @Injectable()
 export class EmailVerificationService {
   constructor(
-    private readonly mailer: SesMailExternal,
+    private readonly mailer: ResendMailExternal,
     private readonly linkTokens: LinkTokenService,
     private readonly redis: RedisExternal,
   ) {}
