@@ -28,12 +28,11 @@ import { CreateWithdrawalDto } from './dto/create-withdrawal.dto';
 import { PayWithdrawalDto } from './dto/review-withdrawal.dto';
 import { AchievementsService } from '../achievements/achievements.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { TelegramExternal } from '../../external/telegram.external';
+import { COINZU_ADMIN_URL, TelegramExternal } from '../../external/telegram.external';
 import { Env } from '../../common/config/env';
 
 const ONE_PENDING_INDEX = 'IDX_withdrawal_requests_one_pending';
 // Admin panel link in the Telegram alert.
-const WITHDRAWALS_ADMIN_URL = 'https://rewardtym.online/admin/coinzu/withdrawals';
 
 const ADDRESS_FORMAT: Record<UsdtNetwork, RegExp> = {
   BEP20: /^0x[a-fA-F0-9]{40}$/,
@@ -239,18 +238,23 @@ export class WithdrawalService {
         where: { cz_user_id: row.user_id },
         select: { name: true, email: true, kyc_status: true, signup_platform: true },
       });
-      const e = (v: string | null | undefined) => this.telegram.escape(v ?? '-');
-      const lines = [
-        '<b>💸 New withdrawal request</b>',
-        `User: ${e(user?.name)} (${e(user?.email)})`,
-        `Amount: ${row.amount_coins.toLocaleString('en-US')} coins = $${row.amount_usd}`,
-        `Fee: ${row.fee_percent}% ($${row.fee_usd}) · <b>Pay: $${row.payout_usd} USDT</b>`,
-        `Network: <b>${e(row.network)}</b>`,
-        `Address: <code>${e(row.wallet_address)}</code>`,
-        `KYC: ${e(user?.kyc_status)} · Signed up: ${e(user?.signup_platform)}`,
-        `<a href="${WITHDRAWALS_ADMIN_URL}/${row.cz_withdrawal_request_id}">Review in admin</a>`,
-      ];
-      await this.telegram.sendAlert(lines.join('\n'), Env.telegram.withdrawalsChatId || undefined);
+      const html =
+        this.telegram.title('💸 New withdrawal request') +
+        this.telegram.table([
+          ['User', user?.name],
+          ['Email', user?.email],
+          ['Amount', `${row.amount_coins.toLocaleString('en-US')} coins`],
+          ['Value', `$${row.amount_usd}`],
+          ['Fee', `${row.fee_percent}% ($${row.fee_usd})`],
+          ['Pay', `$${row.payout_usd} USDT`],
+          ['Network', row.network],
+          ['KYC', user?.kyc_status],
+          ['Signed up', user?.signup_platform],
+          ['Request', row.cz_withdrawal_request_id],
+        ]) +
+        `Address\n<code>${this.telegram.escape(row.wallet_address ?? '-')}</code>\n\n` +
+        `<a href="${COINZU_ADMIN_URL}/withdrawals/${row.cz_withdrawal_request_id}">Review in admin</a>`;
+      await this.telegram.sendAlert(html, Env.telegram.withdrawalsChatId || undefined);
     } catch (err) {
       this.logger.warn(`Withdrawal alert failed: ${String(err)}`);
     }

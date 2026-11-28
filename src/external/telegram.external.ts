@@ -4,6 +4,12 @@ import { Env } from '../common/config/env';
 
 const SEND_TIMEOUT_MS = 10000;
 const MAX_LEN = 3800;
+const TABLE_VALUE_MAX = 64;
+
+/** Admin panel base, for "open in admin" links in alerts. */
+export const COINZU_ADMIN_URL = 'https://rewardtym.online/admin/coinzu';
+
+export type TelegramRow = [label: string, value: string | number | null | undefined];
 
 /**
  * Ops alerts to Telegram (gift-card orders etc). Reuses the RewardTym bot token
@@ -21,7 +27,12 @@ export class TelegramExternal {
       this.logger.warn(`[telegram skipped] ${html.replace(/<[^>]+>/g, '')}`);
       return;
     }
-    const text = html.length > MAX_LEN ? `${html.slice(0, MAX_LEN)}…` : html;
+    let text = html;
+    if (text.length > MAX_LEN) {
+      text = `${text.slice(0, MAX_LEN)}…`;
+      // A cut inside <pre> leaves invalid HTML that Telegram rejects.
+      if ((text.match(/<pre>/g) || []).length > (text.match(/<\/pre>/g) || []).length) text += '</pre>';
+    }
     try {
       await axios.post(
         `https://api.telegram.org/bot${token}/sendMessage`,
@@ -68,6 +79,27 @@ export class TelegramExternal {
       this.logger.warn(`Telegram member check failed: ${detail}`);
       return null;
     }
+  }
+
+  /** Bold subject line; Telegram previews only the first line. */
+  title(text: string): string {
+    return `<b>${this.escape(text)}</b>\n`;
+  }
+
+  /** Label/value pairs as an aligned monospace table. Empty values are dropped. */
+  table(rows: TelegramRow[]): string {
+    const visible = rows
+      .map(([label, value]) => [label, value == null ? '' : String(value).replace(/\s+/g, ' ').trim()] as const)
+      .filter(([, value]) => value !== '');
+    if (!visible.length) return '';
+    const width = Math.max(...visible.map(([label]) => label.length));
+    const body = visible
+      .map(([label, value]) => {
+        const cell = value.length > TABLE_VALUE_MAX ? `${value.slice(0, TABLE_VALUE_MAX - 1)}…` : value;
+        return `${label.padEnd(width)} │ ${cell}`;
+      })
+      .join('\n');
+    return `<pre>${this.escape(body)}</pre>`;
   }
 
   /** Escape user/vendor text before putting it inside an HTML alert. */

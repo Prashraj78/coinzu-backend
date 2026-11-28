@@ -29,7 +29,11 @@ import {
   GiftCardVendorPlan,
 } from '../../external/gift-card.external';
 import { ResendMailExternal } from '../../external/resend-mail.external';
-import { TelegramExternal } from '../../external/telegram.external';
+import {
+  COINZU_ADMIN_URL,
+  TelegramExternal,
+  type TelegramRow,
+} from '../../external/telegram.external';
 import { ListProductsDto } from './dto/list-products.dto';
 import { AdminListProductsDto } from './dto/admin-list-products.dto';
 
@@ -292,11 +296,10 @@ export class RedeemService {
       return order;
     });
 
-    await this.alert(
-      `🧾 <b>Gift card ordered</b>\n${this.telegram.escape(
-        `${product.brand} ${product.denomination}`,
-      )} — ${product.price_coins} coins — order <code>${saved.cz_gift_card_order_id}</code>`,
-    );
+    await this.orderAlert('🧾 Gift card ordered', saved, product, [
+      ['Price', `${product.price_coins.toLocaleString('en-US')} coins`],
+      ['Vendor', product.provider_name],
+    ]);
 
     await this.fulfill(saved, product);
     await this.achievementsService.trackProgress(user_id, 'redeem_gift_card');
@@ -337,9 +340,11 @@ export class RedeemService {
       const alt = plan.failover ? await this.alternative(product, plan) : null;
       if (alt) {
         const first = `${product.provider_name}: ${result.failure_reason ?? 'rejected'}`;
-        await this.alert(
-          `🔁 <b>Gift card failover</b>\norder <code>${order.cz_gift_card_order_id}</code> — ${this.telegram.escape(first)} → retrying on ${alt.provider_name}`,
-        );
+        await this.orderAlert('🔁 Gift card failover', order, product, [
+          ['Failed on', product.provider_name],
+          ['Reason', result.failure_reason ?? 'rejected'],
+          ['Retrying on', alt.provider_name],
+        ]);
         const second = await this.attempt(
           order,
           alt.provider_name,
@@ -357,7 +362,7 @@ export class RedeemService {
 
     this.applyResult(order, result.status, result.code, result.failure_reason);
     await this.orders.save(order);
-    if (order.status === 'failed') await this.refund(order);
+    if (order.status === 'failed') await this.refund(order, product);
     if (order.status === 'fulfilled') await this.notifyReady(order, product);
   }
 
@@ -472,7 +477,7 @@ export class RedeemService {
       );
       await this.orders.save(order);
 
-      if (order.status === 'failed') await this.refund(order);
+      if (order.status === 'failed') await this.refund(order, order.product);
       if (order.status === 'fulfilled' && order.product) {
         await this.notifyReady(order, order.product);
       }
@@ -498,7 +503,10 @@ export class RedeemService {
   }
 
   /** A failed order must give the coins back through the ledger. */
-  private async refund(order: GiftCardOrder): Promise<void> {
+  private async refund(
+    order: GiftCardOrder,
+    product?: GiftCardProduct | null,
+  ): Promise<void> {
     await this.walletService.credit({
       user_id: order.user_id,
       currency: 'coin',
@@ -512,11 +520,11 @@ export class RedeemService {
       'Gift card order failed',
       `We could not complete your order, so ${order.price_coins} coins were returned.`,
     );
-    await this.alert(
-      `⚠️ <b>Gift card failed</b>\norder <code>${order.cz_gift_card_order_id}</code> — ${this.telegram.escape(
-        order.failure_reason ?? 'unknown',
-      )} — ${order.price_coins} coins refunded`,
-    );
+    await this.orderAlert('⚠️ Gift card failed', order, product, [
+      ['Vendor', order.provider_name ?? product?.provider_name],
+      ['Reason', order.failure_reason ?? 'unknown'],
+      ['Refunded', `${order.price_coins.toLocaleString('en-US')} coins`],
+    ]);
   }
 
   private async notifyReady(
@@ -529,11 +537,14 @@ export class RedeemService {
       `Your ${product.brand} ${product.denomination} code is ready to view.`,
     );
     await this.emailCode(order, product);
-    await this.alert(
-      `✅ <b>Gift card fulfilled</b>\n${this.telegram.escape(
-        `${product.brand} ${product.denomination}`,
-      )} — order <code>${order.cz_gift_card_order_id}</code>`,
-    );
+    const secs = order.fulfilled_at
+      ? Math.max(0, Math.round((+order.fulfilled_at - +order.created_at) / 1000))
+      : null;
+    await this.orderAlert('✅ Gift card fulfilled', order, product, [
+      ['Price', `${order.price_coins.toLocaleString('en-US')} coins`],
+      ['Vendor', order.provider_name ?? product.provider_name],
+      ['Took', secs === null ? null : secs < 60 ? `${secs}s` : `${Math.floor(secs / 60)}m ${secs % 60}s`],
+    ]);
   }
 
   /** Sends the code + redeem steps to the user's email. Best-effort. */
@@ -568,6 +579,33 @@ export class RedeemService {
       `Your ${product.brand} gift card code`,
       lines.join('\n'),
     );
+  }
+
+  /** Order alert with who ordered what; the user lookup never blocks the flow. */
+  private async orderAlert(
+    heading: string,
+    order: GiftCardOrder,
+    product: GiftCardProduct | null | undefined,
+    rows: TelegramRow[],
+  ): Promise<void> {
+    const user = await this.users
+      .findOne({
+        where: { cz_user_id: order.user_id },
+        select: { name: true, email: true, country: true },
+      })
+      .catch(() => null);
+    const html =
+      this.telegram.title(heading) +
+      this.telegram.table([
+        ['User', user?.name],
+        ['Email', user?.email],
+        ['Country', user?.country],
+        ['Card', product ? `${product.brand} ${product.denomination}` : null],
+        ...rows,
+        ['Order', order.cz_gift_card_order_id],
+      ]) +
+      `<a href="${COINZU_ADMIN_URL}/users/${order.user_id}">Open user in admin</a>`;
+    await this.alert(html);
   }
 
   /** Fire-and-forget ops alert; failures never touch the order flow. */
