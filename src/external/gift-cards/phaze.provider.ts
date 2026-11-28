@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosError } from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { createHash } from 'crypto';
 import { Env } from '../../common/config/env';
 import {
@@ -44,6 +45,8 @@ type PhazeVoucher = {
  * sha256(method + pathWithQuery + requestSecret + compactJsonBody). Orders are
  * keyed by our own order id (`orderId`), which is also how they are looked up.
  */
+const phazeProxyAgent = Env.outboundProxyUrl ? new HttpsProxyAgent(Env.outboundProxyUrl) : null;
+
 @Injectable()
 export class PhazeProvider implements GiftCardProvider {
   readonly name = 'phaze';
@@ -371,6 +374,8 @@ export class PhazeProvider implements GiftCardProvider {
       },
       timeout,
       transformRequest: [(d: unknown) => d],
+      // Phaze allowlists exact IPs and Render's outbound IPs rotate, so calls leave through the fixed-IP proxy.
+      ...(phazeProxyAgent ? { httpsAgent: phazeProxyAgent, proxy: false as const } : {}),
     });
     return res.data;
   }

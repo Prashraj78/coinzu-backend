@@ -181,6 +181,8 @@ export const Env = {
     fromName: str('MAIL_FROM_NAME', 'Coinzu by Rewardtym'),
     replyToAddress: str('MAIL_REPLY_TO', 'rahul@rewardtym.online'),
   },
+  // Fixed-IP forward proxy (EC2 + Elastic IP) for partners that allowlist a single IP, e.g. Phaze. Empty = direct.
+  outboundProxyUrl: str('OUTBOUND_PROXY_URL', ''),
   // VPN block: the app and web show a blocking sheet while the request IP is a VPN / proxy / datacenter (GeoLookupExternal).
   networkBlockEnabled: bool('NETWORK_BLOCK_ENABLED', true),
   // Server-side GA4 events (Measurement Protocol) into the Coinzu Web stream; empty = off.
